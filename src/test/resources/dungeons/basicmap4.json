@@ -1,0 +1,25 @@
+{
+    "width": 4,
+    "height": 2,
+    "entities": [
+        {
+            "x": 0,
+            "y": 0,
+            "type": "player"
+        },
+        {
+            "x": 2,
+            "y": 0,
+            "type": "treasure"
+        },         
+        {
+            "x": 3,
+            "y": 0,
+            "type": "exit"
+        }
+
+    ],
+    "goal-condition": {
+        "goal": "exit AND treasure"
+    }    
+}
