@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StaticEntities {
+public class StaticEntities extends Entities {
     private Position pos;
     private String type;
 }

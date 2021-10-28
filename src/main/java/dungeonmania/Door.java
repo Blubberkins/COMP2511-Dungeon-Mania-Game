@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CollectableEntities extends Entities {
-    private Position pos;
-    private String type;
+public class Door extends StaticEntities {
+    private Boolean isOpen;
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CollectableEntities extends Entities {
+public class Entities {
     private Position pos;
-    private String type;
+    private String id;
 }
