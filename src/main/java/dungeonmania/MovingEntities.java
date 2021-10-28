@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MovingEntities {
+public class MovingEntities extends Entities {
     private Position pos;
     private String type;
 }

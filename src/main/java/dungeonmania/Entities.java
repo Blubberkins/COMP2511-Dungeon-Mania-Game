@@ -4,14 +4,13 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
-import dungeonmania.util.Position;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StaticEntities extends Entities {
+public class Entities {
     private Position pos;
-    private String type;
+    private String id;
 }

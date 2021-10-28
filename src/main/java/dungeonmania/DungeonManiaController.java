@@ -44,6 +44,7 @@ public class DungeonManiaController {
             return new ArrayList<>();
         }
     }
+
     /**
      * Initializes game state + spawns in all entities and main character + items
      * @param dungeonName
@@ -67,113 +68,72 @@ public class DungeonManiaController {
             String type = entities.getJSONObject(i).getString("type");
             int x = entities.getJSONObject(i).getInt("x");
             int y = entities.getJSONObject(i).getInt("y");
-            DungeonMania.createEntity(x,y,type);
+            Position pos = new Position(x, y, 0); //placeholder for layer
+            DungeonMania.createEntity(pos, type);
+        }
 
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         GoalCondition condition = recurseGoalCondition(jsonGoalCondition);
         dungeonMania.setCondition = condition;
-
-
-
-            
-
-        }
-
-        private GoalCondition recurseGoalCondition(JSONObject currentCondition) {
-            String goalType = currentCondition.getString("goal");
-    
-            GoalCondition nodeCondition;
-            switch (goalType) {
-                case "enemies":
-                default:
-                {
-                    nodeCondition = new EnemiesCondition();
-                    break;
-                }
-                case "treasure":
-                {
-                    nodeCondition = new TreasureCondition();
-                    break;
-                }
-                case "exit":
-                {
-                    nodeCondition = new ExitCondition();
-                    break;
-                }
-                case "boulders":
-                {
-                    nodeCondition = new BouldersCondition();
-                    break;
-                }
-                case "AND":
-                {
-                    JSONArray jsonSubGoals = currentCondition.getJSONArray("subgoals");
-    
-                    ANDCondition andCondition = new ANDCondition();
-    
-                    for (Object goal : jsonSubGoals)
-                    {
-                        GoalCondition leaf = recurseGoalCondition((JSONObject)goal);
-                        andCondition.addCondition(leaf);
-                    }
-    
-                    nodeCondition = andCondition;
-                }
-                case "OR":
-                {
-                    JSONArray jsonSubGoals = currentCondition.getJSONArray("subgoals");
-    
-                    ORCondition orCondition = new ORCondition();
-    
-                    for (Object goal : jsonSubGoals)
-                    {
-                        GoalCondition leaf = recurseGoalCondition((JSONObject)goal);
-                        orCondition.addCondition(leaf);
-                    }
-    
-                    nodeCondition = orCondition;
-                }
-            }
-    
-            return nodeCondition;
-        }
-    
+    }
         
+    private GoalCondition recurseGoalCondition(JSONObject currentCondition) {
+        String goalType = currentCondition.getString("goal");
 
-        return null;
-        //visually seeing one of the maps
-        //create our dungeon mania object
-        // evaluate string gamemode --> State files for each of the game-modes
-        //spawning in static entities (abstract entities class)
-        //after spawn finish --> player movement
-        // spawning in walls first
-        //player check for goal completion (recycle the lab) --> we only do basic composite goals (and/or)
+        GoalCondition nodeCondition;
+        switch (goalType) {
+            case "enemies":
+            default:
+            {
+                nodeCondition = new EnemiesCondition();
+                break;
+            }
+            case "treasure":
+            {
+                nodeCondition = new TreasureCondition();
+                break;
+            }
+            case "exit":
+            {
+                nodeCondition = new ExitCondition();
+                break;
+            }
+            case "boulders":
+            {
+                nodeCondition = new BouldersCondition();
+                break;
+            }
+            case "AND":
+            {
+                JSONArray jsonSubGoals = currentCondition.getJSONArray("subgoals");
 
-        //Sprint 1
-        //newgame --> tick
-        //Gamemodes
-        //Loads in walls
-        //player can move
-        //player can successfully reach the exit
+                ANDCondition andCondition = new ANDCondition();
 
-        //ORDER OF PRIORITY
-        //Spawning
-        //Create a randomized location for spider,
-        //Movement
-        //inside abstract entities, update movement abstract function, implemented down
-        //Item interactions 
-        //Battle
+                for (Object goal : jsonSubGoals)
+                {
+                    GoalCondition leaf = recurseGoalCondition((JSONObject)goal);
+                    andCondition.addCondition(leaf);
+                }
 
-        //Sprint 2
-        //loads in one enemy(of choice)
-        //movement for enemy
-        //battle with said enemy
-        //other goals (treasure) and basic composite goals
+                nodeCondition = andCondition;
+            }
+            case "OR":
+            {
+                JSONArray jsonSubGoals = currentCondition.getJSONArray("subgoals");
 
-        //Sprint 3
-        //everything else
+                ORCondition orCondition = new ORCondition();
 
+                for (Object goal : jsonSubGoals)
+                {
+                    GoalCondition leaf = recurseGoalCondition((JSONObject)goal);
+                    orCondition.addCondition(leaf);
+                }
 
+                nodeCondition = orCondition;
+            }
+        }
+
+        return nodeCondition;
     }
     
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
