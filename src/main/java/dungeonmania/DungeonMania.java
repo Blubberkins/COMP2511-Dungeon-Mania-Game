@@ -14,7 +14,8 @@ import java.util.Map;
 
 public class DungeonMania {
     private Character character;
-    private Map game;
+    private int height;
+    private int width;
     private List<MovingEntities> movingEntities;
     private List<StaticEntities> staticEntities;
     private Goal goal;
