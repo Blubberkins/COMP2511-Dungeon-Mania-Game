@@ -58,6 +58,7 @@ public class DungeonManiaController {
             String filename = "src\\main\\resources\\dungeons\\" + dungeonName + ".json";
             dungeon =  new JSONObject(new JSONTokener(new FileReader(filename)));
         } catch (Exception e) {
+            
         }
          int width = dungeon.getInt("width");
          int height = dungeon.getInt("height");
