@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StaticEntities {
-    private Position pos;
-    private String type;
+public class Exit extends StaticEntity {
+
+    public Exit(Position pos, String type, String id) {
+        super(pos, type, id);
+        //TODO Auto-generated constructor stub
+    }
+    
 }

@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CollectableEntities extends Entity {
-    private Position pos;
-    private String type;
-    public CollectableEntities(Position pos, String type, String id) {
+public class DoorEntity extends dungeonmania.StaticEntity {
+    public DoorEntity(Position pos, String type, String id) {
         super(pos, type, id);
-        super.setIsInteractable(true);
         //TODO Auto-generated constructor stub
     }
-   
+
+    private Boolean isOpen;
 }
