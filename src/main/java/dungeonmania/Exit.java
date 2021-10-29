@@ -15,6 +15,7 @@ public class Exit extends StaticEntity {
 
     public Exit(Position pos, String type, String id) {
         super(pos, type, id);
+        super.setIsInteractable(true);
         //TODO Auto-generated constructor stub
     }
     

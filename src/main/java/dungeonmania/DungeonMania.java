@@ -76,10 +76,15 @@ public class DungeonMania {
         Entity entity = null;
         if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
-            this.Entities.add(entity);
+        }
+        if (Type.equalsIgnoreCase("exit")) {
+            entity = new Exit(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
+        }
+
+        if (entity != null) {
             this.Entities.add(entity);
         }
         
