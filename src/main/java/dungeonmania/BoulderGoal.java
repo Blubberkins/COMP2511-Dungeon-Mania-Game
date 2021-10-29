@@ -33,7 +33,7 @@ public class BoulderGoal extends GoalLeaf {
         return true;
     }
 
-    public Boolean hasBoulder(DungeonResponse game, Position position) {
+    public static Boolean hasBoulder(DungeonResponse game, Position position) {
         List<EntityResponse> entities = game.getEntities();
 
         for (EntityResponse entity : entities) {
