@@ -21,7 +21,6 @@ public class Spider extends MovingEntity {
         this.spawn_point = pos;
         this.setPos(pos.translateBy(Direction.UP));
     }
-
     public void move(DungeonMania dungeonmania) {
         Position newPosition = nextSquare(dungeonmania);
         if (newPosition == null) {
