@@ -121,25 +121,36 @@ public class DungeonManiaController {
     public DungeonResponse tick(String itemUsed, Direction movementDirection) throws IllegalArgumentException, InvalidActionException {
         String Goalstring;
         DungeonMania currentGame = this.loadedgame;
-        List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
         Character updateCharacter = currentGame.getCharacter();
         updateCharacter.move(currentGame, movementDirection);
         currentGame.setCharacter(updateCharacter);
         currentGame.updateEntities(updateCharacter);
         Goal goal = currentGame.getGoal();
+        List<Entity> toRemove = new ArrayList<>();
         for (Entity entity: currentGame.getEntities()) {
             if(entity instanceof MovingEntity) {
               ((MovingEntity) entity).move(currentGame);
             }
+
+            if (entity instanceof CollectableEntities) {
+                if(updateCharacter.getPos().equals(entity.getPos())){
+                    toRemove.add(entity);
+                    currentGame.addItem(entity.getId());
+                }
+            }
         }
+        for (Entity entity: toRemove) {
+            currentGame.removeEntity(entity);
+        }
+        
         if (goal.isComplete(currentGame)) {
            Goalstring = "";
         }
         else {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
         }
-        return new DungeonResponse(currentGame.getId(),currentGame.getName(), currentGame.getEntityResponses(), items, buildables,Goalstring);
+        return new DungeonResponse(currentGame.getId(),currentGame.getName(), currentGame.getEntityResponses(), currentGame.getItemResponses(), buildables,Goalstring);
 
     }
 
