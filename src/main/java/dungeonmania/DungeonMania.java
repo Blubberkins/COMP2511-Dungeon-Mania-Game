@@ -23,31 +23,45 @@ public class DungeonMania {
     private List<Entity> Items;
     private List<Entity> Buildables; 
     private Goal goal;
+    private String id;
     private String name;
     private String difficulty;
     
-    public DungeonMania(String difficulty) {
+    public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
+        this.name = name;
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
         this.entityResponses = new ArrayList<>();
     }
+    
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public int getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
     public int getWidth() {
         return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     public List<EntityResponse> getEntityResponses() {

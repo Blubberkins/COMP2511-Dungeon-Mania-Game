@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Character extends Entity {
+public class Character extends MovingEntity {
     private int health;
     private int attack;
     private List<CollectableEntities> collectables;

@@ -23,9 +23,17 @@ import dungeonmania.util.Position;
 
 public class DungeonManiaController {
     private ArrayList<DungeonMania> games;
+    private DungeonMania loadedgame;
     
     public DungeonManiaController() {
-        this.games = new ArrayList<>();
+        this.games = new ArrayList<>();    }
+    
+    public ArrayList<DungeonMania> getGames() {
+        return games;
+    }
+
+    public void setGames(ArrayList<DungeonMania> games) {
+        this.games = games;
     }
 
     public String getSkin() {
@@ -64,7 +72,7 @@ public class DungeonManiaController {
         List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
         List<EntityResponse> responses = new ArrayList<>();
-        DungeonMania dungeonMania = new DungeonMania(gameMode);
+        DungeonMania dungeonMania = new DungeonMania(gameMode, dungeonName);
         JSONObject dungeon = null;
         File f = new File("src/test/resources/dungeons/" + dungeonName + ".json");
         String s = f.getAbsolutePath();
@@ -86,8 +94,11 @@ public class DungeonManiaController {
         }
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
-        List<EntityResponse> e = dungeonMania.getEntityResponses();
-        return new DungeonResponse(dungeonName + gameMode ,dungeonName, e, items, buildables,GoalFactory.goalString(dungeonMania.getGoal()));
+        List<EntityResponse> entityResponses = dungeonMania.getEntityResponses();
+        dungeonMania.setId(Integer.toString(this.games.size() + 1));
+        this.games.add(dungeonMania);
+        this.loadedgame = dungeonMania;
+        return new DungeonResponse(dungeonMania.getId(),dungeonName, entityResponses, items, buildables,GoalFactory.goalString(dungeonMania.getGoal()));
     }
         
 
@@ -101,10 +112,12 @@ public class DungeonManiaController {
     }
 
     public List<String> allGames() {
-        return new ArrayList<>();
+        return null;
     }
 
     public DungeonResponse tick(String itemUsed, Direction movementDirection) throws IllegalArgumentException, InvalidActionException {
+        DungeonMania currentGame = this.loadedgame;
+        currentGame.updatePlayerMovement();   
         return null;
     }
 
