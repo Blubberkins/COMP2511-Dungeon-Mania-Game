@@ -76,7 +76,7 @@ public class DungeonManiaController {
         }
         //int width = dungeon.getInt("width");
         //int height = dungeon.getInt("height");
-         JSONArray entities = dungeon.getJSONArray("entities");
+        JSONArray entities = dungeon.getJSONArray("entities");
         for (int i = 0; i < entities.length(); i++) {
             String type = entities.getJSONObject(i).getString("type");
             int x = entities.getJSONObject(i).getInt("x");

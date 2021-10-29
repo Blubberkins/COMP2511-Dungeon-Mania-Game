@@ -23,6 +23,7 @@ public class DungeonMania {
     private List<Entity> Items;
     private List<Entity> Buildables; 
     private Goal goal;
+    private String name;
     private String difficulty;
     
     public DungeonMania(String difficulty) {
@@ -73,8 +74,12 @@ public class DungeonMania {
     public void createEntity(Position pos, String Type){
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
-        if(Type.equalsIgnoreCase("wall")){
+        if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
+            this.Entities.add(entity);
+        }
+        if (Type.equalsIgnoreCase("player")) {
+            entity = new Character(pos, Type, id);
             this.Entities.add(entity);
         }
         
