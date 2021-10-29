@@ -21,10 +21,10 @@ public class DungeonMania {
     private List<Entity> Entities;
     private List<EntityResponse> entityResponses;
     private List<Entity> Items;
-    private List<Entity> Buildables; 
+    private List<Entity> Buildables;
     private Goal goal;
     private String difficulty;
-    
+
     public DungeonMania(String difficulty) {
         this.difficulty = difficulty;
         this.Entities = new ArrayList<>();
@@ -51,11 +51,15 @@ public class DungeonMania {
 
     public List<EntityResponse> getEntityResponses() {
         List<EntityResponse> e = new ArrayList<>();
-        for (Entity entity: this.Entities){
+        for (Entity entity : this.Entities) {
             e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));
         }
         return e;
-        
+
+    }
+
+    public List<Entity> getEntities() {
+        return this.Entities;
     }
 
     public void setEntities(List<Entity> entities) {
@@ -70,13 +74,13 @@ public class DungeonMania {
         this.goal = goal;
     }
 
-    public void createEntity(Position pos, String Type){
+    public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
-        if(Type.equalsIgnoreCase("wall")){
+        if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
             this.Entities.add(entity);
         }
-        
+
     }
 }

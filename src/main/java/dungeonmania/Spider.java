@@ -22,10 +22,10 @@ public class Spider extends MovingEntity {
         this.setPos(pos.translateBy(Direction.UP));
     }
 
-    public void move(DungeonResponse game) {
-        Position newPosition = nextSquare(game);
+    public void move(DungeonMania dungeonmania) {
+        Position newPosition = nextSquare(dungeonmania);
         if (newPosition == null) {
-            newPosition = previousSquare(game);
+            newPosition = previousSquare(dungeonmania);
         }
 
         if (newPosition != null) {
@@ -33,7 +33,7 @@ public class Spider extends MovingEntity {
         }
     }
 
-    public Position nextSquare(DungeonResponse game) {
+    public Position nextSquare(DungeonMania dungeonmania) {
         int spawnX = this.spawn_point.getX();
         int spawnY = this.spawn_point.getY();
         int currX = this.getPos().getX();
@@ -49,14 +49,14 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.DOWN));
         }
 
-        if (BoulderGoal.hasBoulder(game, newPos)) {
+        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {
             newPos = null;
         }
 
         return newPos;
     }
 
-    public Position previousSquare(DungeonResponse game) {
+    public Position previousSquare(DungeonMania dungeonmania) {
         int spawnX = this.spawn_point.getX();
         int spawnY = this.spawn_point.getY();
         int currX = this.getPos().getX();
@@ -72,7 +72,7 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.UP));
         }
 
-        if (BoulderGoal.hasBoulder(game, newPos)) {
+        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {
             newPos = null;
         }
 

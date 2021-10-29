@@ -1,7 +1,5 @@
 package dungeonmania;
 
-import dungeonmania.response.models.DungeonResponse;
-
 // for literal goals
 // By Liam
 
@@ -18,7 +16,7 @@ public class GoalLeaf implements Goal {
     }
 
     // this is a stub. functionality delegated to subclasses
-    public Boolean isComplete(DungeonResponse game) {
+    public Boolean isComplete(DungeonMania game) {
         return false;
     }
 
