@@ -17,6 +17,6 @@ public abstract class MovingEntity extends Entity {
         super.setIsInteractable(false);
         //TODO Auto-generated constructor stub
     }
-    public abstract void move();
+    public abstract void move(DungeonMania d);
 
 }

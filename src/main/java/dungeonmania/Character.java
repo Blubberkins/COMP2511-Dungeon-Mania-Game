@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Character extends MovingEntity {
+public class Character extends Entity {
     private int health;
     private int attack;
     private List<CollectableEntities> collectables;
@@ -19,6 +19,10 @@ public class Character extends MovingEntity {
     public Character (Position pos, String type, String id){
         super(pos, type, id);
         super.setIsInteractable(false);
+    }
+    public void move(DungeonMania d, Direction move) {
+        
+
     }
 
 
