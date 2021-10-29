@@ -52,6 +52,7 @@ public class DungeonMania {
         for (Entity entity: this.Entities){
             e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));
         }
+        String s = "hi";
         return e;
     }
 

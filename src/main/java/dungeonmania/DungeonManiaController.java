@@ -63,27 +63,28 @@ public class DungeonManiaController {
         List<EntityResponse> responses = new ArrayList<>();
         DungeonMania dungeonMania = new DungeonMania(gameMode);
         JSONObject dungeon = null;
-        File f = new File("src/test/resources/dungeons/maze.json");
+        File f = new File("src/test/resources/dungeons/" + dungeonName + ".json");
         String s = f.getAbsolutePath();
         
         try {
+            FileReader g = new FileReader(s);
             dungeon =  new JSONObject(new JSONTokener(new FileReader(s)));
         } catch (Exception e) {
         }
         //int width = dungeon.getInt("width");
         //int height = dungeon.getInt("height");
          JSONArray entities = dungeon.getJSONArray("entities");
-         for (int i = 0; i < entities.length(); i++) {
+        for (int i = 0; i < entities.length(); i++) {
             String type = entities.getJSONObject(i).getString("type");
             int x = entities.getJSONObject(i).getInt("x");
             int y = entities.getJSONObject(i).getInt("y");
             Position pos = new Position(x, y, 0); //placeholder for layer
             dungeonMania.createEntity(pos, type);
         }
-        
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
-        dungeonMania.getEntityResponses();
+        responses = dungeonMania.getEntityResponses();
+        String test = "hi";
         return new DungeonResponse(dungeonName + gameMode,dungeonName, responses, items, buildables,"treasure");
     }
         

@@ -17,6 +17,4 @@ public abstract class MovingEntity extends Entity {
         super.setIsInteractable(false);
         //TODO Auto-generated constructor stub
     }
-    private Position pos;
-    private String type;
 }

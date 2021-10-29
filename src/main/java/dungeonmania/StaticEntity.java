@@ -17,6 +17,4 @@ public  abstract class StaticEntity extends Entity {
         super(pos, type, id);
         super.setIsInteractable(false);
     }
-    private Position pos;
-    private String type;
 }
