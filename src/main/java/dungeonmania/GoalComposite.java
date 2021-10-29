@@ -3,8 +3,6 @@ package dungeonmania;
 import java.util.List;
 import java.util.ArrayList;
 
-import dungeonmania.response.models.DungeonResponse;
-
 // for logical operators on goals
 // By Liam 
 
@@ -21,7 +19,7 @@ public class GoalComposite implements Goal {
         return this.name;
     }
 
-    public Boolean isComplete(DungeonResponse game) {
+    public Boolean isComplete(DungeonMania game) {
         switch (name) {
         case "AND":
             for (Goal goal : subgoals) {

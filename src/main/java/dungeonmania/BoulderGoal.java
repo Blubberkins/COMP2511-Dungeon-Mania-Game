@@ -13,19 +13,19 @@ public class BoulderGoal extends GoalLeaf {
     }
 
     @Override
-    public Boolean isComplete(DungeonResponse game) {
-        List<EntityResponse> entities = game.getEntities();
+    public Boolean isComplete(DungeonMania game) {
+        List<Entity> entities = game.getEntities();
 
-        List<EntityResponse> switches = new ArrayList<EntityResponse>();
+        List<Entity> switches = new ArrayList<Entity>();
 
-        for (EntityResponse entity : entities) {
+        for (Entity entity : entities) {
             if (entity.getType().compareTo("switch") == 0) {
                 switches.add(entity);
             }
         }
 
-        for (EntityResponse switchEntity : switches) {
-            if (!hasBoulder(game, switchEntity.getPosition())) {
+        for (Entity switchEntity : switches) {
+            if (!hasBoulder(game, switchEntity.getPos())) {
                 return false;
             }
         }
@@ -33,12 +33,12 @@ public class BoulderGoal extends GoalLeaf {
         return true;
     }
 
-    public Boolean hasBoulder(DungeonResponse game, Position position) {
-        List<EntityResponse> entities = game.getEntities();
+    public static Boolean hasBoulder(DungeonMania game, Position position) {
+        List<Entity> entities = game.getEntities();
 
-        for (EntityResponse entity : entities) {
+        for (Entity entity : entities) {
             if (entity.getType().compareTo("boulder") == 0) {
-                if (position.equals(entity.getPosition())) {
+                if (position.equals(entity.getPos())) {
                     return true;
                 }
             }

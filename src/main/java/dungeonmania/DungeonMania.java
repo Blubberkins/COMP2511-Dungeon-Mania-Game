@@ -21,41 +21,74 @@ public class DungeonMania {
     private List<Entity> Entities;
     private List<EntityResponse> entityResponses;
     private List<Entity> Items;
-    private List<Entity> Buildables; 
+    private List<Entity> Buildables;
     private Goal goal;
+    private String id;
+    private String name;
     private String difficulty;
     
-    public DungeonMania(String difficulty) {
+    public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
+        this.name = name;
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
         this.entityResponses = new ArrayList<>();
     }
+    
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+    public void updateEntities(Entity e){
+        for (Entity entity: this.Entities) {
+            if (entity.getId().equals(e.getId())){
+                entity = e;
+            }
+        }
+    }
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getId() {
+        return id;
+    }
+
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public int getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public List<EntityResponse> getEntityResponses() {
         List<EntityResponse> e = new ArrayList<>();
-        for (Entity entity: this.Entities){
+        for (Entity entity : this.Entities) {
             e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));
         }
         return e;
-        
+
+    }
+
+    public List<Entity> getEntities() {
+        return this.Entities;
     }
 
     public void setEntities(List<Entity> entities) {
@@ -70,13 +103,23 @@ public class DungeonMania {
         this.goal = goal;
     }
 
-    public void createEntity(Position pos, String Type){
+    public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
-        if(Type.equalsIgnoreCase("wall")){
+        if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("exit")) {
+            entity = new Exit(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("player")) {
+            entity = new Character(pos, Type, id);
+            this.character = (Character) entity;
+        }
+
+        if (entity != null) {
             this.Entities.add(entity);
         }
-        
+
     }
 }

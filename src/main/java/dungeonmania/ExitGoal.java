@@ -2,8 +2,6 @@ package dungeonmania;
 
 import java.util.List;
 
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 public class ExitGoal extends GoalLeaf {
@@ -12,12 +10,12 @@ public class ExitGoal extends GoalLeaf {
     }
 
     @Override
-    public Boolean isComplete(DungeonResponse game) {
-        List<EntityResponse> entities = game.getEntities();
+    public Boolean isComplete(DungeonMania game) {
+        List<Entity> entities = game.getEntities();
 
-        for (EntityResponse entity : entities) {
+        for (Entity entity : entities) {
             if (entity.getType().compareTo("exit") == 0) {
-                Position exitposition = entity.getPosition();
+                Position exitposition = entity.getPos();
                 if (exitposition.equals(getPlayerPosition(game))) {
                     return true;
                 }
@@ -27,13 +25,13 @@ public class ExitGoal extends GoalLeaf {
         return false;
     }
 
-    public Position getPlayerPosition(DungeonResponse game) {
-        List<EntityResponse> entities = game.getEntities();
+    public Position getPlayerPosition(DungeonMania game) {
+        List<Entity> entities = game.getEntities();
 
         Position position = null;
-        for (EntityResponse entity : entities) {
+        for (Entity entity : entities) {
             if (entity.getType().compareTo("player") == 0) {
-                position = entity.getPosition();
+                position = entity.getPos();
                 return position;
             }
         }

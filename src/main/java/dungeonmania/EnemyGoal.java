@@ -3,19 +3,16 @@ package dungeonmania;
 import java.util.List;
 import java.util.ArrayList;
 
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
-
 public class EnemyGoal extends GoalLeaf {
     public EnemyGoal() {
         super("enemies");
     }
 
     @Override
-    public Boolean isComplete(DungeonResponse game) {
-        List<EntityResponse> entities = game.getEntities();
+    public Boolean isComplete(DungeonMania game) {
+        List<Entity> entities = game.getEntities();
 
-        for (EntityResponse entity : entities) {
+        for (Entity entity : entities) {
             if (isEnemy(entity)) {
                 return false;
             }
@@ -24,7 +21,7 @@ public class EnemyGoal extends GoalLeaf {
         return true;
     }
 
-    public Boolean isEnemy(EntityResponse entity) {
+    public Boolean isEnemy(Entity entity) {
         List<String> enemies = new ArrayList<String>();
 
         enemies.add("spider");
