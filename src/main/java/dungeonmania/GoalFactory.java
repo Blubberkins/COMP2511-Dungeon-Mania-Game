@@ -51,8 +51,8 @@ public class GoalFactory {
         JSONArray subgoals = jsonObject.getJSONArray("subgoals");
 
         for (int i = 0; i < subgoals.length(); i++) {
-            String subgoal = (String) subgoals.get(i);
-            goal.add(generate(subgoal));
+            JSONObject subgoal = subgoals.getJSONObject(i);
+            goal.add(generate(subgoal.toString()));
         }
     }
 

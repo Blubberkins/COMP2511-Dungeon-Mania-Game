@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-import javax.swing.text.html.parser.Entity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +22,7 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.*;
 
 public class DungeonManiaController {
     private ArrayList<DungeonMania> games;
@@ -83,8 +84,6 @@ public class DungeonManiaController {
             dungeon =  new JSONObject(new JSONTokener(new FileReader(s)));
         } catch (Exception e) {
         }
-        //int width = dungeon.getInt("width");
-        //int height = dungeon.getInt("height");
         JSONArray entities = dungeon.getJSONArray("entities");
         for (int i = 0; i < entities.length(); i++) {
             String type = entities.getJSONObject(i).getString("type");
@@ -92,6 +91,9 @@ public class DungeonManiaController {
             int y = entities.getJSONObject(i).getInt("y");
             Position pos = new Position(x, y, 0); //placeholder for layer
             dungeonMania.createEntity(pos, type);
+        }
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0,5); i++) {
+            dungeonMania.spawnSpider();
         }
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
@@ -119,20 +121,36 @@ public class DungeonManiaController {
     public DungeonResponse tick(String itemUsed, Direction movementDirection) throws IllegalArgumentException, InvalidActionException {
         String Goalstring;
         DungeonMania currentGame = this.loadedgame;
-        List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
         Character updateCharacter = currentGame.getCharacter();
         updateCharacter.move(currentGame, movementDirection);
         currentGame.setCharacter(updateCharacter);
         currentGame.updateEntities(updateCharacter);
         Goal goal = currentGame.getGoal();
+        List<Entity> toRemove = new ArrayList<>();
+        for (Entity entity: currentGame.getEntities()) {
+            if(entity instanceof MovingEntity) {
+              ((MovingEntity) entity).move(currentGame);
+            }
+
+            if (entity instanceof CollectableEntities) {
+                if(updateCharacter.getPos().equals(entity.getPos())){
+                    toRemove.add(entity);
+                    currentGame.addItem(entity.getId());
+                }
+            }
+        }
+        for (Entity entity: toRemove) {
+            currentGame.removeEntity(entity);
+        }
+        
         if (goal.isComplete(currentGame)) {
            Goalstring = "";
         }
         else {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
         }
-        return new DungeonResponse(currentGame.getId(),currentGame.getName(), currentGame.getEntityResponses(), items, buildables,Goalstring);
+        return new DungeonResponse(currentGame.getId(),currentGame.getName(), currentGame.getEntityResponses(), currentGame.getItemResponses(), buildables,Goalstring);
 
     }
 
