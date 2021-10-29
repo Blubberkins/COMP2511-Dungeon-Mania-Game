@@ -19,6 +19,7 @@ public class DungeonMania {
     private int height;
     private int width;
     private List<Entity> Entities;
+    private List<EntityResponse> entityResponses;
     private List<Entity> Items;
     private List<Entity> Buildables; 
     private Goal goal;
@@ -29,6 +30,7 @@ public class DungeonMania {
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
+        this.entityResponses = new ArrayList<>();
     }
 
     public int getHeight() {
@@ -52,8 +54,8 @@ public class DungeonMania {
         for (Entity entity: this.Entities){
             e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));
         }
-        String s = "hi";
         return e;
+        
     }
 
     public void setEntities(List<Entity> entities) {
@@ -73,7 +75,8 @@ public class DungeonMania {
         Entity entity = null;
         if(Type.equalsIgnoreCase("wall")){
             entity = new Wall(pos, Type, id);
+            this.Entities.add(entity);
         }
-        this.Entities.add(entity);
+        
     }
 }
