@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DungeonMania {
     private Character character;
@@ -49,6 +50,27 @@ public class DungeonMania {
                 entity = e;
             }
         }
+    }
+    public int getLargestX(){
+        int x = 0;
+        for (Entity entity: this.Entities){
+            int newX = entity.getPos().getX();
+            if (newX > x){
+                x = newX;
+            }
+        }
+        return x;
+    }
+    public int getLargestY(){
+        int y = 0;
+        for (Entity entity: this.Entities){
+            int newY = entity.getPos().getY();
+            if (newY > y){
+                y = newY;
+            }
+        }
+        return y;
+
     }
     public String getName() {
         return name;
@@ -102,7 +124,29 @@ public class DungeonMania {
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
+    public Position generateRandomPos(){
+        int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX());
+        int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY());
+        return new Position (spawnX,spawnY,0);
+    }
+    public void spawnSpider(){
+        Boolean isBoulder = true;
+        Position p = null;
+        while (isBoulder){
+            p = generateRandomPos();
+            for (Entity entity: this.Entities) {
+              if (p.equals(entity.getPos()) && entity.getType().equals("boulder")){
+                  isBoulder = true;
+              }
+              else {
+                  isBoulder = false;
+              }
+            }
+        }
+     Spider s  = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
+     Entities.add(s);
 
+    }
     public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
