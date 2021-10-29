@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BuildableEntities extends CollectableEntities {
-    private Position pos;
-    private String type;
+public abstract class MovingEntity extends Entity {
+    public MovingEntity(Position pos, String type, String id) {
+        super(pos, type, id);
+        super.setIsInteractable(false);
+        //TODO Auto-generated constructor stub
+    }
 }

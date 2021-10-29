@@ -1,17 +1,17 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+// goal interface
+// By Liam
 
-public class Goal {
-    private String goal;
-    private boolean completed;
+public interface Goal {
+    public String getName();
+
+    public Boolean isComplete(DungeonResponse game);
+
+    public Boolean add(Goal g);
+
+    public Boolean remove(Goal g);
+
 }

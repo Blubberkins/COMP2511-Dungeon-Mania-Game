@@ -16,5 +16,5 @@ public class Character {
     private int attack;
     private Position pos;
     private List<CollectableEntities> collectables;
-    private List<BuildableEntities> buildables;
+    private List<BuildableEntity> buildables;
 }

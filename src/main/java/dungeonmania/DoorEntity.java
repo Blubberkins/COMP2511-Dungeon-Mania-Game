@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StaticEntities extends Entities {
-    private Position pos;
-    private String type;
+public class DoorEntity extends dungeonmania.StaticEntity {
+    public DoorEntity(Position pos, String type, String id) {
+        super(pos, type, id);
+        //TODO Auto-generated constructor stub
+    }
+
+    private Boolean isOpen;
 }
