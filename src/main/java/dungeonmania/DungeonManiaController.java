@@ -84,7 +84,7 @@ public class DungeonManiaController {
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
         List<EntityResponse> e = dungeonMania.getEntityResponses();
-        return new DungeonResponse(dungeonName + gameMode,dungeonName, e, items, buildables,"treasure");
+        return new DungeonResponse(dungeonName + gameMode,dungeonName, e, items, buildables,GoalFactory.goalString(dungeonMania.getGoal()));
     }
         
 
