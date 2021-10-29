@@ -22,7 +22,10 @@ import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 
 public class DungeonManiaController {
+    private ArrayList<DungeonMania> games;
+    
     public DungeonManiaController() {
+        this.games = new ArrayList<>();
     }
 
     public String getSkin() {
@@ -84,7 +87,7 @@ public class DungeonManiaController {
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
         List<EntityResponse> e = dungeonMania.getEntityResponses();
-        return new DungeonResponse(dungeonName + gameMode,dungeonName, e, items, buildables,GoalFactory.goalString(dungeonMania.getGoal()));
+        return new DungeonResponse(dungeonName + gameMode ,dungeonName, e, items, buildables,GoalFactory.goalString(dungeonMania.getGoal()));
     }
         
 
