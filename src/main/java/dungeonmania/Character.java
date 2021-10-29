@@ -20,9 +20,16 @@ public class Character extends Entity {
         super(pos, type, id);
         super.setIsInteractable(false);
     }
-    public void move(DungeonMania d, Direction move) {
-        
-
+    public void move(DungeonMania game, Direction move) {
+        Position newPos =  this.getPos().translateBy(move);
+        for(Entity entity: game.getEntities()){
+            if(entity.getPos().equals(newPos)){
+                if(entity instanceof Wall){
+                    return;
+                }
+            }
+        }
+        this.setPos(newPos);
     }
 
 

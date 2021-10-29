@@ -36,6 +36,20 @@ public class DungeonMania {
         this.entityResponses = new ArrayList<>();
     }
     
+    public Character getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+    public void updateEntities(Entity e){
+        for (Entity entity: this.Entities) {
+            if (entity.getId().equals(e.getId())){
+                entity = e;
+            }
+        }
+    }
     public String getName() {
         return name;
     }
@@ -100,6 +114,7 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
+            this.character = (Character) entity;
         }
 
         if (entity != null) {

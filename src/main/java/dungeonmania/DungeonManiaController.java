@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.text.html.parser.Entity;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -71,7 +73,6 @@ public class DungeonManiaController {
     public DungeonResponse newGame(String dungeonName, String gameMode) throws IllegalArgumentException {
         List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
-        List<EntityResponse> responses = new ArrayList<>();
         DungeonMania dungeonMania = new DungeonMania(gameMode, dungeonName);
         JSONObject dungeon = null;
         File f = new File("src/test/resources/dungeons/" + dungeonName + ".json");
@@ -116,9 +117,23 @@ public class DungeonManiaController {
     }
 
     public DungeonResponse tick(String itemUsed, Direction movementDirection) throws IllegalArgumentException, InvalidActionException {
+        String Goalstring;
         DungeonMania currentGame = this.loadedgame;
-        currentGame.updatePlayerMovement();   
-        return null;
+        List<ItemResponse> items = new ArrayList<>();
+        List<String> buildables = new ArrayList<>();
+        Character updateCharacter = currentGame.getCharacter();
+        updateCharacter.move(currentGame, movementDirection);
+        currentGame.setCharacter(updateCharacter);
+        currentGame.updateEntities(updateCharacter);
+        Goal goal = currentGame.getGoal();
+        if (goal.isComplete(currentGame)) {
+           Goalstring = "";
+        }
+        else {
+            Goalstring = GoalFactory.goalString(currentGame.getGoal());
+        }
+        return new DungeonResponse(currentGame.getId(),currentGame.getName(), currentGame.getEntityResponses(), items, buildables,Goalstring);
+
     }
 
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
