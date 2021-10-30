@@ -28,7 +28,7 @@ public class DungeonMania {
     private String id;
     private String name;
     private String difficulty;
-    
+
     public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
         this.name = name;
@@ -37,7 +37,11 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.entityResponses = new ArrayList<>();
     }
-    
+
+    public String getDifficulty() {
+        return this.difficulty;
+    }
+
     public List<Item> getItems() {
         return Items;
     }
@@ -45,9 +49,10 @@ public class DungeonMania {
     public void addItem(String type) {
         this.Items.add(new Item(type, Integer.toString(this.Items.size() + 1)));
     }
+
     public List<ItemResponse> getItemResponses() {
         List<ItemResponse> items = new ArrayList<>();
-        for (Item item: this.Items) {
+        for (Item item : this.Items) {
             items.add(new ItemResponse(item.getId(), item.getType()));
         }
         return items;
@@ -60,53 +65,53 @@ public class DungeonMania {
     public void setCharacter(Character character) {
         this.character = character;
     }
-    public void updateEntities(Entity e){
-        for (Entity entity: this.Entities) {
-            if (entity.getId().equals(e.getId())){
+
+    public void updateEntities(Entity e) {
+        for (Entity entity : this.Entities) {
+            if (entity.getId().equals(e.getId())) {
                 entity = e;
             }
         }
     }
-    public int getLargestX(){
+
+    public int getLargestX() {
         int x = 0;
-        for (Entity entity: this.Entities){
+        for (Entity entity : this.Entities) {
             int newX = entity.getPos().getX();
-            if (newX > x){
+            if (newX > x) {
                 x = newX;
             }
         }
         return x;
     }
-    public int getLargestY(){
+
+    public int getLargestY() {
         int y = 0;
-        for (Entity entity: this.Entities){
+        for (Entity entity : this.Entities) {
             int newY = entity.getPos().getY();
-            if (newY > y){
+            if (newY > y) {
                 y = newY;
             }
         }
         return y;
 
     }
+
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;
     }
 
-
     public String getId() {
         return id;
     }
 
-
     public void setId(String id) {
         this.id = id;
     }
-
 
     public int getHeight() {
         return height;
@@ -140,29 +145,31 @@ public class DungeonMania {
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
-    public Position generateRandomPos(){
+
+    public Position generateRandomPos() {
         int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX());
         int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY());
-        return new Position (spawnX,spawnY,0);
+        return new Position(spawnX, spawnY, 0);
     }
-    public void spawnSpider(){
+
+    public void spawnSpider() {
         Boolean isBoulder = true;
         Position p = null;
-        while (isBoulder){
+        while (isBoulder) {
             p = generateRandomPos();
-            for (Entity entity: this.Entities) {
-              if (p.equals(entity.getPos()) && entity.getType().equals("boulder")){
-                  isBoulder = true;
-              }
-              else {
-                  isBoulder = false;
-              }
+            for (Entity entity : this.Entities) {
+                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")) {
+                    isBoulder = true;
+                } else {
+                    isBoulder = false;
+                }
             }
         }
-     Spider s  = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
-     Entities.add(s);
+        Spider s = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
+        Entities.add(s);
 
     }
+
     public void removeEntity(Entity e) {
         this.Entities.remove(e);
     }
