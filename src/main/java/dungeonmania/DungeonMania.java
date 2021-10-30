@@ -3,6 +3,7 @@ package dungeonmania;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
@@ -21,7 +22,7 @@ public class DungeonMania {
     private int width;
     private List<Entity> Entities;
     private List<EntityResponse> entityResponses;
-    private List<Entity> Items;
+    private List<Item> Items;
     private List<Entity> Buildables;
     private Goal goal;
     private String id;
@@ -37,6 +38,21 @@ public class DungeonMania {
         this.entityResponses = new ArrayList<>();
     }
     
+    public List<Item> getItems() {
+        return Items;
+    }
+
+    public void addItem(String type) {
+        this.Items.add(new Item(type, Integer.toString(this.Items.size() + 1)));
+    }
+    public List<ItemResponse> getItemResponses() {
+        List<ItemResponse> items = new ArrayList<>();
+        for (Item item: this.Items) {
+            items.add(new ItemResponse(item.getId(), item.getType()));
+        }
+        return items;
+    }
+
     public Character getCharacter() {
         return character;
     }
@@ -147,6 +163,10 @@ public class DungeonMania {
      Entities.add(s);
 
     }
+    public void removeEntity(Entity e) {
+        this.Entities.remove(e);
+    }
+
     public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
@@ -155,6 +175,12 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("exit")) {
             entity = new Exit(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("treasure")) {
+            entity = new TreasureEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("mercenary")) {
+            entity = new Mercenary(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
