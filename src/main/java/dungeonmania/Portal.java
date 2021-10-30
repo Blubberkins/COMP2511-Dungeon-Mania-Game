@@ -12,10 +12,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Portal extends StaticEntity {
+    private String colour;
+
     public Portal(Position pos, String type, String id) {
         super(pos, type, id);
-        //TODO Auto-generated constructor stub
+        super.setIsInteractable(false);
     }
 
-    private Portal otherPortal;
+    public String getColour() {
+        return colour;
+    }
+
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+    
 }

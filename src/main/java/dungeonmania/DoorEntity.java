@@ -12,10 +12,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class DoorEntity extends dungeonmania.StaticEntity {
+    private Boolean isOpen;
     public DoorEntity(Position pos, String type, String id) {
         super(pos, type, id);
-        //TODO Auto-generated constructor stub
+        super.setIsInteractable(false);
     }
 
-    private Boolean isOpen;
+    public Boolean getIsOpen() {
+        return isOpen;
+    }
+    public void setIsOpen(Boolean isOpen) {
+        this.isOpen = isOpen;
+    }
 }
