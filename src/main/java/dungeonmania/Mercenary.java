@@ -38,7 +38,6 @@ public class Mercenary extends MovingEntity {
 
         // based on the vector, decide which direction is best to move in
         List<Direction> order = optimalMove(vector, dungeonmania);
-        System.out.println(order);
 
         // pick the single best move that is valid
         for (Direction move : order) {

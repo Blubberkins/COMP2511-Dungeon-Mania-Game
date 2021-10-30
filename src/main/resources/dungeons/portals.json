@@ -19,16 +19,5 @@
         }
     ],
     "width": 5,
-    "height": 5,
-    "goal-condition": {
-        "goal": "AND",
-        "subgoals": [
-          {
-            "goal": "exit"
-          },
-          {
-            "goal": "treasure"
-          }
-        ]
-      }
+    "height": 5
 }

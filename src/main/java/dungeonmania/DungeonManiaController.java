@@ -89,8 +89,13 @@ public class DungeonManiaController {
             String type = entities.getJSONObject(i).getString("type");
             int x = entities.getJSONObject(i).getInt("x");
             int y = entities.getJSONObject(i).getInt("y");
-            Position pos = new Position(x, y, 0); // placeholder for layer
-            dungeonMania.createEntity(pos, type);
+            Position pos = new Position(x, y, 0); //placeholder for layer
+            if (type.equalsIgnoreCase("portal")) {
+                dungeonMania.createPortal(pos, type, entities.getJSONObject(i).getString("colour"));
+            }
+            else {
+                dungeonMania.createEntity(pos, type);
+            }
         }
         for (int i = 0; i < ThreadLocalRandom.current().nextInt(0, 5); i++) {
             dungeonMania.spawnSpider();
@@ -220,15 +225,22 @@ public class DungeonManiaController {
         currentGame.updateEntities(updateCharacter);
         Goal goal = currentGame.getGoal();
         List<Entity> toRemove = new ArrayList<>();
-        for (Entity entity : currentGame.getEntities()) {
+        for (Entity entity: currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
-                ((MovingEntity) entity).move(currentGame);
+              ((MovingEntity) entity).move(currentGame);
             }
 
             if (entity instanceof CollectableEntities) {
                 if (updateCharacter.getPos().equals(entity.getPos())) {
                     toRemove.add(entity);
                     currentGame.addItem(entity.getId());
+                }
+            }
+            if (entity instanceof StaticEntity) {
+                if (entity instanceof FloorSwitch) {
+                    if (((FloorSwitch) entity).checkTriggered(currentGame.getEntities())) {
+                        ((FloorSwitch) entity).setisTriggered(true);
+                    }
                 }
             }
         }

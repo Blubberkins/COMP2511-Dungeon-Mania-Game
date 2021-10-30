@@ -15,9 +15,17 @@ public class Boulder extends Wall {
 
     public Boulder(Position pos, String type, String id) {
         super(pos, type, id);
-        super.setIsInteractable(true);
-
-        //TODO Auto-generated constructor stub
+        super.setIsInteractable(false);
     }
     
+    public boolean checkBoulderMovable (List<Entity> entities, Direction move) {
+        for (Entity checkEmpty: entities) {
+            if (checkEmpty.getPos().equals(this.getPos().translateBy(move))) {
+                if (checkEmpty instanceof Wall) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
