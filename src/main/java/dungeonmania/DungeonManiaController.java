@@ -236,7 +236,7 @@ public class DungeonManiaController {
             if (entity instanceof CollectableEntities) {
                 if (updateCharacter.getPos().equals(entity.getPos())) {
                     toRemove.add(entity);
-                    currentGame.addItem(entity.getId());
+                    currentGame.AddItem(entity.getType());
                 }
             }
             if (entity instanceof StaticEntity) {
@@ -266,6 +266,33 @@ public class DungeonManiaController {
     }
 
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
+        if(!buildable.equals("bow") && !buildable.equals("shield")){
+            throw new IllegalArgumentException();
+        }
+        int keys = 0;
+        int wood = 0;
+        int arrows = 0;
+        int treasure = 0;
+        DungeonMania dungeon = this.loadedgame;
+        for (Entity item: dungeon.getItems()){
+            if (item.getType().equals("wood")) {
+                wood++;
+            }
+            if (item.getType().equals("key") && ((KeyEntity) item).getIsUsed()) {
+                keys++;
+            }
+            if (item.getType().equals("arrow")) {
+                arrows++;
+            }
+            if(item.getType().equals("treasure")) {
+                treasure++;
+            }
+        }
+        if(buildable.equals("Bow")) {
+            if(wood >= 1 &&  arrows >= 3) {
+                dungeon.addBuildable("Bow");
+            }
+        }
         return null;
     }
 

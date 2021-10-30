@@ -21,8 +21,7 @@ public class DungeonMania {
     private int height;
     private int width;
     private List<Entity> Entities;
-    private List<EntityResponse> entityResponses;
-    private List<Item> Items;
+    private List<Entity> Items;
     private List<Entity> Buildables;
     private Goal goal;
     private String id;
@@ -35,24 +34,35 @@ public class DungeonMania {
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
-        this.entityResponses = new ArrayList<>();
+    }
+    public void addBuildable(String type) {
+        String id = Integer.toString(Buildables.size());
+        if(type.equals("bow")) {
+        this.Buildables.add(new Bow(null, type, id));
+        }
+        if(type.equals("shield")) {
+            this.Buildables.add(new Shield(null, type, id));
+            }
+    }
+    public void removeItem(Entity e) {
+        this.Buildables.remove(e);
+    }
+
+    public List<Entity> getItems() {
+        return Items;
+    }
+
+    public void setItems(List<Entity> items) {
+        Items = items;
     }
 
     public String getDifficulty() {
         return this.difficulty;
     }
 
-    public List<Item> getItems() {
-        return Items;
-    }
-
-    public void addItem(String type) {
-        this.Items.add(new Item(type, Integer.toString(this.Items.size() + 1)));
-    }
-
     public List<ItemResponse> getItemResponses() {
         List<ItemResponse> items = new ArrayList<>();
-        for (Item item : this.Items) {
+        for (Entity item : this.Items) {
             items.add(new ItemResponse(item.getId(), item.getType()));
         }
         return items;
@@ -202,6 +212,7 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(pos, Type, id);
         }
+
         if (Type.equalsIgnoreCase("mercenary")) {
             entity = new Mercenary(pos, Type, id);
         }
@@ -209,10 +220,38 @@ public class DungeonMania {
             entity = new Character(pos, Type, id);
             this.character = (Character) entity;
         }
-
+        if (Type.equalsIgnoreCase("wood")) {
+            entity = new WoodEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("arrow")) {
+            entity = new ArrowsEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("key")) {
+            entity = new KeyEntity(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
+    }
+    public void AddItem(String Type) {
+        String id = Integer.toString(this.Entities.size());
+        Entity entity = null;
+        if (Type.equalsIgnoreCase("wood")) {
+            entity = new WoodEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("arrow")) {
+            entity = new ArrowsEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("key")) {
+            entity = new KeyEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("treasure")) {
+            entity = new TreasureEntity(null, Type, id);
+        }
+        if (entity != null) {
+            this.Items.add(entity);
+        }
+
     }
 
     public void createPortal (Position pos, String Type, String colour) {
@@ -220,5 +259,8 @@ public class DungeonMania {
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);
         this.Entities.add(entity);
+    }
+
+    public void addEntity(String id2) {
     }
 }
