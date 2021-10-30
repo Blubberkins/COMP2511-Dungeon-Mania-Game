@@ -2,6 +2,7 @@ package dungeonmania;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,6 +106,48 @@ public class DungeonManiaController {
     }
 
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
+        int numSaves = allGames().size();
+        String difficulty = this.loadedgame.getDifficulty();
+        String mapName = this.loadedgame.getName();
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mapName", mapName);
+
+        JSONArray entities = new JSONArray();
+        List<Entity> gameEntities = this.loadedgame.getEntities();
+
+        for (Entity entity : gameEntities) {
+            JSONObject newEntity = new JSONObject();
+            int xPos = entity.getPos().getX();
+            int yPos = entity.getPos().getY();
+            String type = entity.getType();
+            newEntity.put("x", xPos);
+            newEntity.put("y", yPos);
+            newEntity.put("type", type);
+            entities.put(newEntity);
+        }
+
+        jsonObject.put("entities", entities);
+
+        Goal gameGoals = this.loadedgame.getGoal();
+        JSONObject goals = goalToJSON(gameGoals);
+        jsonObject.put("goal-condition", goals);
+
+        String conts = jsonObject.toString();
+
+        try {
+            String pathname = "src/test/resources/saves/";
+            String filename = difficulty + mapName + Integer.toString(numSaves) + ".json";
+
+            File save = new File(pathname + filename);
+            if (save.createNewFile()) {
+                writeToFile(conts, filename);
+            }
+        } catch (IOException e) {
+
+        }
+
         return null;
     }
 
@@ -209,5 +252,32 @@ public class DungeonManiaController {
 
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
         return null;
+    }
+
+    public void writeToFile(String conts, String filename) {
+        try {
+            FileWriter fw = new FileWriter(filename);
+            fw.write(conts);
+            fw.close();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public JSONObject goalToJSON(Goal goal) {
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("goal", goal.getName());
+
+        if (goal instanceof GoalComposite) {
+            List<Goal> subgoals = ((GoalComposite) goal).getSubgoals();
+            JSONArray array = new JSONArray();
+            for (Goal subgoal : subgoals) {
+                array.put(goalToJSON(subgoal));
+            }
+            jsonObject.put("subgoals", array);
+        }
+
+        return jsonObject;
     }
 }
