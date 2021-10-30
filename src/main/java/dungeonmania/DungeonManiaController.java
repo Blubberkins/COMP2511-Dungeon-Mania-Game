@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -76,7 +79,7 @@ public class DungeonManiaController {
         List<String> buildables = new ArrayList<>();
         DungeonMania dungeonMania = new DungeonMania(gameMode, dungeonName);
         JSONObject dungeon = null;
-        File f = new File("src/test/resources/dungeons/" + dungeonName + ".json");
+        File f = new File("src/main/resources/dungeons/" + dungeonName + ".json");
         String s = f.getAbsolutePath();
 
         try {
@@ -142,18 +145,19 @@ public class DungeonManiaController {
         String conts = jsonObject.toString();
 
         try {
-            String pathname = "src/test/resources/saves/";
-            String filename = difficulty + mapName + Integer.toString(numSaves) + ".json";
-
-            File save = new File(pathname + filename);
-            if (save.createNewFile()) {
-                writeToFile(conts, filename);
-            }
+            String pathname = "src/main/resources/saves/";
+            String filename = difficulty + "-" + mapName + "-" + Integer.toString(numSaves) + "-" + ".json";
+            File f = new File(pathname);
+            String absolutePathName = f.getAbsolutePath();
+            File save = new File(absolutePathName + filename);
+            save.createNewFile();
+            writeToFile(conts, absolutePathName + "/" + filename);
         } catch (IOException e) {
 
         }
 
-        return null;
+        return new DungeonResponse(this.loadedgame.getId(), this.loadedgame.getName(), this.loadedgame.getEntityResponses(), this.loadedgame.getItemResponses(), null,
+                GoalFactory.goalString(this.loadedgame.getGoal()));
     }
 
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
@@ -169,7 +173,7 @@ public class DungeonManiaController {
         List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
 
-        File f = new File("src/test/resources/saves/" + name + ".json");
+        File f = new File("src/main/resources/saves/" + name);
         String s = f.getAbsolutePath();
         JSONObject dungeon = null;
 
@@ -204,13 +208,12 @@ public class DungeonManiaController {
     }
 
     public List<String> allGames() {
-        List<String> saves = null;
-        try {
-            saves = FileLoader.listFileNamesInResourceDirectory("/saves");
-        } catch (IOException e) {
-
-        }
-
+        File f = new File("src/main/resources/");
+        String filepath = f.getAbsolutePath();
+        Boolean madeDirectory = new File(filepath + "/saves/").mkdir();
+        List<String> saves = new ArrayList<>();
+            File savespath = new File(filepath + "/saves/");
+            saves = Arrays.asList(savespath.list());
         return saves;
     }
 
