@@ -38,6 +38,7 @@ public class Mercenary extends MovingEntity {
 
         // based on the vector, decide which direction is best to move in
         List<Direction> order = optimalMove(vector, dungeonmania);
+        System.out.println(order);
 
         // pick the single best move that is valid
         for (Direction move : order) {
@@ -94,7 +95,7 @@ public class Mercenary extends MovingEntity {
             }
         } else {
             if (yPos) {
-                optimal.add(Direction.UP);
+                optimal.add(Direction.DOWN);
                 if (xPos) {
                     optimal.add(Direction.RIGHT);
                     optimal.add(Direction.LEFT);
@@ -102,9 +103,9 @@ public class Mercenary extends MovingEntity {
                     optimal.add(Direction.LEFT);
                     optimal.add(Direction.RIGHT);
                 }
-                optimal.add(Direction.DOWN);
+                optimal.add(Direction.UP);
             } else {
-                optimal.add(Direction.DOWN);
+                optimal.add(Direction.UP);
                 if (xPos) {
                     optimal.add(Direction.RIGHT);
                     optimal.add(Direction.LEFT);
@@ -112,7 +113,7 @@ public class Mercenary extends MovingEntity {
                     optimal.add(Direction.LEFT);
                     optimal.add(Direction.RIGHT);
                 }
-                optimal.add(Direction.UP);
+                optimal.add(Direction.DOWN);
             }
         }
 
@@ -133,4 +134,26 @@ public class Mercenary extends MovingEntity {
 
         return player;
     }
+
+    // public static void main(String args[]) {
+    // Position pos1 = new Position(0, 0);
+    // Position pos2 = new Position(3, 3);
+
+    // Character c = new Character(pos1, "player", "hello1");
+    // Mercenary m = new Mercenary(pos2, "mercenary", "hello2");
+    // DungeonMania dungeonmania = new DungeonMania("Peaceful", "hello");
+
+    // List<Entity> entities = new ArrayList<Entity>();
+    // entities.add(c);
+    // entities.add(m);
+    // dungeonmania.setEntities(entities);
+
+    // m.move(dungeonmania);
+    // System.out.println(c.getPos());
+    // System.out.println(m.getPos());
+
+    // m.move(dungeonmania);
+    // System.out.println(c.getPos());
+    // System.out.println(m.getPos());
+    // }
 }
