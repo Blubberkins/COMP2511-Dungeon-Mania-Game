@@ -145,11 +145,10 @@ public class DungeonMania {
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
-
-    public Position generateRandomPos() {
-        int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX());
-        int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY());
-        return new Position(spawnX, spawnY, 0);
+    public Position generateRandomPos(){
+        int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
+        int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
+        return new Position (spawnX,spawnY,0);
     }
 
     public void spawnSpider() {
@@ -157,12 +156,16 @@ public class DungeonMania {
         Position p = null;
         while (isBoulder) {
             p = generateRandomPos();
-            for (Entity entity : this.Entities) {
-                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")) {
+            for (Entity entity: this.Entities) {
+                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")){
                     isBoulder = true;
-                } else {
+                }
+                else {
                     isBoulder = false;
                 }
+            }
+            if (p.getX() == 0 && p.getY() == 0) {
+                isBoulder = true;
             }
         }
         Spider s = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
@@ -177,11 +180,24 @@ public class DungeonMania {
     public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
+        // Static entities
         if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("exit")) {
             entity = new Exit(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("boulder")) {
+            entity = new Boulder(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("switch")) {
+            entity = new FloorSwitch(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("door")) {
+            entity = new DoorEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("zombie_toast_spawner")) {
+            entity = new ZombieToastSpawner(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(pos, Type, id);
@@ -197,6 +213,12 @@ public class DungeonMania {
         if (entity != null) {
             this.Entities.add(entity);
         }
+    }
 
+    public void createPortal (Position pos, String Type, String colour) {
+        String id = Integer.toString(this.Entities.size());
+        Entity entity = new Portal(pos, Type, id);
+        ((Portal) entity).setColour(colour);
+        this.Entities.add(entity);
     }
 }

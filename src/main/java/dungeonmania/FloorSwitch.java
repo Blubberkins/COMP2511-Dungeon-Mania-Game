@@ -12,10 +12,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FloorSwitch extends StaticEntity {
+    private boolean isTriggered;
+
     public FloorSwitch(Position pos, String type, String id) {
         super(pos, type, id);
-        //TODO Auto-generated constructor stub
+        super.setIsInteractable(false);
     }
 
-    private boolean isTriggered;
+    public boolean checkTriggered (List<Entity> entities) {
+        for (Entity entity: entities) {
+            if (entity.getPos().equals(this.getPos())) {
+                if (entity instanceof Boulder) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isTriggered() {
+        return isTriggered;
+    }
+
+    public void setisTriggered(boolean isTriggered) {
+        this.isTriggered = isTriggered;
+    }
 }
