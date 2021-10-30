@@ -179,6 +179,9 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("mercenary")) {
+            entity = new Mercenary(pos, Type, id);
+        }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
             this.character = (Character) entity;
