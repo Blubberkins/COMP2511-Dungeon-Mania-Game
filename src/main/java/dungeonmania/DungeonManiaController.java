@@ -292,7 +292,6 @@ public class DungeonManiaController {
             if(wood >= 1 &&  arrows >= 3) {
                 dungeon.addBuildable("Bow");
             }
-            
         }
         return null;
     }
