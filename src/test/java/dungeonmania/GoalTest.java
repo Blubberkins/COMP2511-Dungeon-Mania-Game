@@ -100,11 +100,6 @@ public class GoalTest {
 
     @Test
     public void testEnemy() {
-        // TODO figure this out once random entity spawning is decided
-        // currently assumes:
-        // zombies have 1hp
-        // player has more hp than the zombie does in one hit
-        // sword has a base damage of 5, and at least two durability
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         dungeonManiaController.newGame("basicmap6", "Standard");
 
@@ -112,10 +107,10 @@ public class GoalTest {
         Character player = game.getCharacter();
         List<ItemResponse> inventory = game.getItemResponses();
 
-        // player starts on (0, 0), spawner on (5, 0)
+        // player starts on (1, 1), spawner on (6, 1)
         dungeonManiaController.tick("", Direction.RIGHT);
 
-        // should have picked up the sword on (1, 0)
+        // should have picked up the sword on (2, 1)
         ItemResponse sword = inventory.get(0);
         assertTrue(inventory.size() == 1);
         assertTrue(sword.getType().compareTo("sword") == 0);
@@ -126,14 +121,14 @@ public class GoalTest {
             dungeonManiaController.tick("", Direction.LEFT);
         }
 
-        // player is currently on (1, 0), 19 ticks have passed
+        // player is currently on (2, 1), 19 ticks have passed
         dungeonManiaController.tick("", Direction.RIGHT);
 
-        // player should now be on (2, 0)
-        Position position = new Position(2, 0);
+        // player should now be on (3, 1)
+        Position position = new Position(3, 1);
         assertTrue(player.getPos().equals(position));
 
-        // a zombie should have spawned on (4, 0), the only square a zombie can spawn
+        // a zombie should have spawned on (5, 1), the only square a zombie can spawn
         List<EntityResponse> entities = game.getEntityResponses();
         EntityResponse zombie = null;
         for (EntityResponse entity : entities) {
@@ -235,6 +230,33 @@ public class GoalTest {
         dungeonManiaController.tick("", Direction.LEFT);
         dungeonManiaController.tick("", Direction.RIGHT);
 
+        assertTrue(dungeonManiaController.getLoadedGame() == null);
+    }
+
+    @Test
+    public void MercenaryGoal() {
+        DungeonManiaController dungeonManiaController = new DungeonManiaController();
+        dungeonManiaController.newGame("basicmap8", "Standard");
+
+        // pick up the treasure on (2, 1)
+        dungeonManiaController.tick("", Direction.RIGHT);
+        // go to (3, 1) with mercenary now on (4, 1)
+        dungeonManiaController.tick("", Direction.RIGHT);
+        // find the mercenary
+        DungeonMania game = dungeonManiaController.getLoadedGame();
+        List<Entity> entities = game.getEntities();
+
+        String id = "";
+
+        for (Entity e : entities) {
+            if (e instanceof Mercenary) {
+                id = e.getId();
+            }
+        }
+
+        // bribe the mercenary
+        dungeonManiaController.interact(id);
+        // game should now be complete
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
 }
