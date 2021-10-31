@@ -93,11 +93,10 @@ public class DungeonManiaController {
             String type = entities.getJSONObject(i).getString("type");
             int x = entities.getJSONObject(i).getInt("x");
             int y = entities.getJSONObject(i).getInt("y");
-            Position pos = new Position(x, y, 0); //placeholder for layer
+            Position pos = new Position(x, y, 0); // placeholder for layer
             if (type.equalsIgnoreCase("portal")) {
                 dungeonMania.createPortal(pos, type, entities.getJSONObject(i).getString("colour"));
-            }
-            else {
+            } else {
                 dungeonMania.createEntity(pos, type);
             }
         }
@@ -157,7 +156,8 @@ public class DungeonManiaController {
 
         }
 
-        return new DungeonResponse(this.loadedgame.getId(), this.loadedgame.getName(), this.loadedgame.getEntityResponses(), this.loadedgame.getItemResponses(), null,
+        return new DungeonResponse(this.loadedgame.getId(), this.loadedgame.getName(),
+                this.loadedgame.getEntityResponses(), this.loadedgame.getItemResponses(), null,
                 GoalFactory.goalString(this.loadedgame.getGoal()));
     }
 
@@ -213,8 +213,8 @@ public class DungeonManiaController {
         String filepath = f.getAbsolutePath();
         Boolean madeDirectory = new File(filepath + "/saves/").mkdir();
         List<String> saves = new ArrayList<>();
-            File savespath = new File(filepath + "/saves/");
-            saves = Arrays.asList(savespath.list());
+        File savespath = new File(filepath + "/saves/");
+        saves = Arrays.asList(savespath.list());
         return saves;
     }
 
@@ -224,34 +224,33 @@ public class DungeonManiaController {
         DungeonMania currentGame = this.loadedgame;
         List<String> buildables = new ArrayList<>();
         Character updateCharacter = currentGame.getCharacter();
-        if(!updateCharacter.getInBattle()) {
-        updateCharacter.move(currentGame, movementDirection);
-        currentGame.setCharacter(updateCharacter);
-        currentGame.updateEntities(updateCharacter);
+        if (!updateCharacter.getInBattle()) {
+            updateCharacter.move(currentGame, movementDirection);
+            currentGame.setCharacter(updateCharacter);
+            currentGame.updateEntities(updateCharacter);
         }
         Goal goal = currentGame.getGoal();
         List<Entity> toRemove = new ArrayList<>();
-        for (Entity entity: currentGame.getEntities()) {
+        for (Entity entity : currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
-                if(!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()){
+                if (!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
                     ((MovingEntity) entity).move(currentGame);
-                    if(((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
+                    if (((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
                         updateCharacter.setInBattle(true);
                         ((MovingEntity) entity).setInBattle(true);
 
                     }
-                    
+
                 }
-                if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()){
+                if (updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()) {
                     BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity);
-                if( outcome == BattleOutcome.CHARACTER_WINS) {
-                    toRemove.add(entity);
+                    if (outcome == BattleOutcome.CHARACTER_WINS) {
+                        toRemove.add(entity);
+                    } else if (outcome == BattleOutcome.ENEMY_WINS) {
+                        toRemove.add(updateCharacter);
+                    }
+
                 }
-                else if (outcome == BattleOutcome.ENEMY_WINS){
-                    toRemove.add(updateCharacter);
-                }
-                
-            }
             }
 
             if (entity instanceof CollectableEntities) {
@@ -272,13 +271,17 @@ public class DungeonManiaController {
             currentGame.removeEntity(entity);
         }
 
+        String id = currentGame.getId();
+        String name = currentGame.getName();
+        List<EntityResponse> e = currentGame.getEntityResponses();
+        List<ItemResponse> i = currentGame.getItemResponses();
         if (goal.isComplete(currentGame)) {
             Goalstring = "";
+            this.loadedgame = null;
         } else {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
         }
-        return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
-                currentGame.getItemResponses(), buildables, Goalstring);
+        return new DungeonResponse(id, name, e, i, buildables, Goalstring);
 
     }
 
@@ -287,7 +290,7 @@ public class DungeonManiaController {
     }
 
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        if(!buildable.equals("bow") && !buildable.equals("shield")){
+        if (!buildable.equals("bow") && !buildable.equals("shield")) {
             throw new IllegalArgumentException();
         }
         int keys = 0;
@@ -295,7 +298,7 @@ public class DungeonManiaController {
         int arrows = 0;
         int treasure = 0;
         DungeonMania dungeon = this.loadedgame;
-        for (Entity item: dungeon.getItems()){
+        for (Entity item : dungeon.getItems()) {
             if (item.getType().equals("wood")) {
                 wood++;
             }
@@ -305,12 +308,12 @@ public class DungeonManiaController {
             if (item.getType().equals("arrow")) {
                 arrows++;
             }
-            if(item.getType().equals("treasure")) {
+            if (item.getType().equals("treasure")) {
                 treasure++;
             }
         }
-        if(buildable.equals("Bow")) {
-            if(wood >= 1 &&  arrows >= 3) {
+        if (buildable.equals("Bow")) {
+            if (wood >= 1 && arrows >= 3) {
                 dungeon.addBuildable("Bow");
             }
         }
@@ -342,5 +345,9 @@ public class DungeonManiaController {
         }
 
         return jsonObject;
+    }
+
+    public DungeonMania getLoadedGame() {
+        return this.loadedgame;
     }
 }
