@@ -49,26 +49,17 @@ public class GoalTest {
     @Test
     public void testTreasure() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap2", "Peaceful");
+        dungeonManiaController.newGame("basicmap2", "Peaceful");
 
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player
-        EntityResponse player = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-                break;
-            }
-        }
-        assertTrue(player != null);
-
+        DungeonMania game = dungeonManiaController.getLoadedGame();
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick("", Direction.DOWN);
         }
 
+        List<ItemResponse> inventory = game.getItemResponses();
+
         // should have picked up the treasure on (0, 3)
-        ItemResponse item1 = game.getInventory().get(0);
+        ItemResponse item1 = inventory.get(0);
         assertTrue(item1.getType().compareTo("treasure") == 0);
         // but shouldn't have finished the level, there is still treasure at (2, 0)
         assertFalse(dungeonManiaController.getLoadedGame() == null);
@@ -84,7 +75,8 @@ public class GoalTest {
         // the player is supposed to reach the final treasure after this move
         dungeonManiaController.tick("", Direction.LEFT);
         // should have two pieces of treasure (inventory size 2)
-        assertTrue(game.getInventory().size() == 2);
+        inventory = game.getItemResponses();
+        assertTrue(inventory.size() == 2);
 
         // run a check for goal completion, should be okay this time
         assertTrue(dungeonManiaController.getLoadedGame() == null);
@@ -94,19 +86,7 @@ public class GoalTest {
     @Test
     public void testBoulderMap() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap3", "Peaceful");
-
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player
-        EntityResponse player = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-                break;
-            }
-        }
-        assertTrue(player != null);
+        dungeonManiaController.newGame("basicmap3", "Peaceful");
 
         // player on (0, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -126,29 +106,18 @@ public class GoalTest {
         // player has more hp than the zombie does in one hit
         // sword has a base damage of 5, and at least two durability
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap6", "Standard");
+        dungeonManiaController.newGame("basicmap6", "Standard");
 
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player, and the spawner
-        EntityResponse player = null;
-        EntityResponse spawner = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-            } else if (entity.getType().compareTo("zombie_toast_spawner") == 0) {
-                spawner = entity;
-            }
-        }
-        assertTrue(player != null);
-        assertTrue(spawner != null);
+        DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = game.getCharacter();
+        List<ItemResponse> inventory = game.getItemResponses();
 
         // player starts on (0, 0), spawner on (5, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
 
         // should have picked up the sword on (1, 0)
-        ItemResponse sword = game.getInventory().get(0);
-        assertTrue(game.getInventory().size() == 1);
+        ItemResponse sword = inventory.get(0);
+        assertTrue(inventory.size() == 1);
         assertTrue(sword.getType().compareTo("sword") == 0);
 
         // going back and forth until the spawner spawns a zombie after 20 ticks
@@ -162,9 +131,10 @@ public class GoalTest {
 
         // player should now be on (2, 0)
         Position position = new Position(2, 0);
-        assertTrue(player.getPosition().equals(position));
+        assertTrue(player.getPos().equals(position));
 
         // a zombie should have spawned on (4, 0), the only square a zombie can spawn
+        List<EntityResponse> entities = game.getEntityResponses();
         EntityResponse zombie = null;
         for (EntityResponse entity : entities) {
             if (entity.getType().compareTo("zombie_toast") == 0) {
@@ -188,7 +158,8 @@ public class GoalTest {
         // should just now be the player and the spawner
         assertTrue(game.getEntities().size() == 2);
         // player should still have the sword
-        assertTrue(game.getInventory().size() == 1);
+        inventory = game.getItemResponses();
+        assertTrue(inventory.size() == 1);
         // game should not be complete because the spawner still exists
         assertFalse(dungeonManiaController.getLoadedGame() == null);
 
@@ -201,19 +172,8 @@ public class GoalTest {
     public void testGoalComposition1() {
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap4", "Peaceful");
-
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player
-        EntityResponse player = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-                break;
-            }
-        }
-        assertTrue(player != null);
+        dungeonManiaController.newGame("basicmap4", "Peaceful");
+        DungeonMania game = dungeonManiaController.getLoadedGame();
 
         // player on (0, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -221,10 +181,11 @@ public class GoalTest {
         assertFalse(dungeonManiaController.getLoadedGame() == null);
         dungeonManiaController.tick("", Direction.RIGHT);
         // the player should now be on (2, 0) having picked up the treasure
-        assertTrue(game.getInventory().size() == 1);
+        assertTrue(game.getItems().size() == 1);
         assertFalse(dungeonManiaController.getLoadedGame() == null);
         // the player should now be moving to the exit
         dungeonManiaController.tick("", Direction.RIGHT);
+
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
 
@@ -232,19 +193,7 @@ public class GoalTest {
     public void testGoalComposition2() {
         // GOAL: exit OR (treasure AND boulders)
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap5", "Peaceful");
-
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player
-        EntityResponse player = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-                break;
-            }
-        }
-        assertTrue(player != null);
+        dungeonManiaController.newGame("basicmap5", "Peaceful");
 
         // player to head straight to the exit
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -254,30 +203,15 @@ public class GoalTest {
         assertTrue(dungeonManiaController.getLoadedGame() == null);
 
         // set up an identical new game
-        DungeonManiaController dungeonManiaController2 = new DungeonManiaController();
-        DungeonResponse game2 = dungeonManiaController2.newGame("basicmap5", "Peaceful");
-
-        List<EntityResponse> entities2 = game2.getEntities();
-
-        // track the player
-        EntityResponse player2 = null;
-        for (EntityResponse entity : entities2) {
-            if (entity.getType().compareTo("player") == 0) {
-                player2 = entity;
-                break;
-            }
-        }
-        assertTrue(player2 != null);
-
+        dungeonManiaController.newGame("basicmap5", "Peaceful");
         // player to push the boulder (1, 1) onto the switch (2, 1)
-        dungeonManiaController2.tick("", Direction.DOWN);
-        dungeonManiaController2.tick("", Direction.RIGHT);
+        dungeonManiaController.tick("", Direction.DOWN);
+        dungeonManiaController.tick("", Direction.RIGHT);
         // go up and take the treasure
-        dungeonManiaController2.tick("", Direction.UP);
-        dungeonManiaController2.tick("", Direction.RIGHT);
+        dungeonManiaController.tick("", Direction.UP);
+        dungeonManiaController.tick("", Direction.RIGHT);
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
-
     }
 
     @Test
@@ -285,19 +219,7 @@ public class GoalTest {
         // same as testComposition1 but testing now for exit completion last
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        DungeonResponse game = dungeonManiaController.newGame("basicmap4", "Peaceful");
-
-        List<EntityResponse> entities = game.getEntities();
-
-        // track the player
-        EntityResponse player = null;
-        for (EntityResponse entity : entities) {
-            if (entity.getType().compareTo("player") == 0) {
-                player = entity;
-                break;
-            }
-        }
-        assertTrue(player != null);
+        dungeonManiaController.newGame("basicmap4", "Peaceful");
 
         // player on (0, 0), will dodge the treasure on (2, 0)
         // and go to the exit on (3, 0)

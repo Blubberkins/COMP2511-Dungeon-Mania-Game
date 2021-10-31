@@ -20,6 +20,14 @@
 
     ],
     "goal-condition": {
-        "goal": "exit AND treasure"
-    }    
+        "goal": "AND",
+        "subgoals": [
+          {
+            "goal": "exit"
+          },
+          {
+            "goal": "treasure"
+          }
+        ]
+      }
 }
