@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Spider extends MovingEntity {
     private Position spawn_point;
-
+    Boolean clockwise;
 
     public Spider(Position pos, String type, String id) {
         super(pos, type, id);
@@ -24,10 +24,29 @@ public class Spider extends MovingEntity {
         super.setHealth(30);
         super.setDamage(5);
     }
+
+    public void setDirection(Boolean direction) {
+        this.clockwise = direction;
+    }
+
+    @Override
     public void move(DungeonMania dungeonmania) {
-        Position newPosition = nextSquare(dungeonmania);
-        if (newPosition == null) {
+        Position newPosition = this.getPos();
+        if (this.clockwise) {
+            newPosition = nextSquare(dungeonmania);
+        } else {
             newPosition = previousSquare(dungeonmania);
+        }
+
+        if (newPosition == null) {
+            if (this.clockwise) {
+                newPosition = previousSquare(dungeonmania);
+                setDirection(false);
+            } else {
+                newPosition = nextSquare(dungeonmania);
+                setDirection(true);
+            }
+
         }
 
         if (newPosition != null) {
@@ -80,6 +99,7 @@ public class Spider extends MovingEntity {
 
         return newPos;
     }
+
     @Override
     public void receiveDMG(int damage) {
         super.setHealth(super.getHealth() - super.getDamage());
