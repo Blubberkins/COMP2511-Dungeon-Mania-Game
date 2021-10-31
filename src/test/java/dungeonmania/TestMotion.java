@@ -23,11 +23,14 @@ public class TestMotion {
         Character player = game.getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
         player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         for (int i = 0; i < 5; i++) {
             dm.tick(null, Direction.UP);
             dm.tick(null, Direction.DOWN);
             dm.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         // game shouldn't be completed because the player gets stuck behind two boulders
@@ -43,15 +46,20 @@ public class TestMotion {
         Character player = game.getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
         player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(player.getPos() == new Position(1, 1));
         // pick up key
         dm.tick(null, Direction.RIGHT);
         assertTrue(game.getItems().size() == 1);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // walk through door then portal
         dm.tick(null, Direction.RIGHT);
         dm.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(player.getPos() == new Position(6, 1));
     }

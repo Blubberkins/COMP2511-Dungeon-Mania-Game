@@ -26,6 +26,7 @@ public class TestMercenary {
         assertTrue(player != null);
         // maxing out the hp of the character so they don't die to random spiders
         player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         Position mPos = mercenary.getPos();
         Position pPos = player.getPos();
@@ -34,6 +35,8 @@ public class TestMercenary {
         // player started on (1, 1), mercenary on (7, 7)
         // so they are 12 steps away. the mercenary should cut it down to 10.
         dm.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         Position vector = Position.calculatePositionBetween(mPos, pPos);
@@ -41,6 +44,8 @@ public class TestMercenary {
 
         // repeating...
         dm.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         vector = Position.calculatePositionBetween(mPos, pPos);
@@ -49,6 +54,8 @@ public class TestMercenary {
         // changing direction
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.DOWN);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -61,6 +68,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -69,6 +78,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -81,6 +92,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.LEFT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -89,6 +102,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -101,6 +116,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.LEFT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -109,6 +126,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.DOWN);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -129,6 +148,7 @@ public class TestMercenary {
         assertTrue(player != null);
         // maxing out the hp of the character so they don't die to random spiders
         player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         Position mPos = mercenary.getPos();
         Position pPos = player.getPos();
@@ -137,6 +157,8 @@ public class TestMercenary {
         // player started on (1, 1), mercenary on (7, 7)
         // so they are 12 steps away. the mercenary should cut it down to 10.
         dm.tick(null, Direction.DOWN);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         Position vector = Position.calculatePositionBetween(mPos, pPos);
@@ -144,6 +166,8 @@ public class TestMercenary {
 
         // repeating...
         dm.tick(null, Direction.DOWN);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         vector = Position.calculatePositionBetween(mPos, pPos);
@@ -152,6 +176,8 @@ public class TestMercenary {
         // changing direction
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -164,6 +190,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -172,6 +200,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -184,6 +214,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -192,6 +224,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.LEFT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -204,6 +238,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 2; i++) {
             dm.tick(null, Direction.DOWN);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -212,6 +248,8 @@ public class TestMercenary {
 
         for (int i = 0; i < 3; i++) {
             dm.tick(null, Direction.LEFT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -233,17 +271,26 @@ public class TestMercenary {
         assertTrue(player != null);
         // maxing out the hp of the character so they don't die to random spiders
         player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // mercenary should be stuck
         for (int i = 0; i < 20; i++) {
             dm.tick(null, Direction.RIGHT);
             assertTrue(mercenary.getPos().getX() == 7);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             dm.tick(null, Direction.LEFT);
             assertTrue(mercenary.getPos().getX() == 7);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             dm.tick(null, Direction.UP);
             assertTrue(mercenary.getPos().getX() == 7);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
             dm.tick(null, Direction.DOWN);
             assertTrue(mercenary.getPos().getX() == 7);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         // attacking a non-existent player, mercenary should stay put
