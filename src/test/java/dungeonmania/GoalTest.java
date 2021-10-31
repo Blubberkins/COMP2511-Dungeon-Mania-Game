@@ -135,15 +135,10 @@ public class GoalTest {
         player.setHealth(Integer.MAX_VALUE);
         game.setCharacter(player);
 
-<<<<<<< HEAD
-        // player starts on (1, 1), spawner on (6, 1)
-        dungeonManiaController.tick("", Direction.RIGHT);
-=======
         // player starts on (0, 0), spawner on (5, 0)
         dungeonManiaController.tick(null, Direction.RIGHT);
         player.setHealth(Integer.MAX_VALUE);
         game.setCharacter(player);
->>>>>>> 76ef5553a4bb613c363978bb1a617a9ac8a80ab1
 
         // should have picked up the sword on (2, 1)
         ItemResponse sword = inventory.get(0);
@@ -160,15 +155,10 @@ public class GoalTest {
             game.setCharacter(player);
         }
 
-<<<<<<< HEAD
-        // player is currently on (2, 1), 19 ticks have passed
-        dungeonManiaController.tick("", Direction.RIGHT);
-=======
         // player is currently on (1, 0), 19 ticks have passed
         dungeonManiaController.tick(null, Direction.RIGHT);
         player.setHealth(Integer.MAX_VALUE);
         game.setCharacter(player);
->>>>>>> 76ef5553a4bb613c363978bb1a617a9ac8a80ab1
 
         // player should now be on (3, 1)
         Position position = new Position(3, 1);
