@@ -10,22 +10,22 @@
         {
             "x": 1,
             "y": 0,
-            "type": "wall"
+            "type": "wood"
         },
         {
             "x": 1,
             "y": 1,
-            "type": "wall"
+            "type": "arrow"
         },
         {
             "x": 1,
             "y": 2,
-            "type": "wall"
+            "type": "arrow"
         },
         {
             "x": 2,
             "y": 1,
-            "type": "wall"
+            "type": "arrow"
         },
         {
             "x": 2,

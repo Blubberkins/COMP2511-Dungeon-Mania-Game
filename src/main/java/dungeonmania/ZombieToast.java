@@ -42,10 +42,11 @@ public class ZombieToast extends MovingEntity {
         Direction random = null;
         Position p = null;
         while (isWall) {
+            isWall = false;
             random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));
             for (Entity entity: d.getEntities()) {
-                if (!(entity instanceof Wall) && this.getPos().translateBy(random).equals(entity.getPos())) {
-                    isWall = false;
+                if ((entity instanceof Wall) && this.getPos().translateBy(random).equals(entity.getPos())) {
+                    isWall = true;
                 }
             }
         }

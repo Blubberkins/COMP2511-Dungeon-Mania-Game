@@ -24,7 +24,7 @@ public class DungeonMania {
     private int width;
     private List<Entity> Entities;
     private List<Entity> Items;
-    private List<Entity> Buildables;
+    private List<String> Buildables;
     private Goal goal;
     private String id;
     private String name;
@@ -37,12 +37,22 @@ public class DungeonMania {
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
     }
+    public void addToBuildableEntities(String s){
+        this.Buildables.add((s));
+    }
+    public List<String> getBuildables() {
+        return this.Buildables;
+    }
+    public void removeItem(Entity e){
+        this.Items.remove(e);
+    }
 
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
         if (type.equals("bow")) {
-            this.Buildables.add(new Bow(null, type, id));
+            this.Items.add(new Bow(null, type, id));
+            this.Buildables.remove("bow");
             int woodCount = 1;
             int arrowCount = 3;
             for (Entity entity : this.Items) {
@@ -57,7 +67,8 @@ public class DungeonMania {
             }
         }
         if (type.equals("shield")) {
-            this.Buildables.add(new Shield(null, type, id));
+            this.Items.add(new Shield(null, type, id));
+            this.Buildables.remove("shield");
             int metalCount = 1;
             int woodCount = 2;
             for (Entity entity : this.Items) {
@@ -72,7 +83,7 @@ public class DungeonMania {
             }
         }
         for (Entity entity : toRemove) {
-            this.removeEntity(entity);
+            this.removeItem(entity);
         }
     }
     public void removeBuildable(Entity e) {
@@ -220,7 +231,7 @@ public class DungeonMania {
                 isBoulder = true;
             }
         }
-        Spider s = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
+        Spider s = new Spider(p, "spider", Integer.toString(Entities.size()));
         Entities.add(s);
 
     }
@@ -235,15 +246,16 @@ public class DungeonMania {
         Direction random = null;
         Position p = null;
         while (isWall) {
+            isWall = false;
             random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));
             for (Entity entity: this.Entities) {
-                if (!(entity instanceof Wall) && pos.translateBy(random).equals(entity.getPos())) {
-                    isWall = false;
+                if ((entity instanceof Wall) && pos.translateBy(random).equals(entity.getPos())) {
+                    isWall = true;
                 }
             }
         }
         p = pos.translateBy(random);
-        createEntity(pos, "zombie_toast");
+        createEntity(p, "zombie_toast");
     }
 
     public void removeEntity(Entity e) {

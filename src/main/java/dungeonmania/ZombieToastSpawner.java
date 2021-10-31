@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ZombieToastSpawner extends StaticEntity {
+public class ZombieToastSpawner extends Wall {
     private int ticksSinceSpawn;
     
     public ZombieToastSpawner(Position pos, String type, String id) {
