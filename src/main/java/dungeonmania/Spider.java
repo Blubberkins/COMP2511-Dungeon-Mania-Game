@@ -83,7 +83,7 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.LEFT));
         } else if (currY >= spawnY && currX <= spawnX) {
             newPos = (this.getPos().translateBy(Direction.UP));
-        } else if (currY <= spawnY && currX > spawnX) {
+        } else {
             newPos = (this.getPos().translateBy(Direction.DOWN));
         }
         if (dungeonmania.getCharacter().getisInvincible() && IsCloser(this.getPos(), newPos, dungeonmania)) {
@@ -113,7 +113,7 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.RIGHT));
         } else if (currY == spawnY && currX <= spawnX) {
             newPos = (this.getPos().translateBy(Direction.DOWN));
-        } else if (currY == spawnY && currX > spawnX) {
+        } else {
             newPos = (this.getPos().translateBy(Direction.UP));
         }
         if (dungeonmania.getCharacter().getisInvincible() && IsCloser(this.getPos(), newPos, dungeonmania)) {
