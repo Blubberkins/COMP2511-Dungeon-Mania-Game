@@ -79,4 +79,19 @@ public class ControllerTest {
 
         assertTrue(game.getEntities().size() == 7);
     }
+
+    @Test
+    public void testBuild() {
+        DungeonManiaController dm = new DungeonManiaController();
+        dm.newGame("basicmap7", "Peaceful");
+
+        for (int i = 0; i < 7; i++) {
+            dm.tick("", Direction.RIGHT);
+        }
+
+        dm.build("bow");
+        dm.build("shield");
+
+        assertTrue(dm.getLoadedGame().getItems().size() == 2);
+    }
 }
