@@ -13,6 +13,7 @@ public class Spider extends MovingEntity {
         this.spawn_point = pos;
         this.clockwise = true;
         this.setPos(pos.translateBy(Direction.UP));
+        this.clockwise = true;
         super.setHealth(30);
         super.setDamage(5);
     }

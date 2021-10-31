@@ -11,6 +11,8 @@ import dungeonmania.response.models.*;
 
 import java.util.List;
 
+// By Liam
+
 public class ControllerTest {
     @Test
     public void TestNewGame() {
@@ -57,6 +59,8 @@ public class ControllerTest {
         dm.tick("", Direction.DOWN);
         dm.tick("", Direction.DOWN);
         dm.tick("", Direction.DOWN);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         assertTrue(player.getPos().equals(new Position(0, 3)));
         assertTrue(game.getItems().size() == 1);
 
@@ -76,5 +80,26 @@ public class ControllerTest {
         assertTrue(game.getItems().size() == 1);
 
         assertTrue(game.getEntities().size() == 7);
+    }
+
+    @Test
+    public void testBuild() {
+        DungeonManiaController dm = new DungeonManiaController();
+        dm.newGame("basicmap7", "Peaceful");
+
+        DungeonMania game = dm.getLoadedGame();
+        Character player = game.getCharacter();
+
+        for (int i = 0; i < 7; i++) {
+            dm.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
+            game.setCharacter(player);
+        }
+
+        dm.build("bow");
+        dm.build("shield");
+
+        assertTrue(dm.getLoadedGame().getItems().size() == 2);
     }
 }

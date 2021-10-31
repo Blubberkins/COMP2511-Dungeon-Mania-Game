@@ -17,30 +17,40 @@ public class GoalTest {
     @Test
     public void testExit() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap1", "Peaceful");
+        dungeonManiaController.newGame("basicmap1", "Standard");
 
+        DungeonMania game = dungeonManiaController.getLoadedGame();
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         Position position = new Position(0, 0);
         assertTrue(player.getPos().equals(position));
 
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.DOWN);
+            dungeonManiaController.tick(null, Direction.DOWN);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.RIGHT);
+            dungeonManiaController.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.UP);
+            dungeonManiaController.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         position = new Position(3, 0);
         assertTrue(player.getPos().equals(position));
 
         // the player is supposed to reach the exit after this move
-        dungeonManiaController.tick("", Direction.LEFT);
+        dungeonManiaController.tick(null, Direction.LEFT);
 
         // run a check for goal completion
         assertTrue(dungeonManiaController.getLoadedGame() == null);
@@ -49,11 +59,15 @@ public class GoalTest {
     @Test
     public void testTreasure() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap2", "Peaceful");
-
+        dungeonManiaController.newGame("basicmap2", "Standard");
         DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.DOWN);
+            dungeonManiaController.tick(null, Direction.DOWN);
         }
 
         List<ItemResponse> inventory = game.getItemResponses();
@@ -65,15 +79,19 @@ public class GoalTest {
         assertFalse(dungeonManiaController.getLoadedGame() == null);
 
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.RIGHT);
+            dungeonManiaController.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         for (int i = 0; i < 3; i++) {
-            dungeonManiaController.tick("", Direction.UP);
+            dungeonManiaController.tick(null, Direction.UP);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
         // the player is supposed to reach the final treasure after this move
-        dungeonManiaController.tick("", Direction.LEFT);
+        dungeonManiaController.tick(null, Direction.LEFT);
         // should have two pieces of treasure (inventory size 2)
         inventory = game.getItemResponses();
         assertTrue(inventory.size() == 2);
@@ -86,13 +104,20 @@ public class GoalTest {
     @Test
     public void testBoulderMap() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap3", "Peaceful");
+        dungeonManiaController.newGame("basicmap3", "Standard");
+        DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // player on (0, 0)
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         // now next to the boulder
         assertFalse(dungeonManiaController.getLoadedGame() == null);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
         // the player should now be on (2, 0) having pushed the boulder on to the switch
         // at (3, 0)
         assertTrue(dungeonManiaController.getLoadedGame() == null);
@@ -106,9 +131,19 @@ public class GoalTest {
         DungeonMania game = dungeonManiaController.getLoadedGame();
         Character player = game.getCharacter();
         List<ItemResponse> inventory = game.getItemResponses();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
+<<<<<<< HEAD
         // player starts on (1, 1), spawner on (6, 1)
         dungeonManiaController.tick("", Direction.RIGHT);
+=======
+        // player starts on (0, 0), spawner on (5, 0)
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+>>>>>>> 76ef5553a4bb613c363978bb1a617a9ac8a80ab1
 
         // should have picked up the sword on (2, 1)
         ItemResponse sword = inventory.get(0);
@@ -117,12 +152,23 @@ public class GoalTest {
 
         // going back and forth until the spawner spawns a zombie after 20 ticks
         for (int i = 0; i < 9; i++) {
-            dungeonManiaController.tick("", Direction.RIGHT);
-            dungeonManiaController.tick("", Direction.LEFT);
+            dungeonManiaController.tick(null, Direction.RIGHT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
+            dungeonManiaController.tick(null, Direction.LEFT);
+            player.setHealth(Integer.MAX_VALUE);
+            game.setCharacter(player);
         }
 
+<<<<<<< HEAD
         // player is currently on (2, 1), 19 ticks have passed
         dungeonManiaController.tick("", Direction.RIGHT);
+=======
+        // player is currently on (1, 0), 19 ticks have passed
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+>>>>>>> 76ef5553a4bb613c363978bb1a617a9ac8a80ab1
 
         // player should now be on (3, 1)
         Position position = new Position(3, 1);
@@ -145,10 +191,14 @@ public class GoalTest {
         // the zombie either moves to (3, 0), where it gets killed by the player in
         // combat
         dungeonManiaController.tick("sword", Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         // if it has moved on top of the spawner on (5, 0), then it is forced to move
         // back to (4, 0)
         // on its second move, where it encounters the player and gets killed regardless
         dungeonManiaController.tick("sword", Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // should just now be the player and the spawner
         assertTrue(game.getEntities().size() == 2);
@@ -160,6 +210,8 @@ public class GoalTest {
 
         // player now destroys the spawner, and beats the level
         dungeonManiaController.tick("sword", Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
 
@@ -167,19 +219,29 @@ public class GoalTest {
     public void testGoalComposition1() {
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap4", "Peaceful");
+        dungeonManiaController.newGame("basicmap4", "Standard");
         DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = game.getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // player on (0, 0)
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         // now next to the treasure on (2, 0), player on (1, 0)
         assertFalse(dungeonManiaController.getLoadedGame() == null);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         // the player should now be on (2, 0) having picked up the treasure
         assertTrue(game.getItems().size() == 1);
         assertFalse(dungeonManiaController.getLoadedGame() == null);
         // the player should now be moving to the exit
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
@@ -188,23 +250,42 @@ public class GoalTest {
     public void testGoalComposition2() {
         // GOAL: exit OR (treasure AND boulders)
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap5", "Peaceful");
+        dungeonManiaController.newGame("basicmap5", "Standard");
+        DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // player to head straight to the exit
-        dungeonManiaController.tick("", Direction.RIGHT);
-        dungeonManiaController.tick("", Direction.RIGHT);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
 
         // set up an identical new game
-        dungeonManiaController.newGame("basicmap5", "Peaceful");
+        dungeonManiaController.newGame("basicmap5", "Standard");
         // player to push the boulder (1, 1) onto the switch (2, 1)
-        dungeonManiaController.tick("", Direction.DOWN);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.DOWN);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
         // go up and take the treasure
-        dungeonManiaController.tick("", Direction.UP);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.UP);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
@@ -214,21 +295,40 @@ public class GoalTest {
         // same as testComposition1 but testing now for exit completion last
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap4", "Peaceful");
+        dungeonManiaController.newGame("basicmap4", "Standard");
+        DungeonMania game = dungeonManiaController.getLoadedGame();
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         // player on (0, 0), will dodge the treasure on (2, 0)
         // and go to the exit on (3, 0)
-        dungeonManiaController.tick("", Direction.DOWN);
-        dungeonManiaController.tick("", Direction.RIGHT);
-        dungeonManiaController.tick("", Direction.RIGHT);
-        dungeonManiaController.tick("", Direction.RIGHT);
-        dungeonManiaController.tick("", Direction.UP);
+        dungeonManiaController.tick(null, Direction.DOWN);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.UP);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertFalse(dungeonManiaController.getLoadedGame() == null);
 
         // but if we track back for the treasure we should complete the game
-        dungeonManiaController.tick("", Direction.LEFT);
-        dungeonManiaController.tick("", Direction.RIGHT);
+        dungeonManiaController.tick(null, Direction.LEFT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
+        dungeonManiaController.tick(null, Direction.RIGHT);
+        player.setHealth(Integer.MAX_VALUE);
+        game.setCharacter(player);
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
