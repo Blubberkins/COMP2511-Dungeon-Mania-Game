@@ -32,8 +32,8 @@ public class EnemyGoal extends GoalLeaf {
             return true;
         }
 
-        if (entity.getType().compareTo("mercenary") == 0) {
-            // TODO: is the mercenary still hostile
+        if (entity.getType().compareTo("mercenary") == 0 && ((Mercenary) entity).isHostile()) {
+            return true;
         }
 
         return false;

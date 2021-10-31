@@ -238,19 +238,17 @@ public class DungeonManiaController {
                     if(((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
                         updateCharacter.setInBattle(true);
                         ((MovingEntity) entity).setInBattle(true);
-
                     }
-                    
                 }
-                if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()){
-                    BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity);
+                if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle() && ((MovingEntity) entity).isHostile()){
+                    BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity, currentGame.getItems());
                 if( outcome == BattleOutcome.CHARACTER_WINS) {
                     toRemove.add(entity);
                 }
                 else if (outcome == BattleOutcome.ENEMY_WINS){
                     toRemove.add(updateCharacter);
                 }
-                
+                currentGame.removeUsedItems();
             }
             }
 
@@ -283,7 +281,20 @@ public class DungeonManiaController {
     }
 
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        DungeonMania loadedgame = this.loadedgame;
+        Entity interactableEntity = null;
+        for (Entity entity: loadedgame.getEntities()){
+            if(entity.getId().equals(entityId)) {
+                interactableEntity = entity;
+            }
+        }
+        if(interactableEntity instanceof Mercenary) {
+            Character updateCharacter = loadedgame.getCharacter();
+            updateCharacter.addAlly((Mercenary) interactableEntity);
+            loadedgame.setCharacter(updateCharacter);
+            ((Mercenary) interactableEntity).setIsBribed(true);
+        } 
+        return new DungeonResponse(loadedgame.getId(), loadedgame.getName(),loadedgame.getEntityResponses(), loadedgame.getItemResponses(), null, GoalFactory.goalString(loadedgame.getGoal()));
     }
 
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {

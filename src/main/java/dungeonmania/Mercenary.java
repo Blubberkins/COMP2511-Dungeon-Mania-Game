@@ -21,7 +21,7 @@ public class Mercenary extends MovingEntity {
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
-        super.setIsInteractable(false);
+        super.setIsInteractable(true);
         super.setHealth(30);
         super.setDamage(5);
         this.isBribed = false;
@@ -45,7 +45,6 @@ public class Mercenary extends MovingEntity {
         if (player == null) {
             return;
         }
-
         // get the position vector
         Position vector = Position.calculatePositionBetween(this.getPos(), player.getPos());
 

@@ -16,15 +16,28 @@ public class Character extends Entity {
     private int damage;
     private Boolean inBattle;
     private List<CollectableEntities> collectables;
+    private List<MovingEntity> allies;
     private List<BuildableEntity> buildables;
     public Character (Position pos, String type, String id){
         super(pos, type, id);
         super.setIsInteractable(false);
         this.damage = 10;
         this.health = 30;
+        this.allies = new ArrayList<>();
         this.inBattle = false;
     }
     
+    public List<MovingEntity> getAllies() {
+        return allies;
+    }
+
+    public void setAllies(List<MovingEntity> allies) {
+        this.allies = allies;
+    }
+
+    public void addAlly(MovingEntity entity){
+        this.allies.add(entity);
+    }
     public Boolean getInBattle() {
         return inBattle;
     }

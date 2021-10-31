@@ -44,8 +44,19 @@ public class DungeonMania {
             this.Buildables.add(new Shield(null, type, id));
             }
     }
-    public void removeItem(Entity e) {
+    public void removeBuildable(Entity e) {
         this.Buildables.remove(e);
+    }
+    public void removeUsedItems(){
+        List<Entity> useditems = new ArrayList<>();
+        for (Entity item: this.Items) {
+            if (item instanceof Weapons && ((Weapons) item).getDurability() == 0){
+                useditems.add(item);
+            }
+        }
+        for (Entity usedup: useditems){
+            this.Items.remove(usedup);
+        }
     }
 
     public List<Entity> getItems() {
