@@ -7,8 +7,10 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.*;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.DuplicateFormatFlagsException;
@@ -35,14 +37,43 @@ public class DungeonMania {
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
     }
+
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
-        if(type.equals("bow")) {
-        this.Buildables.add(new Bow(null, type, id));
-        }
-        if(type.equals("shield")) {
-            this.Buildables.add(new Shield(null, type, id));
+        List<Entity> toRemove = new ArrayList<>();
+        if (type.equals("bow")) {
+            this.Buildables.add(new Bow(null, type, id));
+            int woodCount = 1;
+            int arrowCount = 3;
+            for (Entity entity : this.Items) {
+                if (entity instanceof WoodEntity && woodCount > 0) {
+                    toRemove.add(entity);
+                    woodCount--;
+                }
+                if (entity instanceof ArrowsEntity && arrowCount > 0) {
+                    toRemove.add(entity);
+                    arrowCount--;
+                }
             }
+        }
+        if (type.equals("shield")) {
+            this.Buildables.add(new Shield(null, type, id));
+            int metalCount = 1;
+            int woodCount = 2;
+            for (Entity entity : this.Items) {
+                if (entity instanceof WoodEntity && woodCount > 0) {
+                    toRemove.add(entity);
+                    woodCount--;
+                }
+                if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) && metalCount > 0) {
+                    toRemove.add(entity);
+                    metalCount--;
+                }
+            }
+        }
+        for (Entity entity : toRemove) {
+            this.removeEntity(entity);
+        }
     }
     public void removeBuildable(Entity e) {
         this.Buildables.remove(e);
@@ -194,6 +225,27 @@ public class DungeonMania {
 
     }
 
+    public void spawnZombie(Position pos) {
+        Boolean isWall = true;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        Direction random = null;
+        Position p = null;
+        while (isWall) {
+            random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));
+            for (Entity entity: this.Entities) {
+                if (!(entity instanceof Wall) && pos.translateBy(random).equals(entity.getPos())) {
+                    isWall = false;
+                }
+            }
+        }
+        p = pos.translateBy(random);
+        createEntity(pos, "zombie_toast");
+    }
+
     public void removeEntity(Entity e) {
         this.Entities.remove(e);
     }
@@ -223,9 +275,11 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(pos, Type, id);
         }
-
         if (Type.equalsIgnoreCase("mercenary")) {
             entity = new Mercenary(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("zombie_toast")) {
+            entity = new ZombieToast(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
@@ -240,10 +294,32 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("key")) {
             entity = new KeyEntity(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("health_potion")) {
+            entity = new HealthPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invincibility_potion")) {
+            entity = new InvincibilityPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invisibility_potion")) {
+            entity = new InvisibilityPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("bomb")) {
+            entity = new BombEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("sword")) {
+            entity = new SwordEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("armour")) {
+            entity = new ArmourEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("one_ring")) {
+            entity = new TheOneRingEntity(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
     }
+
     public void AddItem(String Type) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = null;
@@ -258,6 +334,27 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("bomb")) {
+            entity = new BombEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("sword")) {
+            entity = new SwordEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("armour")) {
+            entity = new ArmourEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("health_potion")) {
+            entity = new HealthPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invincibility_potion")) {
+            entity = new InvincibilityPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invisibility_potion")) {
+            entity = new InvisibilityPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("one_ring")) {
+            entity = new TheOneRingEntity(null, Type, id);
         }
         if (entity != null) {
             this.Items.add(entity);
