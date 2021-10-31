@@ -24,6 +24,7 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 import dungeonmania.*;
+import dungeonmania.Battles.BattleOutcome;
 
 public class DungeonManiaController {
     private ArrayList<DungeonMania> games;
@@ -223,14 +224,34 @@ public class DungeonManiaController {
         DungeonMania currentGame = this.loadedgame;
         List<String> buildables = new ArrayList<>();
         Character updateCharacter = currentGame.getCharacter();
+        if(!updateCharacter.getInBattle()) {
         updateCharacter.move(currentGame, movementDirection);
         currentGame.setCharacter(updateCharacter);
         currentGame.updateEntities(updateCharacter);
+        }
         Goal goal = currentGame.getGoal();
         List<Entity> toRemove = new ArrayList<>();
         for (Entity entity: currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
-              ((MovingEntity) entity).move(currentGame);
+                if(!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()){
+                    ((MovingEntity) entity).move(currentGame);
+                    if(((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
+                        updateCharacter.setInBattle(true);
+                        ((MovingEntity) entity).setInBattle(true);
+
+                    }
+                    
+                }
+                if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()){
+                    BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity);
+                if( outcome == BattleOutcome.CHARACTER_WINS) {
+                    toRemove.add(entity);
+                }
+                else if (outcome == BattleOutcome.ENEMY_WINS){
+                    toRemove.add(updateCharacter);
+                }
+                
+            }
             }
 
             if (entity instanceof CollectableEntities) {

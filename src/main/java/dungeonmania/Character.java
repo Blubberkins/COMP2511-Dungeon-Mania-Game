@@ -13,13 +13,42 @@ import java.util.List;
 
 public class Character extends Entity {
     private int health;
-    private int attack;
+    private int damage;
+    private Boolean inBattle;
     private List<CollectableEntities> collectables;
     private List<BuildableEntity> buildables;
     public Character (Position pos, String type, String id){
         super(pos, type, id);
         super.setIsInteractable(false);
+        this.damage = 10;
+        this.health = 30;
+        this.inBattle = false;
     }
+    
+    public Boolean getInBattle() {
+        return inBattle;
+    }
+
+    public void setInBattle(Boolean inBattle) {
+        this.inBattle = inBattle;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public void move(DungeonMania game, Direction move) {
         Position newPos =  this.getPos().translateBy(move);
         for (Entity entity: game.getEntities()) {
@@ -61,5 +90,12 @@ public class Character extends Entity {
         this.setPos(newPos);
     }
 
+    public void receiveDMG(int damage2) {
+        this.setHealth(health - damage2);
+    }
+
+    public Boolean isAlive(){
+        return this.health > 0;
+    }
 
 }

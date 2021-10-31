@@ -15,11 +15,14 @@ import java.util.List;
 public class Spider extends MovingEntity {
     private Position spawn_point;
 
+
     public Spider(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
         this.spawn_point = pos;
         this.setPos(pos.translateBy(Direction.UP));
+        super.setHealth(30);
+        super.setDamage(5);
     }
     public void move(DungeonMania dungeonmania) {
         Position newPosition = nextSquare(dungeonmania);
@@ -77,4 +80,9 @@ public class Spider extends MovingEntity {
 
         return newPos;
     }
+    @Override
+    public void receiveDMG(int damage) {
+        super.setHealth(super.getHealth() - super.getDamage());
+    }
+
 }

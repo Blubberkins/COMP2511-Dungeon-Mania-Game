@@ -16,10 +16,23 @@ import java.util.List;
 
 public class Mercenary extends MovingEntity {
     private final int minBribe = 1;
+    private Boolean isBribed;
+
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
+        super.setHealth(30);
+        super.setDamage(5);
+        this.isBribed = false;
+    }
+    
+    public Boolean getIsBribed() {
+        return isBribed;
+    }
+
+    public void setIsBribed(Boolean isBribed) {
+        this.isBribed = isBribed;
     }
 
     public int getBribe() {
@@ -132,6 +145,12 @@ public class Mercenary extends MovingEntity {
         }
 
         return player;
+    }
+
+    @Override
+    public void receiveDMG(int damage) {
+        super.setHealth(super.getHealth() - super.getDamage());
+        
     }
 
     // public static void main(String args[]) {
