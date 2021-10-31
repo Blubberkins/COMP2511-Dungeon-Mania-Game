@@ -92,6 +92,15 @@ public class DungeonManiaController {
      * @throws IllegalArgumentException
      */
     public DungeonResponse newGame(String dungeonName, String gameMode) throws IllegalArgumentException {
+        Boolean peaceful = gameMode.equalsIgnoreCase("peaceful");
+        Boolean standard = gameMode.equalsIgnoreCase("standard");
+        Boolean hard = gameMode.equalsIgnoreCase("hard");
+        if(!peaceful && !standard && !hard){
+            throw new IllegalArgumentException("invalid gamemode");
+        }
+        if (!dungeons().contains(dungeonName)){
+            throw new IllegalArgumentException("invalid dungeonName");
+        }
         List<ItemResponse> items = new ArrayList<>();
         List<String> buildables = new ArrayList<>();
         DungeonMania dungeonMania = new DungeonMania(gameMode, dungeonName);
@@ -289,6 +298,7 @@ public class DungeonManiaController {
         directions.add(Direction.DOWN);
         directions.add(Direction.LEFT);
         directions.add(Direction.RIGHT);
+        directions.add(Direction.NONE);
         for (Direction d: directions) {
             if(dungeon.getCharacter().getPos().translateBy(d).translateBy(d).equals(e)){
                 return true;
@@ -341,6 +351,9 @@ public class DungeonManiaController {
         List<Entity> toRemove = new ArrayList<>();
         updateCharacter.updateChar();
         if (itemUsed != null) {
+            if(currentGame.getItemFromId(itemUsed) == null) {
+                throw new InvalidActionException("Item Not In Inventory");
+            }
             if(currentGame.getItemFromId(itemUsed).getType().equals("bomb")){
                 Boolean isActivated = false;
                 for (Entity entity:currentGame.getEntities()){
@@ -364,20 +377,20 @@ public class DungeonManiaController {
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
-            if (currentGame.getItemFromId(itemUsed).getType().equals("health_potion")) {
+            else if (currentGame.getItemFromId(itemUsed).getType().equals("health_potion")) {
                 updateCharacter.setHealth(30);
                 currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
-            if (currentGame.getItemFromId(itemUsed).getType().equals("invisibility_potion")) {
+            else if (currentGame.getItemFromId(itemUsed).getType().equals("invisibility_potion")) {
                 updateCharacter.setInvisibleTimer(5);
                 updateCharacter.setInvisible(true);
                 currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
-            if (currentGame.getItemFromId(itemUsed).getType().equals("invincibility_potion")) {
+            else if (currentGame.getItemFromId(itemUsed).getType().equals("invincibility_potion")) {
                 updateCharacter.setInvincibleTimer(5);
                 if(!currentGame.getDifficulty().equalsIgnoreCase("Hard")){
                     updateCharacter.setInvincible(true);
@@ -385,6 +398,9 @@ public class DungeonManiaController {
                 currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            }
+            else {
+                throw new IllegalArgumentException("invalid item id");
             }
         }
         List<Entity> zombieToastSpawners = new ArrayList<>();
@@ -513,9 +529,13 @@ public class DungeonManiaController {
         if (!(interactableEntity instanceof Mercenary || interactableEntity instanceof ZombieToastSpawner)) {
             throw new IllegalArgumentException("not a mercenary or Zombie Spawner");
         }
+        Entity bow = null;
         Entity sword = null;
         Entity treasure = null;
         for (Entity item: loadedgame.getItems()) {
+            if (item.getType().equalsIgnoreCase("Bow")) {
+                bow = item;
+            }
             if(item.getType().equalsIgnoreCase("treasure")) {
             treasure = item; 
             }
@@ -523,9 +543,13 @@ public class DungeonManiaController {
                 sword = item; 
                 }
         }
+        if (treasure == null && interactableEntity instanceof Mercenary){
+            throw new InvalidActionException("no treasure");
+        }
+        
         if(interactableEntity instanceof Mercenary && treasure != null) {
             if(!isMercenaryAdjacent(interactableEntity.getPos())){
-                throw new InvalidActionException("too far away");
+                throw new InvalidActionException("not cardinally adjacent within 2 squares");
             }
             loadedgame.removeItem(treasure);
             Character updateCharacter = loadedgame.getCharacter();
@@ -534,10 +558,13 @@ public class DungeonManiaController {
             ((Mercenary) interactableEntity).setIsBribed(true);
         }
         if (interactableEntity instanceof ZombieToastSpawner) {
-            if (!RealisAdjacent(interactableEntity.getPos()) || sword == null) {
-                throw new InvalidActionException("zombie spawner error");
+            if (!RealisAdjacent(interactableEntity.getPos())) {
+                throw new InvalidActionException("not cardianally adjacent");
             }
-            if (RealisAdjacent(interactableEntity.getPos()) && sword != null) {
+            if(sword == null && bow == null) {
+                throw new InvalidActionException("no weapon");
+            }
+            if (RealisAdjacent(interactableEntity.getPos()) && (sword != null || bow != null)) {
                 loadedgame.removeEntity(interactableEntity);
             }
         } 
@@ -617,11 +644,17 @@ public class DungeonManiaController {
             if(CheckBow()) {
                 dungeon.addBuildable("bow");
             }
+            else {
+                throw new InvalidActionException("cannot build bow");
+            }
         }
 
         if (buildable.equals("shield")) {
             if (CheckShield()) {
                 dungeon.addBuildable("shield");
+            }
+            else {
+                throw new InvalidActionException("cannot build shield");
             }
         }
         return new DungeonResponse(loadedgame.getId(), loadedgame.getName(),loadedgame.getEntityResponses(), loadedgame.getItemResponses(), loadedgame.getBuildables(), GoalFactory.goalString(loadedgame.getGoal()));

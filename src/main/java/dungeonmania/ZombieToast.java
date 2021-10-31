@@ -49,7 +49,7 @@ public class ZombieToast extends MovingEntity {
      * @return boolean
      */
     public Boolean HasArmour() {
-        return this.HasArmour() != null;
+        return this.armour != null;
     }
 
     /**

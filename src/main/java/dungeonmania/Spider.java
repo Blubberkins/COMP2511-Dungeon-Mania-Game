@@ -108,11 +108,11 @@ public class Spider extends MovingEntity {
         int currY = this.getPos().getY();
         Position newPos = null;
         if (currY < spawnY && currX <= spawnX) {
-            newPos = (this.getPos().translateBy(Direction.LEFT));
-        } else if (currY > spawnY && currX >= spawnX) {
-            newPos = (this.getPos().translateBy(Direction.RIGHT));
-        } else if (currY == spawnY && currX <= spawnX) {
             newPos = (this.getPos().translateBy(Direction.DOWN));
+        } else if (currY > spawnY && currX >= spawnX) {
+            newPos = (this.getPos().translateBy(Direction.LEFT));
+        } else if (currY >= spawnY && currX <= spawnX) {
+            newPos = (this.getPos().translateBy(Direction.RIGHT));
         } else {
             newPos = (this.getPos().translateBy(Direction.UP));
         }
