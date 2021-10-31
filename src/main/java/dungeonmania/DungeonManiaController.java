@@ -136,7 +136,18 @@ public class DungeonManiaController {
             entities.put(newEntity);
         }
 
+        JSONArray inventory = new JSONArray();
+        List<Entity> gameItems = this.loadedgame.getItems();
+
+        for (Entity item : gameItems) {
+            JSONObject newEntity = new JSONObject();
+            String type = item.getType();
+            newEntity.put("type", type);
+            inventory.put(newEntity);
+        }
+
         jsonObject.put("entities", entities);
+        jsonObject.put("inventory", inventory);
 
         Goal gameGoals = this.loadedgame.getGoal();
         JSONObject goals = goalToJSON(gameGoals);
@@ -156,9 +167,14 @@ public class DungeonManiaController {
 
         }
 
-        return new DungeonResponse(this.loadedgame.getId(), this.loadedgame.getName(),
-                this.loadedgame.getEntityResponses(), this.loadedgame.getItemResponses(), null,
-                GoalFactory.goalString(this.loadedgame.getGoal()));
+        String id = this.loadedgame.getId();
+        String gameName = this.loadedgame.getName();
+        List<EntityResponse> entityResponses = this.loadedgame.getEntityResponses();
+        List<ItemResponse> itemResponses = this.loadedgame.getItemResponses();
+        String goalString = GoalFactory.goalString(this.loadedgame.getGoal());
+        this.loadedgame = null;
+
+        return new DungeonResponse(id, gameName, entityResponses, itemResponses, null, goalString);
     }
 
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
@@ -195,6 +211,12 @@ public class DungeonManiaController {
             int y = entities.getJSONObject(i).getInt("y");
             Position pos = new Position(x, y, 0); // placeholder for layer
             dungeonMania.createEntity(pos, type);
+        }
+
+        JSONArray inventory = dungeon.getJSONArray("inventory");
+        for (int i = 0; i < inventory.length(); i++) {
+            String type = inventory.getJSONObject(i).getString("type");
+            dungeonMania.AddItem(type);
         }
 
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
