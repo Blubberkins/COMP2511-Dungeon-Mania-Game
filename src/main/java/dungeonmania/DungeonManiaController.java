@@ -337,9 +337,11 @@ public class DungeonManiaController {
                     ((MovingEntity) entity).move(currentGame);
                 }
                 if(updateCharacter.getInBattle() && entity instanceof Mercenary && !((MovingEntity) entity).getInBattle()){
+                    if(isMercenaryAdjacent(entity.getPos())) {
                     ((MovingEntity) entity).move(currentGame);
+                    }
                 }
-                
+
                 if (!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
                     ((MovingEntity) entity).move(currentGame);
                     if (((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos()) && !currentGame.getDifficulty().equalsIgnoreCase("peaceful")) {
