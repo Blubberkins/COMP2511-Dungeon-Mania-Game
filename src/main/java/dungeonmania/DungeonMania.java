@@ -1,21 +1,12 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
-import dungeonmania.*;
 
-import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.DuplicateFormatFlagsException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class DungeonMania {
@@ -40,23 +31,53 @@ public class DungeonMania {
         this.intId = 0;
     }
     
+    /**
+     * Increments the id
+     * @return int
+     */
     public int incrementIntId() {
         return this.intId++;
     }
 
+    /**
+     * Sets difficulty of the game
+     * @param difficulty
+     */
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
     }
 
+    /**
+     * Adds a given string to the list
+     * of buildable entities
+     * @param s
+     */
     public void addToBuildableEntities(String s){
         this.Buildables.add((s));
     }
+
+    /**
+     * Gets the list of buildable entities
+     * @return List<String>
+     */
     public List<String> getBuildables() {
         return this.Buildables;
     }
+
+    /**
+     * Removes a given entity from items list
+     * @param e
+     */
     public void removeItem(Entity e){
         this.Items.remove(e);
     }
+
+    /**
+     * Gets an instance of entity given
+     * the id
+     * @param id
+     * @return Entity
+     */
     public Entity getItemFromId(String id){
         for (Entity item: this.Items) {
             if(item.getId().equals(id)){
@@ -67,6 +88,11 @@ public class DungeonMania {
 
     }
 
+    /**
+     * Given a string of the desired item, crafts
+     * the item and consumes necessary materials
+     * @param type
+     */
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
@@ -106,9 +132,12 @@ public class DungeonMania {
             this.removeItem(entity);
         }
     }
-    public void removeBuildable(Entity e) {
-        this.Buildables.remove(e);
-    }
+
+    /**
+     * Removes items that have either
+     * been consumed, or run out of durability
+     * from the items list.
+     */
     public void removeUsedItems(){
         List<Entity> useditems = new ArrayList<>();
         for (Entity item: this.Items) {
@@ -124,18 +153,35 @@ public class DungeonMania {
         }
     }
 
+    /**
+     * Gets the list of Items
+     * @return List<Entity>
+     */
     public List<Entity> getItems() {
         return Items;
     }
 
+    /**
+     * Sets the list of items to a specific list.
+     * @param items
+     */
     public void setItems(List<Entity> items) {
         Items = items;
     }
 
+    /**
+     * Gets the difficulty of the game
+     * @return String
+     */
     public String getDifficulty() {
         return this.difficulty;
     }
 
+    /**
+     * Gets the item responses for all items in the items
+     * list
+     * @return List<ItemResponse>
+     */
     public List<ItemResponse> getItemResponses() {
         List<ItemResponse> items = new ArrayList<>();
         for (Entity item : this.Items) {
@@ -144,14 +190,26 @@ public class DungeonMania {
         return items;
     }
 
+    /**
+     * Gets the instance of character in the game
+     * @return Character
+     */
     public Character getCharacter() {
         return character;
     }
 
+    /**
+     * Sets the character
+     * @param character
+     */
     public void setCharacter(Character character) {
         this.character = character;
     }
 
+    /**
+     * Updates a given entity.
+     * @param e
+     */
     public void updateEntities(Entity e) {
         for (Entity entity : this.Entities) {
             if (entity.getId().equals(e.getId())) {
@@ -160,6 +218,10 @@ public class DungeonMania {
         }
     }
 
+    /**
+     * Gets the largest x value of the map
+     * @return int
+     */
     public int getLargestX() {
         int x = 0;
         for (Entity entity : this.Entities) {
@@ -171,6 +233,10 @@ public class DungeonMania {
         return x;
     }
 
+    /**
+     * Gets the largest y value of the map
+     * @return int
+     */
     public int getLargestY() {
         int y = 0;
         for (Entity entity : this.Entities) {
@@ -183,63 +249,121 @@ public class DungeonMania {
 
     }
 
+    /**
+     * Gets the name of the dungeon
+     * @return String
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the dungeon
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the id of the dungeon
+     * @return String
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Sets the id of the dungeon
+     * @param id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Gets the height of the dungeon
+     * @return int
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * Gets the width of the dungeon
+     * @return int
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * Returns a list of entity responses
+     * for all entities in the game
+     * @return List<EntityResponse>
+     */
     public List<EntityResponse> getEntityResponses() {
         List<EntityResponse> e = new ArrayList<>();
         for (Entity entity : this.Entities) {
             e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));
         }
         return e;
-
     }
 
+    /**
+     * Gets the List of entities
+     * @return List<Entity>
+     */
     public List<Entity> getEntities() {
         return this.Entities;
     }
 
+    /**
+     * Sets the list of entities in the game
+     * @param entities
+     */
     public void setEntities(List<Entity> entities) {
         Entities = entities;
     }
 
+    /**
+     * Gets the goal of the game
+     * @return Goal
+     */
     public Goal getGoal() {
         return goal;
     }
 
+    /**
+     * Sets the goal of the game
+     * @param goal
+     */
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
+
+    /**
+     * If a battle is won and an item is collected from the
+     * battle, add it to items list
+     * @param e
+     */
     public void winItem(Entity e) {
         this.Items.add(e);
     }
+
+    /**
+     * Creates a random position within the map boundaries
+     * @return Position
+     */
     public Position generateRandomPos(){
         int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
         return new Position(spawnX, spawnY, 0);
     }
 
+    /**
+     * Spawns a spider
+     */
     public void spawnSpider() {
         Boolean isBoulder = true;
         Position p = null;
@@ -261,6 +385,11 @@ public class DungeonMania {
 
     }
 
+    /**
+     * Spawns a zombie given the position of the 
+     * toast spawner
+     * @param pos
+     */
     public void spawnZombie(Position pos) {
         Boolean isWall = true;
         List<Direction> directions = new ArrayList<>();
@@ -283,10 +412,20 @@ public class DungeonMania {
         createEntity(p, "zombie_toast");
     }
 
+    /**
+     * Removes a specific entity from the Entities list
+     * @param e
+     */
     public void removeEntity(Entity e) {
         this.Entities.remove(e);
     }
 
+    /**
+     * Given a position and a string type, create an entity with
+     * respective class and add to entities list
+     * @param pos
+     * @param Type
+     */
     public void createEntity(Position pos, String Type) {
         String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
@@ -357,6 +496,10 @@ public class DungeonMania {
         }
     }
 
+    /**
+     * Given a string type, add respective class to items list
+     * @param Type
+     */
     public void AddItem(String Type) {
         String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
@@ -399,13 +542,17 @@ public class DungeonMania {
 
     }
 
+    /**
+     * Creates a portal given position type and colour 
+     * of the portal
+     * @param pos
+     * @param Type
+     * @param colour
+     */
     public void createPortal(Position pos, String Type, String colour) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);
         this.Entities.add(entity);
-    }
-
-    public void addEntity(String id2) {
     }
 }

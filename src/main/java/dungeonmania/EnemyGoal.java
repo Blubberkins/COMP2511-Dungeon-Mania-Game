@@ -21,6 +21,11 @@ public class EnemyGoal extends GoalLeaf {
         return true;
     }
 
+    /**
+     * Checks if a given entity is an enemy
+     * @param entity
+     * @return boolean
+     */
     public Boolean isEnemy(Entity entity) {
         List<String> enemies = new ArrayList<String>();
 
@@ -37,7 +42,6 @@ public class EnemyGoal extends GoalLeaf {
                 return true;
             }
         }
-
         return false;
     }
 }

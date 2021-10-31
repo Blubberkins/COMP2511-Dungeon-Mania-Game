@@ -1,16 +1,7 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
-import dungeonmania.response.models.*;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Spider extends MovingEntity {
     private Position spawn_point;
@@ -25,6 +16,15 @@ public class Spider extends MovingEntity {
         super.setHealth(30);
         super.setDamage(5);
     }
+    
+    /**
+     * Checks if the current spider's desired move
+     * moves towards the character.
+     * @param originalPos
+     * @param newPos
+     * @param dungeonmania
+     * @return boolean
+     */
     public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania){
             Position CharacterPos = dungeonmania.getCharacter().getPos();
             int CharacterX = CharacterPos.getX();
@@ -37,10 +37,10 @@ public class Spider extends MovingEntity {
             int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));
             return (NewDistance > OldDistance);
     }
-    public void setDirection(Boolean direction) {
-        this.clockwise = direction;
-    }
 
+    /**
+     * Calculates movement for spider
+     */
     @Override
     public void move(DungeonMania dungeonmania) {
         Position newPosition = this.getPos();
@@ -66,6 +66,11 @@ public class Spider extends MovingEntity {
         }
     }
 
+    /**
+     * Gets the next spiders next square and returns it
+     * @param dungeonmania
+     * @return Position
+     */
     public Position nextSquare(DungeonMania dungeonmania) {
         int spawnX = this.spawn_point.getX();
         int spawnY = this.spawn_point.getY();
@@ -91,6 +96,11 @@ public class Spider extends MovingEntity {
         return newPos;
     }
 
+    /**
+     * Gets the spiders previous square and returns it
+     * @param dungeonmania
+     * @return Position
+     */
     public Position previousSquare(DungeonMania dungeonmania) {
         int spawnX = this.spawn_point.getX();
         int spawnY = this.spawn_point.getY();
@@ -120,6 +130,10 @@ public class Spider extends MovingEntity {
     @Override
     public void receiveDMG(int damage) {
         super.setHealth(super.getHealth() - super.getDamage());
+    }
+
+    public void setDirection(Boolean direction) {
+        this.clockwise = direction;
     }
 
 }

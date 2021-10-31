@@ -1,15 +1,9 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
-import dungeonmania.response.models.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,35 +22,21 @@ public class Mercenary extends MovingEntity {
         this.isBribed = false;
         this.armour = ChanceOfArmour();
     }
+
+    /**
+     * Creates a random chance to generate armor
+     * @return
+     */
     public ArmourEntity ChanceOfArmour() {
         if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
             return new ArmourEntity(null, "armour", "armour" + this.getId());
         }
         return null;
     }
-    public ArmourEntity getArmour(){
-        return this.armour;
-    }
 
-    public void decrementArmourDurability() {
-        this.armour.decrementDurability();
-    }
-    public Boolean HasArmour() {
-        return this.armour != null;
-    }
-
-    public Boolean getIsBribed() {
-        return isBribed;
-    }
-
-    public void setIsBribed(Boolean isBribed) {
-        this.isBribed = isBribed;
-    }
-
-    public int getBribe() {
-        return this.minBribe;
-    }
-
+    /**
+     * Moves the mercenary in a given game
+     */
     public void move(DungeonMania dungeonmania) {
         Entity player = getPlayer(dungeonmania);
         // if the player doesn't exist, we do nothing
@@ -89,6 +69,13 @@ public class Mercenary extends MovingEntity {
         
     }
 
+    /**
+     * Checks if a desired move is valid (not blocked)
+     * @param position
+     * @param direction
+     * @param dungeonMania
+     * @return boolean
+     */
     public Boolean validMove(Position position, Direction direction, DungeonMania dungeonMania) {
         Position newPos = position.translateBy(direction);
 
@@ -103,6 +90,12 @@ public class Mercenary extends MovingEntity {
         return true;
     }
 
+    /**
+     * Calculates the optimal movement
+     * @param vector
+     * @param dungeonMania
+     * @return List<Direction>
+     */
     public List<Direction> optimalMove(Position vector, DungeonMania dungeonMania) {
         Boolean xPos = vector.getX() >= 0;
         int xDist = Math.abs(vector.getX());
@@ -160,6 +153,11 @@ public class Mercenary extends MovingEntity {
         return optimal;
     }
 
+    /**
+     * Gets the player in a game
+     * @param dungeonmania
+     * @return Entity
+     */
     public Entity getPlayer(DungeonMania dungeonmania) {
         List<Entity> entities = dungeonmania.getEntities();
 
@@ -180,26 +178,28 @@ public class Mercenary extends MovingEntity {
         super.setHealth(super.getHealth() - super.getDamage());
 
     }
+    
+    public ArmourEntity getArmour(){
+        return this.armour;
+    }
 
-    // public static void main(String args[]) {
-    // Position pos1 = new Position(0, 0);
-    // Position pos2 = new Position(3, 3);
+    public void decrementArmourDurability() {
+        this.armour.decrementDurability();
+    }
+    public Boolean HasArmour() {
+        return this.armour != null;
+    }
 
-    // Character c = new Character(pos1, "player", "hello1");
-    // Mercenary m = new Mercenary(pos2, "mercenary", "hello2");
-    // DungeonMania dungeonmania = new DungeonMania("Peaceful", "hello");
+    public Boolean getIsBribed() {
+        return isBribed;
+    }
 
-    // List<Entity> entities = new ArrayList<Entity>();
-    // entities.add(c);
-    // entities.add(m);
-    // dungeonmania.setEntities(entities);
+    public void setIsBribed(Boolean isBribed) {
+        this.isBribed = isBribed;
+    }
 
-    // m.move(dungeonmania);
-    // System.out.println(c.getPos());
-    // System.out.println(m.getPos());
+    public int getBribe() {
+        return this.minBribe;
+    }
 
-    // m.move(dungeonmania);
-    // System.out.println(c.getPos());
-    // System.out.println(m.getPos());
-    // }
 }
