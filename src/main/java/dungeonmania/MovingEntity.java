@@ -1,15 +1,6 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class MovingEntity extends Entity {
     private int health;
@@ -19,14 +10,20 @@ public abstract class MovingEntity extends Entity {
         super(pos, type, id);
         super.setIsInteractable(false);
         this.InBattle = false;
-        //TODO Auto-generated constructor stub
     }
+
+    /**
+     * Checks if a Mercenary is bribed,
+     * else is hostile
+     * @return boolean
+     */
     public Boolean isHostile(){
         if(this instanceof Mercenary && ((Mercenary) this).getIsBribed()){
             return false;
         }
         return true;
     }
+    
     public int getHealth() {
         return health;
     }

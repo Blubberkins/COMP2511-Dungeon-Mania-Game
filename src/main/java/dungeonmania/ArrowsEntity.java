@@ -6,8 +6,5 @@ public class ArrowsEntity extends CollectableEntities {
 
     public ArrowsEntity(Position pos, String type, String id) {
         super(pos, type, id);
-        //TODO Auto-generated constructor stub
     }
-
-    
 }

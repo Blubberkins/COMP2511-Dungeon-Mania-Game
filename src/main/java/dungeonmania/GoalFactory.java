@@ -47,6 +47,11 @@ public class GoalFactory {
         return newGoal;
     }
 
+    /**
+     * Creates a subgoal
+     * @param goal
+     * @param jsonObject
+     */
     public static void addSubGoal(Goal goal, JSONObject jsonObject) {
         JSONArray subgoals = jsonObject.getJSONArray("subgoals");
 
@@ -56,6 +61,11 @@ public class GoalFactory {
         }
     }
 
+    /**
+     * Turns a given goal into a string
+     * @param goal
+     * @return String
+     */
     public static String goalString(Goal goal) {
         // do a pretty print
 

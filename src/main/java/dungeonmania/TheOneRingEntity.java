@@ -9,7 +9,6 @@ public class TheOneRingEntity extends CollectableEntities {
     private TheOneRingEntity(Position pos, String type, String id) {
         super(pos, type, id);
         this.isUsed = false;
-        // TODO Auto-generated constructor stub
     }
 
     public Boolean getIsUsed() {

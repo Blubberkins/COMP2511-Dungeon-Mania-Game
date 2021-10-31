@@ -1,14 +1,9 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,21 +18,44 @@ public class ZombieToast extends MovingEntity {
         this.armour = ChanceOfArmour();
     }
 
+    /**
+     * Generates a chance for a zombie to spawn with armor
+     * @return
+     */
     public ArmourEntity ChanceOfArmour() {
         if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
             return new ArmourEntity(null, "armour", "armour" + this.getId());
         }
         return null;
     }
+
+    /**
+     * Decrements armor durability
+     */
     public void decrementArmourDurability() {
         this.armour.decrementDurability();
     }
+
+    /**
+     * Gets current zombies armour
+     * @return ArmourEntity
+     */
     public ArmourEntity getArmour(){
         return this.armour;
     }
+
+    /**
+     * Checks if a zombie has armor
+     * @return boolean
+     */
     public Boolean HasArmour() {
         return this.HasArmour() != null;
     }
+
+    /**
+     * Generates random movement for zombie toasts
+     * and moves the zombie
+     */
     @Override
     public void move(DungeonMania d) {   
         Boolean isWall = true;
@@ -61,6 +79,9 @@ public class ZombieToast extends MovingEntity {
         this.setPos(p);
     }
 
+    /**
+     * Does damage to the zombie
+     */
     public void receiveDMG(int damage) {
         super.setHealth(super.getHealth() - damage);
     }

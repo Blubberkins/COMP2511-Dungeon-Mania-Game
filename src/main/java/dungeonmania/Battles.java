@@ -1,24 +1,20 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import javax.crypto.spec.ChaCha20ParameterSpec;
-
-import org.w3c.dom.CharacterData;
 
 public class Battles {
     public static enum BattleOutcome {
         CHARACTER_WINS, ENEMY_WINS, NEITHER
     }
+
+    /**
+     * Calculates the outcome of a battle between
+     * the character and an enemy.
+     * @param character
+     * @param entity
+     * @param items
+     * @return BattleOutcome
+     */
     public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items){
         int allyDamage = 0;
         for (MovingEntity ally: character.getAllies()){
@@ -43,11 +39,11 @@ public class Battles {
             characterDamage = characterDamage/2;
             ((ZombieToast) entity).decrementArmourDurability();
         }
-       /* if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+       if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
             characterDamage = characterDamage/2;
             ((Mercenary) entity).decrementArmourDurability();
         }
-        */
+        
         entity.receiveDMG(characterDamage);
         if (!entity.isAlive()){
             character.setInBattle(false);

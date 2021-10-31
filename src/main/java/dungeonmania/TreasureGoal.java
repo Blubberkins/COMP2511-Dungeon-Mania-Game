@@ -16,7 +16,6 @@ public class TreasureGoal extends GoalLeaf {
                 return false;
             }
         }
-
         return true;
     }
 }

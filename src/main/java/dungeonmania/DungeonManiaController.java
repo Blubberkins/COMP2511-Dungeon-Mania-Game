@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +20,6 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
-import dungeonmania.*;
 import dungeonmania.Battles.BattleOutcome;
 
 public class DungeonManiaController {
@@ -34,22 +30,42 @@ public class DungeonManiaController {
         this.games = new ArrayList<>();
     }
 
+    /**
+     * Gets list of existing games
+     * @return ArrayList<DungeonMania>
+     */
     public ArrayList<DungeonMania> getGames() {
         return games;
     }
 
+    /**
+     * Sets the list of existing games
+     * @param games
+     */
     public void setGames(ArrayList<DungeonMania> games) {
         this.games = games;
     }
 
+    /**
+     * Gets current skin
+     * @return String
+     */
     public String getSkin() {
         return "default";
     }
 
+    /**
+     * Gets localisation
+     * @return String
+     */
     public String getLocalisation() {
         return "en_US";
     }
 
+    /**
+     * Gets list of gamemodes
+     * @return List<String>
+     */
     public List<String> getGameModes() {
         return Arrays.asList("Standard", "Peaceful", "Hard");
     }
@@ -84,7 +100,6 @@ public class DungeonManiaController {
         String s = f.getAbsolutePath();
 
         try {
-            FileReader g = new FileReader(s);
             dungeon = new JSONObject(new JSONTokener(new FileReader(s)));
         } catch (Exception e) {
         }
@@ -113,6 +128,12 @@ public class DungeonManiaController {
                 GoalFactory.goalString(dungeonMania.getGoal()));
     }
 
+    /**
+     * Saves a game given the name of the game instance
+     * @param name
+     * @return DungeonResponse
+     * @throws IllegalArgumentException
+     */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
         int numSaves = allGames().size();
         String difficulty = this.loadedgame.getDifficulty();
@@ -177,6 +198,12 @@ public class DungeonManiaController {
         return new DungeonResponse(id, gameName, entityResponses, itemResponses, null, goalString);
     }
 
+    /**
+     * Loads a specific game given the name of the game
+     * @param name
+     * @return DungeonResponse
+     * @throws IllegalArgumentException
+     */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
         try {
             List<String> saves = allGames();
@@ -195,7 +222,6 @@ public class DungeonManiaController {
         JSONObject dungeon = null;
 
         try {
-            FileReader g = new FileReader(s);
             dungeon = new JSONObject(new JSONTokener(new FileReader(s)));
         } catch (Exception e) {
         }
@@ -229,6 +255,12 @@ public class DungeonManiaController {
                 GoalFactory.goalString(dungeonMania.getGoal()));
 
     }
+
+    /**
+     * Checks if a position is adjacent 
+     * @param e
+     * @return boolean
+     */
     public boolean RealisAdjacent(Position e) {
         DungeonMania dungeon = this.loadedgame;
         List<Direction> directions = new ArrayList<>();
@@ -243,6 +275,13 @@ public class DungeonManiaController {
         }
         return false;
     }
+
+    /**
+     * Checks if a mercenary is adjacent to a 
+     * given position
+     * @param e
+     * @return boolean
+     */
     public boolean isMercenaryAdjacent(Position e) {
         DungeonMania dungeon = this.loadedgame;
         List<Direction> directions = new ArrayList<>();
@@ -258,15 +297,33 @@ public class DungeonManiaController {
         return false;
     }
 
+    /**
+     * Returns a list of all the games (saved and current)
+     * @return List<String>
+     */
     public List<String> allGames() {
         File f = new File("src/main/resources/");
         String filepath = f.getAbsolutePath();
-        Boolean madeDirectory = new File(filepath + "/saves/").mkdir();
         List<String> saves = new ArrayList<>();
         File savespath = new File(filepath + "/saves/");
         saves = Arrays.asList(savespath.list());
         return saves;
     }
+
+    /**
+     * Advances the game state by one tick
+     * also calculates what craftables the character may have access to
+     * uses items if items have been used
+     * and moves the character given the direction
+     * does battle, and checks if the game has ended through
+     * the goal condition/ player death.
+     * and updates the state of all entities in the game.
+     * @param itemUsed
+     * @param movementDirection
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
+     */
     public DungeonResponse tick(String itemUsed, Direction movementDirection)
             throws IllegalArgumentException, InvalidActionException {
         String Goalstring;
@@ -438,6 +495,13 @@ public class DungeonManiaController {
 
     }
 
+    /**
+     * Interacts with a given entity Id
+     * @param entityId
+     * @return DungeonResponse
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
+     */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         DungeonMania loadedgame = this.loadedgame;
         Entity interactableEntity = null;
@@ -479,6 +543,11 @@ public class DungeonManiaController {
         } 
         return new DungeonResponse(loadedgame.getId(), loadedgame.getName(),loadedgame.getEntityResponses(), loadedgame.getItemResponses(), null, GoalFactory.goalString(loadedgame.getGoal()));
     }
+
+    /** 
+     * Checks if the character can craft a bow
+     * @return boolean
+    */
     public Boolean CheckBow(){
         int wood = 0;
         int arrows = 0;
@@ -499,6 +568,11 @@ public class DungeonManiaController {
         }
         return false;
     }
+
+    /**
+     * Checks if the character can craft a shield
+     * @return boolean
+     */
     public Boolean CheckShield(){
         int keys = 0;
         int wood = 0;
@@ -525,7 +599,15 @@ public class DungeonManiaController {
         return false;
     }
     
-
+    /**
+     * Builds a bow given the string of the type
+     * throws error if the desired craft
+     * is not bow or shield
+     * @param buildable
+     * @return DungeonResponse
+     * @throws IllegalArgumentException
+     * @throws InvalidActionException
+     */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
         if (!buildable.equals("bow") && !buildable.equals("shield")) {
             throw new IllegalArgumentException();
@@ -545,6 +627,12 @@ public class DungeonManiaController {
         return new DungeonResponse(loadedgame.getId(), loadedgame.getName(),loadedgame.getEntityResponses(), loadedgame.getItemResponses(), loadedgame.getBuildables(), GoalFactory.goalString(loadedgame.getGoal()));
     }
 
+    /**
+     * Writes the given contents 
+     * to a given filename
+     * @param conts
+     * @param filename
+     */
     public void writeToFile(String conts, String filename) {
         try {
             FileWriter fw = new FileWriter(filename);
@@ -555,6 +643,11 @@ public class DungeonManiaController {
         }
     }
 
+    /**
+     * Turns a given goal the a json file
+     * @param goal
+     * @return JSONObject
+     */
     public JSONObject goalToJSON(Goal goal) {
         JSONObject jsonObject = new JSONObject();
 
@@ -572,6 +665,10 @@ public class DungeonManiaController {
         return jsonObject;
     }
 
+    /**
+     * Gets the loaded game
+     * @return DungeonMania
+     */
     public DungeonMania getLoadedGame() {
         return this.loadedgame;
     }

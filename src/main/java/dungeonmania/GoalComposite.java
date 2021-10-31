@@ -15,10 +15,19 @@ public class GoalComposite implements Goal {
         this.name = name;
     }
 
+    /**
+     * Gets the name of the goal
+     * @return String
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Checks if the goal has been completed
+     * @param game
+     * @return boolean
+     */
     public Boolean isComplete(DungeonMania game) {
         switch (name) {
         case "AND":
@@ -39,11 +48,21 @@ public class GoalComposite implements Goal {
         return false;
     }
 
+    /**
+     * Adds a goal.
+     * @param g
+     * @return boolean
+     */
     public Boolean add(Goal g) {
         subgoals.add(g);
         return true;
     }
 
+    /**
+     * Removes a specific goal
+     * @param g
+     * @return boolean
+     */
     public Boolean remove(Goal g) {
         subgoals.remove(g);
         return true;

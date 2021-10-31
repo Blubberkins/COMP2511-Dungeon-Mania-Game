@@ -1,14 +1,7 @@
 package dungeonmania;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.util.Direction;
-import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FloorSwitch extends StaticEntity {
@@ -19,6 +12,13 @@ public class FloorSwitch extends StaticEntity {
         super.setIsInteractable(false);
     }
 
+    /**
+     * Checks if there is a boulder on the same position
+     * as the current instance of floorswitch, if there is
+     * then it is triggered.
+     * @param entities
+     * @return
+     */
     public boolean checkTriggered (List<Entity> entities) {
         for (Entity entity: entities) {
             if (entity.getPos().equals(this.getPos())) {

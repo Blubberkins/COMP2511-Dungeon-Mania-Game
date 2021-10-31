@@ -3,8 +3,6 @@ package dungeonmania;
 import java.util.List;
 import java.util.ArrayList;
 
-import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 
 public class BoulderGoal extends GoalLeaf {
@@ -29,10 +27,15 @@ public class BoulderGoal extends GoalLeaf {
                 return false;
             }
         }
-
         return true;
     }
 
+    /**
+     * Checks if the current game map has boulders
+     * @param game
+     * @param position
+     * @return boolean
+     */
     public static Boolean hasBoulder(DungeonMania game, Position position) {
         List<Entity> entities = game.getEntities();
 
