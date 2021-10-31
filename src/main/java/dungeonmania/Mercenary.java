@@ -42,7 +42,7 @@ public class Mercenary extends MovingEntity {
         this.armour.decrementDurability();
     }
     public Boolean HasArmour() {
-        return this.HasArmour() != null;
+        return this.armour != null;
     }
 
     public Boolean getIsBribed() {

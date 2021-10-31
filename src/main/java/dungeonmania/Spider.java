@@ -20,11 +20,23 @@ public class Spider extends MovingEntity {
         super(pos, type, id);
         super.setIsInteractable(false);
         this.spawn_point = pos;
+        this.clockwise = true;
         this.setPos(pos.translateBy(Direction.UP));
         super.setHealth(30);
         super.setDamage(5);
     }
-
+    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania){
+            Position CharacterPos = dungeonmania.getCharacter().getPos();
+            int CharacterX = CharacterPos.getX();
+            int CharacterY = CharacterPos.getY();
+            int OldPosX = originalPos.getX();
+            int OldPosY = originalPos.getY();
+            int NewPosX = originalPos.getX();
+            int NewPosY = originalPos.getY();
+            int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));
+            int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));
+            return (NewDistance > OldDistance);
+    }
     public void setDirection(Boolean direction) {
         this.clockwise = direction;
     }
@@ -69,7 +81,9 @@ public class Spider extends MovingEntity {
         } else if (currY <= spawnY && currX > spawnX) {
             newPos = (this.getPos().translateBy(Direction.DOWN));
         }
-
+        if (dungeonmania.getCharacter().getisInvincible() && IsCloser(this.getPos(), newPos, dungeonmania)) {
+            newPos = null;
+        }
         if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {
             newPos = null;
         }
@@ -91,6 +105,9 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.DOWN));
         } else if (currY == spawnY && currX > spawnX) {
             newPos = (this.getPos().translateBy(Direction.UP));
+        }
+        if (dungeonmania.getCharacter().getisInvincible() && IsCloser(this.getPos(), newPos, dungeonmania)) {
+            newPos = null;
         }
 
         if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {

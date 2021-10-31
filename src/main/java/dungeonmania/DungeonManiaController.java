@@ -243,6 +243,20 @@ public class DungeonManiaController {
         }
         return false;
     }
+    public boolean isMercenaryAdjacent(Position e) {
+        DungeonMania dungeon = this.loadedgame;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        for (Direction d: directions) {
+            if(dungeon.getCharacter().getPos().translateBy(d).translateBy(d).equals(e)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<String> allGames() {
         File f = new File("src/main/resources/");
@@ -319,6 +333,13 @@ public class DungeonManiaController {
         List<Entity> zombieToastSpawners = new ArrayList<>();
         for (Entity entity: currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
+                if(updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()){
+                    ((MovingEntity) entity).move(currentGame);
+                }
+                if(updateCharacter.getInBattle() && entity instanceof Mercenary && !((MovingEntity) entity).getInBattle()){
+                    ((MovingEntity) entity).move(currentGame);
+                }
+                
                 if (!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
                     ((MovingEntity) entity).move(currentGame);
                     if (((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos()) && !currentGame.getDifficulty().equalsIgnoreCase("peaceful")) {
@@ -423,6 +444,9 @@ public class DungeonManiaController {
                 interactableEntity = entity;
             }
         }
+        if (!(interactableEntity instanceof Mercenary || interactableEntity instanceof ZombieToastSpawner)) {
+            throw new IllegalArgumentException("not a mercenary or Zombie Spawner");
+        }
         Entity sword = null;
         Entity treasure = null;
         for (Entity item: loadedgame.getItems()) {
@@ -434,6 +458,9 @@ public class DungeonManiaController {
                 }
         }
         if(interactableEntity instanceof Mercenary && treasure != null) {
+            if(!isMercenaryAdjacent(interactableEntity.getPos())){
+                throw new InvalidActionException("too far away");
+            }
             loadedgame.removeItem(treasure);
             Character updateCharacter = loadedgame.getCharacter();
             updateCharacter.addAlly((Mercenary) interactableEntity);
@@ -441,6 +468,9 @@ public class DungeonManiaController {
             ((Mercenary) interactableEntity).setIsBribed(true);
         }
         if (interactableEntity instanceof ZombieToastSpawner) {
+            if (!RealisAdjacent(interactableEntity.getPos()) || sword == null) {
+                throw new InvalidActionException("zombie spawner error");
+            }
             if (RealisAdjacent(interactableEntity.getPos()) && sword != null) {
                 loadedgame.removeEntity(interactableEntity);
             }
