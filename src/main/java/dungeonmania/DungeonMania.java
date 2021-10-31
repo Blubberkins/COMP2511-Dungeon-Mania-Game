@@ -7,8 +7,10 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.*;
 
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.DuplicateFormatFlagsException;
@@ -22,9 +24,10 @@ public class DungeonMania {
     private int width;
     private List<Entity> Entities;
     private List<Entity> Items;
-    private List<Entity> Buildables;
+    private List<String> Buildables;
     private Goal goal;
     private String id;
+    private int intId;
     private String name;
     private String difficulty;
 
@@ -34,18 +37,91 @@ public class DungeonMania {
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
+        this.intId = 0;
     }
+    
+    public int incrementIntId() {
+        return this.intId++;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void addToBuildableEntities(String s){
+        this.Buildables.add((s));
+    }
+    public List<String> getBuildables() {
+        return this.Buildables;
+    }
+    public void removeItem(Entity e){
+        this.Items.remove(e);
+    }
+    public Entity getItemFromId(String id){
+        for (Entity item: this.Items) {
+            if(item.getId().equals(id)){
+                return item;
+            }
+        }
+        return null;
+
+    }
+
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
-        if(type.equals("bow")) {
-        this.Buildables.add(new Bow(null, type, id));
-        }
-        if(type.equals("shield")) {
-            this.Buildables.add(new Shield(null, type, id));
+        List<Entity> toRemove = new ArrayList<>();
+        if (type.equals("bow")) {
+            this.Items.add(new Bow(null, type, id));
+            this.Buildables.remove("bow");
+            int woodCount = 1;
+            int arrowCount = 3;
+            for (Entity entity : this.Items) {
+                if (entity instanceof WoodEntity && woodCount > 0) {
+                    toRemove.add(entity);
+                    woodCount--;
+                }
+                if (entity instanceof ArrowsEntity && arrowCount > 0) {
+                    toRemove.add(entity);
+                    arrowCount--;
+                }
             }
+        }
+        if (type.equals("shield")) {
+            this.Items.add(new Shield(null, type, id));
+            this.Buildables.remove("shield");
+            int metalCount = 1;
+            int woodCount = 2;
+            for (Entity entity : this.Items) {
+                if (entity instanceof WoodEntity && woodCount > 0) {
+                    toRemove.add(entity);
+                    woodCount--;
+                }
+                if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) && metalCount > 0) {
+                    toRemove.add(entity);
+                    metalCount--;
+                }
+            }
+        }
+        for (Entity entity : toRemove) {
+            this.removeItem(entity);
+        }
     }
-    public void removeItem(Entity e) {
+    public void removeBuildable(Entity e) {
         this.Buildables.remove(e);
+    }
+    public void removeUsedItems(){
+        List<Entity> useditems = new ArrayList<>();
+        for (Entity item: this.Items) {
+            if (item instanceof Weapons && ((Weapons) item).getDurability() == 0){
+                useditems.add(item);
+            }
+            if(item instanceof TheOneRingEntity && ((TheOneRingEntity) item).getIsUsed()){
+                useditems.add(item);
+            }
+        }
+        for (Entity usedup: useditems){
+            this.Items.remove(usedup);
+        }
     }
 
     public List<Entity> getItems() {
@@ -155,10 +231,13 @@ public class DungeonMania {
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
+    public void winItem(Entity e) {
+        this.Items.add(e);
+    }
     public Position generateRandomPos(){
         int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
-        return new Position (spawnX,spawnY,0);
+        return new Position(spawnX, spawnY, 0);
     }
 
     public void spawnSpider() {
@@ -166,11 +245,10 @@ public class DungeonMania {
         Position p = null;
         while (isBoulder) {
             p = generateRandomPos();
-            for (Entity entity: this.Entities) {
-                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")){
+            for (Entity entity : this.Entities) {
+                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")) {
                     isBoulder = true;
-                }
-                else {
+                } else {
                     isBoulder = false;
                 }
             }
@@ -178,9 +256,31 @@ public class DungeonMania {
                 isBoulder = true;
             }
         }
-        Spider s = new Spider(p, "spider", Integer.toString(Entities.size() + 1));
+        Spider s = new Spider(p, "spider", Integer.toString(this.incrementIntId()));
         Entities.add(s);
 
+    }
+
+    public void spawnZombie(Position pos) {
+        Boolean isWall = true;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        Direction random = null;
+        Position p = null;
+        while (isWall) {
+            isWall = false;
+            random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));
+            for (Entity entity: this.Entities) {
+                if ((entity instanceof Wall) && pos.translateBy(random).equals(entity.getPos())) {
+                    isWall = true;
+                }
+            }
+        }
+        p = pos.translateBy(random);
+        createEntity(p, "zombie_toast");
     }
 
     public void removeEntity(Entity e) {
@@ -188,7 +288,7 @@ public class DungeonMania {
     }
 
     public void createEntity(Position pos, String Type) {
-        String id = Integer.toString(this.Entities.size());
+        String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
         // Static entities
         if (Type.equalsIgnoreCase("wall")) {
@@ -212,9 +312,11 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(pos, Type, id);
         }
-
         if (Type.equalsIgnoreCase("mercenary")) {
             entity = new Mercenary(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("zombie_toast")) {
+            entity = new ZombieToast(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
@@ -229,12 +331,34 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("key")) {
             entity = new KeyEntity(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("health_potion")) {
+            entity = new HealthPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invincibility_potion")) {
+            entity = new InvincibilityPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invisibility_potion")) {
+            entity = new InvisibilityPotionEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("bomb")) {
+            entity = new BombEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("sword")) {
+            entity = new SwordEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("armour")) {
+            entity = new ArmourEntity(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("one_ring")) {
+            entity = TheOneRingEntity.getInstance(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
     }
+
     public void AddItem(String Type) {
-        String id = Integer.toString(this.Entities.size());
+        String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
@@ -248,13 +372,34 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("treasure")) {
             entity = new TreasureEntity(null, Type, id);
         }
+        if (Type.equalsIgnoreCase("bomb")) {
+            entity = new BombEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("sword")) {
+            entity = new SwordEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("armour")) {
+            entity = new ArmourEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("health_potion")) {
+            entity = new HealthPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invincibility_potion")) {
+            entity = new InvincibilityPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("invisibility_potion")) {
+            entity = new InvisibilityPotionEntity(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("one_ring")) {
+            entity = TheOneRingEntity.getInstance(null, Type, id);
+        }
         if (entity != null) {
             this.Items.add(entity);
         }
 
     }
 
-    public void createPortal (Position pos, String Type, String colour) {
+    public void createPortal(Position pos, String Type, String colour) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);

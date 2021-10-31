@@ -11,19 +11,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 // By Liam
 
 public class Mercenary extends MovingEntity {
     private final int minBribe = 1;
     private Boolean isBribed;
+    private ArmourEntity armour;
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
-        super.setIsInteractable(false);
+        super.setIsInteractable(true);
         super.setHealth(30);
         super.setDamage(5);
         this.isBribed = false;
+        this.armour = ChanceOfArmour();
+    }
+    public ArmourEntity ChanceOfArmour() {
+        if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
+            return new ArmourEntity(null, "armour", "armour" + this.getId());
+        }
+        return null;
+    }
+    public ArmourEntity getArmour(){
+        return this.armour;
+    }
+
+    public void decrementArmourDurability() {
+        this.armour.decrementDurability();
+    }
+    public Boolean HasArmour() {
+        return this.armour != null;
     }
 
     public Boolean getIsBribed() {
@@ -44,7 +63,6 @@ public class Mercenary extends MovingEntity {
         if (player == null) {
             return;
         }
-
         // get the position vector
         Position vector = Position.calculatePositionBetween(this.getPos(), player.getPos());
 
@@ -52,12 +70,23 @@ public class Mercenary extends MovingEntity {
         List<Direction> order = optimalMove(vector, dungeonmania);
 
         // pick the single best move that is valid
-        for (Direction move : order) {
-            if (validMove(this.getPos(), move, dungeonmania)) {
-                this.setPos(this.getPos().translateBy(move));
-                break;
+        if(!dungeonmania.getCharacter().getisInvincible()) {
+            for (Direction move : order) {
+                if (validMove(this.getPos(), move, dungeonmania)) {
+                    this.setPos(this.getPos().translateBy(move));
+                    break;
+                } 
             }
         }
+        else{
+            for (int i = 0; i < order.size(); i++) {
+                if (validMove(this.getPos(), order.get(order.size() - 1 - i), dungeonmania)) {
+                    this.setPos(this.getPos().translateBy(order.get(order.size() - 1 - i)));
+                    break;
+                } 
+            }
+        }
+        
     }
 
     public Boolean validMove(Position position, Direction direction, DungeonMania dungeonMania) {
