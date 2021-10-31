@@ -231,6 +231,26 @@ public class DungeonManiaController {
         }
         Goal goal = currentGame.getGoal();
         List<Entity> toRemove = new ArrayList<>();
+        updateCharacter.updateChar();
+        if (itemUsed != null) {
+            if (itemUsed.equals("health_potion")) {
+                updateCharacter.setHealth(30);
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            }
+            if (itemUsed.equals("invisibility_potion")) {
+                updateCharacter.setInvisibleTimer(5);
+                updateCharacter.setInvisible(true);
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            }
+            if (itemUsed.equals("invincibility_potion")) {
+                updateCharacter.setInvincibleTimer(5);
+                updateCharacter.setInvincible(true);
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            }
+        }
         for (Entity entity: currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
                 if(!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()){
@@ -238,20 +258,18 @@ public class DungeonManiaController {
                     if(((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
                         updateCharacter.setInBattle(true);
                         ((MovingEntity) entity).setInBattle(true);
-
                     }
                     
                 }
                 if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()){
                     BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity);
-                if( outcome == BattleOutcome.CHARACTER_WINS) {
-                    toRemove.add(entity);
+                    if (outcome == BattleOutcome.CHARACTER_WINS) {
+                        toRemove.add(entity);
+                    }
+                    else if (outcome == BattleOutcome.ENEMY_WINS){
+                        toRemove.add(updateCharacter);
+                    }
                 }
-                else if (outcome == BattleOutcome.ENEMY_WINS){
-                    toRemove.add(updateCharacter);
-                }
-                
-            }
             }
 
             if (entity instanceof CollectableEntities) {
@@ -264,6 +282,13 @@ public class DungeonManiaController {
                 if (entity instanceof FloorSwitch) {
                     if (((FloorSwitch) entity).checkTriggered(currentGame.getEntities())) {
                         ((FloorSwitch) entity).setisTriggered(true);
+                    }
+                }
+                if (entity instanceof ZombieToastSpawner) {
+                    ((ZombieToastSpawner) entity).setTicksSinceSpawn(((ZombieToastSpawner) entity).getTicksSinceSpawn() + 1);
+                    if (((ZombieToastSpawner) entity).getTicksSinceSpawn() % 20 == 0) {
+                        currentGame.spawnZombie(((ZombieToastSpawner) entity).getPos());
+                        ((ZombieToastSpawner) entity).setTicksSinceSpawn(0);
                     }
                 }
             }
@@ -309,8 +334,13 @@ public class DungeonManiaController {
                 treasure++;
             }
         }
-        if(buildable.equals("Bow")) {
+        if (buildable.equals("Bow")) {
             if(wood >= 1 &&  arrows >= 3) {
+                dungeon.addBuildable("Bow");
+            }
+        }
+        if (buildable.equals("Shield")) {
+            if (wood >= 2 && (treasure >= 1 || keys >= 1)) {
                 dungeon.addBuildable("Bow");
             }
         }

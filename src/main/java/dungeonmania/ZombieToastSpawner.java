@@ -12,10 +12,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ZombieToastSpawner extends StaticEntity {
+    private int ticksSinceSpawn;
+    
     public ZombieToastSpawner(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(true);
+        this.ticksSinceSpawn = 0;
     }
 
-    private int ticksSinceSpawn;    
+    public int getTicksSinceSpawn() {
+        return ticksSinceSpawn;
+    }
+
+    public void setTicksSinceSpawn(int ticksSinceSpawn) {
+        this.ticksSinceSpawn = ticksSinceSpawn;
+    }
+ 
 }
