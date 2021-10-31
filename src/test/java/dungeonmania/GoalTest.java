@@ -17,9 +17,11 @@ public class GoalTest {
     @Test
     public void testExit() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap1", "Peaceful");
+        dungeonManiaController.newGame("basicmap1", "Standard");
 
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         Position position = new Position(0, 0);
         assertTrue(player.getPos().equals(position));
@@ -49,7 +51,10 @@ public class GoalTest {
     @Test
     public void testTreasure() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap2", "Peaceful");
+        dungeonManiaController.newGame("basicmap2", "Standard");
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         DungeonMania game = dungeonManiaController.getLoadedGame();
         for (int i = 0; i < 3; i++) {
@@ -86,7 +91,10 @@ public class GoalTest {
     @Test
     public void testBoulderMap() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap3", "Peaceful");
+        dungeonManiaController.newGame("basicmap3", "Standard");
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         // player on (0, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -100,17 +108,14 @@ public class GoalTest {
 
     @Test
     public void testEnemy() {
-        // TODO figure this out once random entity spawning is decided
-        // currently assumes:
-        // zombies have 1hp
-        // player has more hp than the zombie does in one hit
-        // sword has a base damage of 5, and at least two durability
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         dungeonManiaController.newGame("basicmap6", "Standard");
 
         DungeonMania game = dungeonManiaController.getLoadedGame();
         Character player = game.getCharacter();
         List<ItemResponse> inventory = game.getItemResponses();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         // player starts on (0, 0), spawner on (5, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -172,8 +177,12 @@ public class GoalTest {
     public void testGoalComposition1() {
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap4", "Peaceful");
+        dungeonManiaController.newGame("basicmap4", "Standard");
         DungeonMania game = dungeonManiaController.getLoadedGame();
+
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         // player on (0, 0)
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -193,7 +202,11 @@ public class GoalTest {
     public void testGoalComposition2() {
         // GOAL: exit OR (treasure AND boulders)
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap5", "Peaceful");
+        dungeonManiaController.newGame("basicmap5", "Standard");
+
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         // player to head straight to the exit
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -203,7 +216,7 @@ public class GoalTest {
         assertTrue(dungeonManiaController.getLoadedGame() == null);
 
         // set up an identical new game
-        dungeonManiaController.newGame("basicmap5", "Peaceful");
+        dungeonManiaController.newGame("basicmap5", "Standard");
         // player to push the boulder (1, 1) onto the switch (2, 1)
         dungeonManiaController.tick("", Direction.DOWN);
         dungeonManiaController.tick("", Direction.RIGHT);
@@ -219,7 +232,11 @@ public class GoalTest {
         // same as testComposition1 but testing now for exit completion last
         // GOAL: exit AND treasure
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
-        dungeonManiaController.newGame("basicmap4", "Peaceful");
+        dungeonManiaController.newGame("basicmap4", "Standard");
+
+        Character player = dungeonManiaController.getLoadedGame().getCharacter();
+        // maxing out the hp of the character so they don't die to random spiders
+        player.setHealth(Integer.MAX_VALUE);
 
         // player on (0, 0), will dodge the treasure on (2, 0)
         // and go to the exit on (3, 0)
