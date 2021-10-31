@@ -13,7 +13,7 @@ public class ZombieToast extends MovingEntity {
     public ZombieToast(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
-        super.setHealth(50);
+        super.setHealth(20);
         super.setDamage(5);
         this.armour = ChanceOfArmour();
     }

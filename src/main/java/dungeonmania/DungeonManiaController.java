@@ -298,7 +298,6 @@ public class DungeonManiaController {
         directions.add(Direction.DOWN);
         directions.add(Direction.LEFT);
         directions.add(Direction.RIGHT);
-        directions.add(Direction.NONE);
         for (Direction d: directions) {
             if(dungeon.getCharacter().getPos().translateBy(d).translateBy(d).equals(e)){
                 return true;
@@ -526,7 +525,7 @@ public class DungeonManiaController {
                 interactableEntity = entity;
             }
         }
-        if (!(interactableEntity instanceof Mercenary || interactableEntity instanceof ZombieToastSpawner)) {
+        if (!(interactableEntity instanceof Mercenary) && !(interactableEntity instanceof ZombieToastSpawner)) {
             throw new IllegalArgumentException("not a mercenary or Zombie Spawner");
         }
         Entity bow = null;
@@ -548,7 +547,7 @@ public class DungeonManiaController {
         }
         
         if(interactableEntity instanceof Mercenary && treasure != null) {
-            if(!isMercenaryAdjacent(interactableEntity.getPos())){
+            if(!isMercenaryAdjacent(interactableEntity.getPos()) && !RealisAdjacent(interactableEntity.getPos())){
                 throw new InvalidActionException("not cardinally adjacent within 2 squares");
             }
             loadedgame.removeItem(treasure);
