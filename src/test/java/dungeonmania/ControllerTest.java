@@ -86,7 +86,7 @@ public class ControllerTest {
         dm.newGame("basicmap7", "Peaceful");
 
         for (int i = 0; i < 7; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
         }
 
         dm.build("bow");

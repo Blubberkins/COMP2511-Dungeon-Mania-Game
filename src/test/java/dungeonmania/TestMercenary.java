@@ -33,14 +33,14 @@ public class TestMercenary {
         // after one move the mercenary should be closer
         // player started on (1, 1), mercenary on (7, 7)
         // so they are 12 steps away. the mercenary should cut it down to 10.
-        dm.tick("", Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         Position vector = Position.calculatePositionBetween(mPos, pPos);
         assertTrue(Math.abs(vector.getX()) + Math.abs(vector.getY()) == 10);
 
         // repeating...
-        dm.tick("", Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         vector = Position.calculatePositionBetween(mPos, pPos);
@@ -48,7 +48,7 @@ public class TestMercenary {
 
         // changing direction
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.DOWN);
+            dm.tick(null, Direction.DOWN);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -60,7 +60,7 @@ public class TestMercenary {
         player.setPos(new Position(1, 7));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -68,7 +68,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.UP);
+            dm.tick(null, Direction.UP);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -80,7 +80,7 @@ public class TestMercenary {
         player.setPos(new Position(7, 7));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.LEFT);
+            dm.tick(null, Direction.LEFT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -88,7 +88,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.UP);
+            dm.tick(null, Direction.UP);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -100,7 +100,7 @@ public class TestMercenary {
         player.setPos(new Position(7, 1));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.LEFT);
+            dm.tick(null, Direction.LEFT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -108,7 +108,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.DOWN);
+            dm.tick(null, Direction.DOWN);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -136,14 +136,14 @@ public class TestMercenary {
         // after one move the mercenary should be closer
         // player started on (1, 1), mercenary on (7, 7)
         // so they are 12 steps away. the mercenary should cut it down to 10.
-        dm.tick("", Direction.DOWN);
+        dm.tick(null, Direction.DOWN);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         Position vector = Position.calculatePositionBetween(mPos, pPos);
         assertTrue(Math.abs(vector.getX()) + Math.abs(vector.getY()) == 10);
 
         // repeating...
-        dm.tick("", Direction.DOWN);
+        dm.tick(null, Direction.DOWN);
         mPos = mercenary.getPos();
         pPos = player.getPos();
         vector = Position.calculatePositionBetween(mPos, pPos);
@@ -151,7 +151,7 @@ public class TestMercenary {
 
         // changing direction
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -163,7 +163,7 @@ public class TestMercenary {
         player.setPos(new Position(1, 7));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.UP);
+            dm.tick(null, Direction.UP);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -171,7 +171,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -183,7 +183,7 @@ public class TestMercenary {
         player.setPos(new Position(7, 7));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.UP);
+            dm.tick(null, Direction.UP);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -191,7 +191,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.LEFT);
+            dm.tick(null, Direction.LEFT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -203,7 +203,7 @@ public class TestMercenary {
         player.setPos(new Position(7, 1));
 
         for (int i = 0; i < 2; i++) {
-            dm.tick("", Direction.DOWN);
+            dm.tick(null, Direction.DOWN);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -211,7 +211,7 @@ public class TestMercenary {
         }
 
         for (int i = 0; i < 3; i++) {
-            dm.tick("", Direction.LEFT);
+            dm.tick(null, Direction.LEFT);
             mPos = mercenary.getPos();
             pPos = player.getPos();
             vector = Position.calculatePositionBetween(mPos, pPos);
@@ -236,13 +236,13 @@ public class TestMercenary {
 
         // mercenary should be stuck
         for (int i = 0; i < 20; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
             assertTrue(mercenary.getPos().getX() == 7);
-            dm.tick("", Direction.LEFT);
+            dm.tick(null, Direction.LEFT);
             assertTrue(mercenary.getPos().getX() == 7);
-            dm.tick("", Direction.UP);
+            dm.tick(null, Direction.UP);
             assertTrue(mercenary.getPos().getX() == 7);
-            dm.tick("", Direction.DOWN);
+            dm.tick(null, Direction.DOWN);
             assertTrue(mercenary.getPos().getX() == 7);
         }
 
