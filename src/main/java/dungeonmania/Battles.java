@@ -39,6 +39,14 @@ public class Battles {
 
             }
         }
+        if(entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
+            characterDamage = characterDamage/2;
+            ((ZombieToast) entity).decrementArmourDurability();
+        }
+        if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+            characterDamage = characterDamage/2;
+            ((Mercenary) entity).decrementArmourDurability();
+        }
         entity.receiveDMG(characterDamage);
         if (!entity.isAlive()){
             character.setInBattle(false);
@@ -55,7 +63,7 @@ public class Battles {
             }
             if(item instanceof ArmourEntity){
                 ((Weapons) item).decrementDurability();
-                entity.receiveDMG(characterDamage);
+                enemydamage = enemydamage/2;
 
             }
         }

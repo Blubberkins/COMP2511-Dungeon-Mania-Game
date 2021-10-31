@@ -10,7 +10,7 @@
         {
             "x": 1,
             "y": 0,
-            "type": "wood"
+            "type": "wall"
         },
         {
             "x": 1,
@@ -20,17 +20,17 @@
         {
             "x": 1,
             "y": 2,
-            "type": "arrow"
+            "type": "wall"
         },
         {
             "x": 2,
             "y": 1,
-            "type": "arrow"
+            "type": "wall"
         },
         {
             "x": 2,
             "y": 2,
-            "type": "arrow"
+            "type": "wall"
         },
         {
             "x": 2,

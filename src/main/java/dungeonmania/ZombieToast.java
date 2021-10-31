@@ -13,24 +13,31 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ZombieToast extends MovingEntity {
-    private boolean hasArmor;
+    private ArmourEntity armour;
 
     public ZombieToast(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
-        this.hasArmor = false;
         super.setHealth(50);
         super.setDamage(5);
+        this.armour = ChanceOfArmour();
     }
 
-    public boolean isHasArmor() {
-        return hasArmor;
+    public ArmourEntity ChanceOfArmour() {
+        if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
+            return new ArmourEntity(null, "armour", "armour" + this.getId());
+        }
+        return null;
     }
-
-    public void setHasArmor(boolean hasArmor) {
-        this.hasArmor = hasArmor;
+    public void decrementArmourDurability() {
+        this.armour.decrementDurability();
     }
-
+    public ArmourEntity getArmour(){
+        return this.armour;
+    }
+    public Boolean HasArmour() {
+        return this.HasArmour() != null;
+    }
     @Override
     public void move(DungeonMania d) {   
         Boolean isWall = true;
@@ -55,6 +62,7 @@ public class ZombieToast extends MovingEntity {
     }
 
     public void receiveDMG(int damage) {
+        super.setHealth(super.getHealth() - damage);
     }
  
 }

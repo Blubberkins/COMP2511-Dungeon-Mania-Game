@@ -3,19 +3,28 @@ package dungeonmania;
 import dungeonmania.util.Position;
 
 public class TheOneRingEntity extends CollectableEntities {
+    private static TheOneRingEntity single_instance = null;
+    private Boolean isUsed;
 
-    //private static TheOneRingEntity singleInstance = null;
-    
-    public TheOneRingEntity(Position pos, String type, String id) {
+    private TheOneRingEntity(Position pos, String type, String id) {
         super(pos, type, id);
-        super.setIsInteractable(false);
+        this.isUsed = false;
+        // TODO Auto-generated constructor stub
     }
 
-    /*public static synchronized TheOneRingEntity getInstance() {
-        if (singleInstance == null) {
-			singleInstance = new TheOneRingEntity();
-		}
-		return singleInstance;
-    }*/
-}
+    public Boolean getIsUsed() {
+        return isUsed;
+    }
 
+    public void setIsUsed(Boolean isUsed) {
+        this.isUsed = isUsed;
+    }
+
+    public static synchronized TheOneRingEntity getInstance(Position pos, String type, String id) {
+        if (single_instance == null) {
+
+            single_instance = new TheOneRingEntity(pos, type, id);
+        }
+        return single_instance;
+    }
+}

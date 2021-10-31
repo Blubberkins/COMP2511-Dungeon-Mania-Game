@@ -27,6 +27,7 @@ public class DungeonMania {
     private List<String> Buildables;
     private Goal goal;
     private String id;
+    private int intId;
     private String name;
     private String difficulty;
 
@@ -36,7 +37,17 @@ public class DungeonMania {
         this.Entities = new ArrayList<>();
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
+        this.intId = 0;
     }
+    
+    public int incrementIntId() {
+        return this.intId++;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
     public void addToBuildableEntities(String s){
         this.Buildables.add((s));
     }
@@ -46,7 +57,15 @@ public class DungeonMania {
     public void removeItem(Entity e){
         this.Items.remove(e);
     }
+    public Entity getItemFromId(String id){
+        for (Entity item: this.Items) {
+            if(item.getId().equals(id)){
+                return item;
+            }
+        }
+        return null;
 
+    }
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
@@ -93,6 +112,9 @@ public class DungeonMania {
         List<Entity> useditems = new ArrayList<>();
         for (Entity item: this.Items) {
             if (item instanceof Weapons && ((Weapons) item).getDurability() == 0){
+                useditems.add(item);
+            }
+            if(item instanceof TheOneRingEntity && ((TheOneRingEntity) item).getIsUsed()){
                 useditems.add(item);
             }
         }
@@ -208,6 +230,9 @@ public class DungeonMania {
     public void setGoal(Goal goal) {
         this.goal = goal;
     }
+    public void winItem(Entity e) {
+        this.Items.add(e);
+    }
     public Position generateRandomPos(){
         int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
@@ -231,7 +256,7 @@ public class DungeonMania {
                 isBoulder = true;
             }
         }
-        Spider s = new Spider(p, "spider", Integer.toString(Entities.size()));
+        Spider s = new Spider(p, "spider", Integer.toString(this.incrementIntId()));
         Entities.add(s);
 
     }
@@ -263,7 +288,7 @@ public class DungeonMania {
     }
 
     public void createEntity(Position pos, String Type) {
-        String id = Integer.toString(this.Entities.size());
+        String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
         // Static entities
         if (Type.equalsIgnoreCase("wall")) {
@@ -325,7 +350,7 @@ public class DungeonMania {
             entity = new ArmourEntity(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("one_ring")) {
-            entity = new TheOneRingEntity(pos, Type, id);
+            entity = TheOneRingEntity.getInstance(pos, Type, id);
         }
         if (entity != null) {
             this.Entities.add(entity);
@@ -333,7 +358,7 @@ public class DungeonMania {
     }
 
     public void AddItem(String Type) {
-        String id = Integer.toString(this.Entities.size());
+        String id = Integer.toString(this.incrementIntId());
         Entity entity = null;
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
@@ -366,7 +391,7 @@ public class DungeonMania {
             entity = new InvisibilityPotionEntity(null, Type, id);
         }
         if (Type.equalsIgnoreCase("one_ring")) {
-            entity = new TheOneRingEntity(null, Type, id);
+            entity = TheOneRingEntity.getInstance(null, Type, id);
         }
         if (entity != null) {
             this.Items.add(entity);

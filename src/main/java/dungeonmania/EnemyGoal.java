@@ -32,8 +32,10 @@ public class EnemyGoal extends GoalLeaf {
             return true;
         }
 
-        if (entity.getType().compareTo("mercenary") == 0 && ((Mercenary) entity).isHostile()) {
-            return true;
+        if (entity.getType().compareTo("mercenary") == 0) {
+            if (!((Mercenary) entity).getIsBribed()) {
+                return true;
+            }
         }
 
         return false;

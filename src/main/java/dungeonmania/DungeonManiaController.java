@@ -229,6 +229,20 @@ public class DungeonManiaController {
                 GoalFactory.goalString(dungeonMania.getGoal()));
 
     }
+    public boolean RealisAdjacent(Position e) {
+        DungeonMania dungeon = this.loadedgame;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        for (Direction d: directions) {
+            if(dungeon.getCharacter().getPos().translateBy(d).equals(e)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<String> allGames() {
         File f = new File("src/main/resources/");
@@ -239,7 +253,6 @@ public class DungeonManiaController {
         saves = Arrays.asList(savespath.list());
         return saves;
     }
-
     public DungeonResponse tick(String itemUsed, Direction movementDirection)
             throws IllegalArgumentException, InvalidActionException {
         String Goalstring;
@@ -257,30 +270,48 @@ public class DungeonManiaController {
         List<Entity> toRemove = new ArrayList<>();
         updateCharacter.updateChar();
         if (itemUsed != null) {
-            if(itemUsed.equals("bomb")){
+            if(currentGame.getItemFromId(itemUsed).getType().equals("bomb")){
                 Boolean isActivated = false;
                 for (Entity entity:currentGame.getEntities()){
-                    if(entity.getType().equals("switch"))) {
-                       ((FloorSwitch)
-                    }                    
-
+                    if(entity.getType().equals("switch") && RealisAdjacent(entity.getPos())) {
+                       isActivated = ((FloorSwitch) entity).isTriggered();
+                    }                   
                 }
-
-            }
-            if (itemUsed.equals("health_potion")) {
-                updateCharacter.setHealth(30);
+                if(!isActivated) {
+                    throw new InvalidActionException("bomb");
+                }
+                List<Entity> removable = new ArrayList<>();
+                for (Entity entity:currentGame.getEntities()) {
+                    if(RealisAdjacent(entity.getPos())) {
+                        removable.add(entity);
+                    }
+                }
+                for (Entity e: removable) {
+                    currentGame.removeEntity(e);
+                }
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
-            if (itemUsed.equals("invisibility_potion")) {
+            if (currentGame.getItemFromId(itemUsed).getType().equals("health_potion")) {
+                updateCharacter.setHealth(30);
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            }
+            if (currentGame.getItemFromId(itemUsed).getType().equals("invisibility_potion")) {
                 updateCharacter.setInvisibleTimer(5);
                 updateCharacter.setInvisible(true);
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
-            if (itemUsed.equals("invincibility_potion")) {
+            if (currentGame.getItemFromId(itemUsed).getType().equals("invincibility_potion")) {
                 updateCharacter.setInvincibleTimer(5);
-                updateCharacter.setInvincible(true);
+                if(!currentGame.getDifficulty().equalsIgnoreCase("Hard")){
+                    updateCharacter.setInvincible(true);
+                }
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
                 return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
                 currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
             }
@@ -290,18 +321,46 @@ public class DungeonManiaController {
             if (entity instanceof MovingEntity) {
                 if (!updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
                     ((MovingEntity) entity).move(currentGame);
-                    if (((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos())) {
+                    if (((MovingEntity) entity).isHostile() && updateCharacter.getPos().equals(entity.getPos()) && !currentGame.getDifficulty().equalsIgnoreCase("peaceful")) {
+                        if(!loadedgame.getCharacter().getisInvisible()) {
                         updateCharacter.setInBattle(true);
                         ((MovingEntity) entity).setInBattle(true);
+                        }
                     }
                 }
                 if(updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle() && ((MovingEntity) entity).isHostile()){
                     BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity, currentGame.getItems());
                     if( outcome == BattleOutcome.CHARACTER_WINS) {
                         toRemove.add(entity);
+                        if(entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
+                            currentGame.winItem(((ZombieToast) entity).getArmour());
+                        }
+                        if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+                            currentGame.winItem(((Mercenary) entity).getArmour());
+                        }
+                        int probability = ThreadLocalRandom.current().nextInt(0, 11);
+                        if(probability == 1){
+                            currentGame.AddItem("one_ring");
+                        }
+
                     }
                     else if (outcome == BattleOutcome.ENEMY_WINS){
+                        Boolean HasOneRing = false;
+                        for (Entity item: currentGame.getItems()){
+                            if (item instanceof TheOneRingEntity) {
+                                HasOneRing = true;
+                                ((TheOneRingEntity) item).setIsUsed(true);
+                            }
+                        }
+                        if(!HasOneRing) {
                         toRemove.add(updateCharacter);
+                        }
+                        else {
+                            Character newLife = currentGame.getCharacter();
+                            newLife.setHealth(30);
+                            currentGame.setCharacter(newLife);
+                        }
+                        
                     }
                     currentGame.removeUsedItems();
                 }
@@ -321,7 +380,10 @@ public class DungeonManiaController {
                 }
                 if (entity instanceof ZombieToastSpawner) {
                     ((ZombieToastSpawner) entity).setTicksSinceSpawn(((ZombieToastSpawner) entity).getTicksSinceSpawn() + 1);
-                    if (((ZombieToastSpawner) entity).getTicksSinceSpawn() % 20 == 0) {
+                    Boolean Standardspawn = ((ZombieToastSpawner) entity).getTicksSinceSpawn() % 20 == 0;
+                    Boolean IsOnHard = currentGame.getDifficulty().equalsIgnoreCase("hard");
+                    Boolean HardSpawn = ((ZombieToastSpawner) entity).getTicksSinceSpawn() % 15 == 0;
+                    if ((Standardspawn && !IsOnHard) || (HardSpawn && IsOnHard)) {
                         zombieToastSpawners.add(entity);
                         ((ZombieToastSpawner) entity).setTicksSinceSpawn(0);
                     }
@@ -361,11 +423,27 @@ public class DungeonManiaController {
                 interactableEntity = entity;
             }
         }
-        if(interactableEntity instanceof Mercenary) {
+        Entity sword = null;
+        Entity treasure = null;
+        for (Entity item: loadedgame.getItems()) {
+            if(item.getType().equalsIgnoreCase("treasure")) {
+            treasure = item; 
+            }
+            if(item.getType().equalsIgnoreCase("sword")) {
+                sword = item; 
+                }
+        }
+        if(interactableEntity instanceof Mercenary && treasure != null) {
+            loadedgame.removeItem(treasure);
             Character updateCharacter = loadedgame.getCharacter();
             updateCharacter.addAlly((Mercenary) interactableEntity);
             loadedgame.setCharacter(updateCharacter);
             ((Mercenary) interactableEntity).setIsBribed(true);
+        }
+        if (interactableEntity instanceof ZombieToastSpawner) {
+            if (RealisAdjacent(interactableEntity.getPos()) && sword != null) {
+                loadedgame.removeEntity(interactableEntity);
+            }
         } 
         return new DungeonResponse(loadedgame.getId(), loadedgame.getName(),loadedgame.getEntityResponses(), loadedgame.getItemResponses(), null, GoalFactory.goalString(loadedgame.getGoal()));
     }
