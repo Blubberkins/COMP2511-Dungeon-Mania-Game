@@ -1,3 +1,4 @@
+
 {
     "width": 4,
     "height": 2,
@@ -16,17 +17,32 @@
             "x": 3,
             "y": 0,
             "type": "exit"
-        }
+        },
+        {
+            "x": 1,
+            "y": 1,
+            "type": "boulder"
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": "switch"
+        } 
 
     ],
     "goal-condition": {
-        "goal": "AND",
+        "goal": "OR",
         "subgoals": [
           {
             "goal": "exit"
           },
           {
-            "goal": "treasure"
+            "goal": "AND",
+            "subgoals": [{
+                "goal": "treasure"
+            }, {
+                "goal": "boulders"
+            }]
           }
         ]
       }

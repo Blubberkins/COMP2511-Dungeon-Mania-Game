@@ -18,7 +18,6 @@ public class Mercenary extends MovingEntity {
     private final int minBribe = 1;
     private Boolean isBribed;
 
-
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(true);
@@ -26,7 +25,7 @@ public class Mercenary extends MovingEntity {
         super.setDamage(5);
         this.isBribed = false;
     }
-    
+
     public Boolean getIsBribed() {
         return isBribed;
     }
@@ -86,21 +85,21 @@ public class Mercenary extends MovingEntity {
             if (xPos) {
                 optimal.add(Direction.RIGHT);
                 if (yPos) {
-                    optimal.add(Direction.UP);
                     optimal.add(Direction.DOWN);
+                    optimal.add(Direction.UP);
                 } else {
-                    optimal.add(Direction.DOWN);
                     optimal.add(Direction.UP);
+                    optimal.add(Direction.DOWN);
                 }
                 optimal.add(Direction.LEFT);
             } else {
                 optimal.add(Direction.LEFT);
                 if (yPos) {
-                    optimal.add(Direction.UP);
                     optimal.add(Direction.DOWN);
+                    optimal.add(Direction.UP);
                 } else {
-                    optimal.add(Direction.DOWN);
                     optimal.add(Direction.UP);
+                    optimal.add(Direction.DOWN);
                 }
                 optimal.add(Direction.RIGHT);
             }
@@ -149,7 +148,7 @@ public class Mercenary extends MovingEntity {
     @Override
     public void receiveDMG(int damage) {
         super.setHealth(super.getHealth() - super.getDamage());
-        
+
     }
 
     // public static void main(String args[]) {
