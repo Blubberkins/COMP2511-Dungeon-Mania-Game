@@ -66,6 +66,7 @@ public class DungeonMania {
         return null;
 
     }
+
     public void addBuildable(String type) {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
@@ -236,7 +237,7 @@ public class DungeonMania {
     public Position generateRandomPos(){
         int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
-        return new Position (spawnX,spawnY,0);
+        return new Position(spawnX, spawnY, 0);
     }
 
     public void spawnSpider() {
@@ -244,11 +245,10 @@ public class DungeonMania {
         Position p = null;
         while (isBoulder) {
             p = generateRandomPos();
-            for (Entity entity: this.Entities) {
-                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")){
+            for (Entity entity : this.Entities) {
+                if (p.equals(entity.getPos()) && entity.getType().equals("boulder")) {
                     isBoulder = true;
-                }
-                else {
+                } else {
                     isBoulder = false;
                 }
             }
@@ -399,7 +399,7 @@ public class DungeonMania {
 
     }
 
-    public void createPortal (Position pos, String Type, String colour) {
+    public void createPortal(Position pos, String Type, String colour) {
         String id = Integer.toString(this.Entities.size());
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);
