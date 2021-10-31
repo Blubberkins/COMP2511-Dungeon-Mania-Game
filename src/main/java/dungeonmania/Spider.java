@@ -67,7 +67,7 @@ public class Spider extends MovingEntity {
             newPos = (this.getPos().translateBy(Direction.LEFT));
         } else if (currY >= spawnY && currX <= spawnX) {
             newPos = (this.getPos().translateBy(Direction.UP));
-        } else if (currY <= spawnY && currX > spawnX) {
+        } else if (currY <= spawnY && currX >= spawnX) {
             newPos = (this.getPos().translateBy(Direction.DOWN));
         }
 
@@ -84,13 +84,13 @@ public class Spider extends MovingEntity {
         int currX = this.getPos().getX();
         int currY = this.getPos().getY();
         Position newPos = null;
-        if (currY < spawnY && currX <= spawnX) {
-            newPos = (this.getPos().translateBy(Direction.LEFT));
-        } else if (currY > spawnY && currX >= spawnX) {
-            newPos = (this.getPos().translateBy(Direction.RIGHT));
-        } else if (currY == spawnY && currX <= spawnX) {
+        if (currY <= spawnY && currX < spawnX) {
             newPos = (this.getPos().translateBy(Direction.DOWN));
-        } else if (currY == spawnY && currX > spawnX) {
+        } else if (currY >= spawnY && currX > spawnX) {
+            newPos = (this.getPos().translateBy(Direction.LEFT));
+        } else if (currY >= spawnY && currX <= spawnX) {
+            newPos = (this.getPos().translateBy(Direction.RIGHT));
+        } else if (currY <= spawnY && currX >= spawnX) {
             newPos = (this.getPos().translateBy(Direction.UP));
         }
 
