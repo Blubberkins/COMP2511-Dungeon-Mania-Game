@@ -18,19 +18,11 @@ public class TestMotion {
     public void reverse() {
         DungeonManiaController dm = new DungeonManiaController();
         dm.newGame("basicmap11", "Standard");
-
         DungeonMania game = dm.getLoadedGame();
-        Character player = game.getCharacter();
-        // maxing out the hp of the character so they don't die to random spiders
-        player.setHealth(Integer.MAX_VALUE);
-        game.setCharacter(player);
-
         for (int i = 0; i < 5; i++) {
             dm.tick(null, Direction.UP);
             dm.tick(null, Direction.DOWN);
             dm.tick(null, Direction.RIGHT);
-            player.setHealth(Integer.MAX_VALUE);
-            game.setCharacter(player);
         }
 
         // game shouldn't be completed because the player gets stuck behind two boulders
@@ -40,30 +32,38 @@ public class TestMotion {
     @Test
     public void testDoorPortal() {
         DungeonManiaController dm = new DungeonManiaController();
-        dm.newGame("basicmap12", "Standard");
+        DungeonMania game = null;
+        int spider = -1;
+        while (spider != 0){
+            int spidercount = 0;
+            dm.newGame("basicmap12", "standard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if(e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
 
-        DungeonMania game = dm.getLoadedGame();
+        }
         Character player = game.getCharacter();
-        // maxing out the hp of the character so they don't die to random spiders
-        player.setHealth(Integer.MAX_VALUE);
-        game.setCharacter(player);
-
-        assertTrue(player.getPos() == new Position(1, 1));
+        assertTrue(player.getPos().getX() == 1);
+        assertTrue(player.getPos().getY() == 1);
         // pick up key
         dm.tick(null, Direction.RIGHT);
         assertTrue(game.getItems().size() == 1);
-        player.setHealth(Integer.MAX_VALUE);
-        game.setCharacter(player);
+;
 
         // walk through door then portal
         dm.tick(null, Direction.RIGHT);
         dm.tick(null, Direction.RIGHT);
-        player.setHealth(Integer.MAX_VALUE);
-        game.setCharacter(player);
 
-        assertTrue(player.getPos() == new Position(6, 1));
+        assertTrue(player.getPos().getX() == 6);
+        assertTrue(player.getPos().getY() == 1);
+
     }
-
+    
     public Boolean hasSpider(DungeonMania game, Position position) {
         List<Entity> entities = game.getEntities();
 

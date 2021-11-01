@@ -10,25 +10,67 @@
         {
             "x": 2,
             "y": 1,
-            "type": "key"
-        }, 
-        {
-            "x": 3,
-            "y": 1,
-            "type": "door"
-        },
+            "type": "boulder"
+        },    
         {
             "x": 4,
             "y": 1,
-            "type": "portal",
-            "colour": "BLUE"
-        },          
+            "type": "boulder"
+        },     
         {
             "x": 6,
             "y": 1,
-            "type": "portal",
-            "colour": "BLUE"
+            "type": "boulder"
         }, {
+            "x": 3,
+            "y": 3,
+            "type": "boulder"
+        },    
+        {
+            "x": 5,
+            "y": 3,
+            "type": "boulder"
+        },     
+        {
+            "x": 5,
+            "y": -1,
+            "type": "boulder"
+        },
+        {
+            "x": 2,
+            "y": -1,
+            "type": "boulder"
+        },    
+        {
+            "x": 4,
+            "y": -1,
+            "type": "boulder"
+        },     
+        {
+            "x": 6,
+            "y": -1,
+            "type": "boulder"
+        },
+        {
+            "x": 2,
+            "y": 3,
+            "type": "boulder"
+        },    
+        {
+            "x": 4,
+            "y": 3,
+            "type": "boulder"
+        },     
+        {
+            "x": 6,
+            "y": 3,
+            "type": "boulder"
+        },
+        {
+            "x": 3,
+            "y": -1,
+            "type": "boulder"
+        },{
             "x": 0,
             "y": 0, 
             "type": "wall"
@@ -103,6 +145,6 @@
         }
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "enemies"
     }    
 }
