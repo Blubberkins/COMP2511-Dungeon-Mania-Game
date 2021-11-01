@@ -69,7 +69,7 @@ public class Character extends Entity {
                     for (Entity item: game.getItems()) {
                         if (item.getType().equals("key")) {
                             ((DoorEntity) entity).setIsOpen(true);
-                            ((KeyEntity) entity).setIsUsed(true);
+                            ((KeyEntity) item).setIsUsed(true);
 
                         }
                     }
