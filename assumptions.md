@@ -8,7 +8,7 @@ all members contributed assumptions relevant to the parts they coded -- see comm
 - interactable entities are  boulder, door,mercenary, all collectables 
 - chance of one ring -- 1%, chance of armour -- 10%
 - armour is localized to zombie and not listed in entities
-- character starting health == 100;
+- character starting health == 30;
 - saves have the game state, map name and difficulty
 - saves are in a file, in a folder called saves
 - assume portals must be created in pairs of the same colour, two of one colour
