@@ -125,6 +125,13 @@ public class DungeonManiaController {
             Position pos = new Position(x, y, 0); // placeholder for layer
             if (type.equalsIgnoreCase("portal")) {
                 dungeonMania.createPortal(pos, type, entities.getJSONObject(i).getString("colour"));
+            } else if (type.equalsIgnoreCase("swamp_tile")) {
+                if (entities.getJSONObject(i).has("movement_factor")) {
+                    int movement_factor = entities.getJSONObject(i).getInt("movement_factor");
+                    dungeonMania.addSwampTile(new SwampTile(new Position(x, y), movement_factor));
+                } else {
+                    dungeonMania.addSwampTile(new SwampTile(new Position(x, y)));
+                }
             } else {
                 dungeonMania.createEntity(pos, type);
             }

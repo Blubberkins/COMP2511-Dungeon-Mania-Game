@@ -21,6 +21,7 @@ public class DungeonMania {
     private int intId;
     private String name;
     private String difficulty;
+    private List<SwampTile> swampTiles;
 
     public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
@@ -29,6 +30,7 @@ public class DungeonMania {
         this.Items = new ArrayList<>();
         this.Buildables = new ArrayList<>();
         this.intId = 0;
+        this.swampTiles = new ArrayList<SwampTile>();
     }
 
     /**
@@ -173,6 +175,39 @@ public class DungeonMania {
      */
     public void setItems(List<Entity> items) {
         Items = items;
+    }
+
+    public List<Position> getSwampTilePos() {
+        List<Position> pos = new ArrayList<Position>();
+        for (SwampTile tile : this.swampTiles) {
+            pos.add(tile.getPos());
+        }
+
+        return pos;
+    }
+
+    public int getSlow(Position pos) {
+        SwampTile tile = null;
+        for (SwampTile tiles : this.swampTiles) {
+            if (pos.equals(tiles.getPos())) {
+                tile = tiles;
+                break;
+            }
+        }
+
+        if (tile == null) {
+            return 1;
+        }
+
+        return tile.getFactor();
+    }
+
+    public void addSwampTile(SwampTile tile) {
+        this.swampTiles.add(tile);
+    }
+
+    public void setSwampTiles(List<SwampTile> tiles) {
+        this.swampTiles = tiles;
     }
 
     /**

@@ -1,19 +1,21 @@
 package dungeonmania.util;
 
-// TODO: accommodate  for swamp tile
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
+
+import dungeonmania.DungeonMania;
+import dungeonmania.SwampTile;
 
 public class Dijkstra {
     public Dijkstra() {
         super();
     }
 
-    public static Map<Position, Position> shortestPath(List<Position> grid, Position source) {
+    public static Map<Position, Position> shortestPath(List<Position> grid, Position source, DungeonMania game) {
         Map<Position, Position> prev = new HashMap<Position, Position>();
         Map<Position, Double> dist = new HashMap<Position, Double>();
 
@@ -36,12 +38,18 @@ public class Dijkstra {
             Position curr = smallest(q, dist);
             q.remove(curr);
             for (Position p : grid) {
+                // note the only adjacent points are cardinally adjacent
+                // we don't have the notion of a graph structure where points of
+                // non-cardinal distance >= 1 and cardinal distance > 1 can be linked
+                // we could have used absDistance(a, b) == 1, but same difference
+                // note that distance will be counted as the no. of ticks to traverse
+                // the square
                 if (Position.isAdjacent(p, curr)) {
-                    // note the only adjacent points are cardinally adjacent
-                    // we don't have the notion of a graph structure where points of
-                    // non-cardinal distance >= 1 and cardinal distance > 1 can be linked
-                    // we could have used absDistance(a, b) == 1, but same difference
-                    Double d = (double) absDistance(curr, p);
+                    Double d = 1.0; // by default
+                    if (game.getSwampTilePos().contains(p)) {
+                        d = (double) game.getSlow(p);
+                    }
+
                     if (dist.get(curr) + d < dist.get(p) && q.contains(p)) {
                         dist.replace(p, dist.get(curr) + d);
                         prev.replace(p, curr);
@@ -77,20 +85,24 @@ public class Dijkstra {
         return smallest;
     }
 
-    // public static void main(String[] args) {
-    // List<Position> grid = new ArrayList<Position>();
+    public static void main(String[] args) {
+        DungeonMania game = new DungeonMania("Peaceful", "mydungeon");
 
-    // for (int i = 0; i < 2; i++) {
-    // for (int j = 0; j < 2; j++) {
-    // grid.add(new Position(i, j));
-    // }
-    // }
+        List<Position> grid = new ArrayList<Position>();
 
-    // Map<Position, Position> prev = shortestPath(grid, new Position(0, 0));
-    // for (Map.Entry<Position, Position> entry : prev.entrySet()) {
-    // System.out.println("-------------------------");
-    // System.out.println(entry.getKey());
-    // System.out.println(entry.getValue());
-    // }
-    // }
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                grid.add(new Position(i, j));
+            }
+        }
+
+        game.addSwampTile(new SwampTile(new Position(1, 0)));
+
+        Map<Position, Position> prev = shortestPath(grid, new Position(0, 0), game);
+        for (Map.Entry<Position, Position> entry : prev.entrySet()) {
+            System.out.println("-------------------------");
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+        }
+    }
 }
