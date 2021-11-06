@@ -1,1 +1,0 @@
-{"difficulty":"Peaceful","entities":[{"x":0,"y":3,"type":"player"},{"x":1,"y":0,"type":"wall"},{"x":1,"y":1,"type":"wall"},{"x":1,"y":2,"type":"wall"},{"x":2,"y":1,"type":"wall"},{"x":2,"y":2,"type":"wall"},{"x":2,"y":0,"type":"treasure"},{"x":3,"y":1,"type":"spider"}],"goal-condition":{"goal":"treasure"},"mapName":"basicmap2","inventory":[{"type":"treasure"}]}
