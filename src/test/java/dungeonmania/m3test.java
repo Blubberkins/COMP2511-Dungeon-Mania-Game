@@ -125,6 +125,87 @@ public class m3test {
 
         assertTrue(game.getCharacter().getAllies().size() == 1);
 
+        // TODO wait until a hydra spawns, then test the hydra's mechanic
+    }
+
+    @Test
+    public void testDijkstra() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("pathingmap1", "Hard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        Mercenary m = findMercenary(game);
+        // there are two paths to the player
+        // we will make the player do nothing and observe where the mercenary goes
+        // the mercenary should take the shortest path to the player on (5, 1)
+        // the upper path
+        dm.tick(null, Direction.NONE);
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(2, 1)));
+    }
+
+    @Test
+    public void testDijkstraVariations() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+
+        // loading a different map, same as above test but player swaps places
+        // with the wall on (5, 3)
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("pathingmap2", "Hard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        Mercenary m = findMercenary(game);
+        // the mercenary should take the shortest path to the player on (5, 3)
+        // the lower path, in this case
+        dm.tick(null, Direction.NONE);
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(2, 3)));
+
+        // loading yet another map. same as the map in testDijkstra
+        // but there are now swamp tiles on the upper path
+        // enough so that the mercenary should take the lower path
+        spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("pathingmap3", "Hard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        m = findMercenary(game);
+        dm.tick(null, Direction.NONE);
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(2, 3)));
     }
 
     public Mercenary findMercenary(DungeonMania game) {
