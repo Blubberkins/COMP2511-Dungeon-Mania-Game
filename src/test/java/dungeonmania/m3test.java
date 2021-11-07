@@ -99,33 +99,72 @@ public class m3test {
 
     @Test
     public void testHydra() {
-        DungeonManiaController dm = new DungeonManiaController();
-        DungeonMania game = null;
+        int numIncreases = 0;
+        int numTrials = 10000;
+        for (int i = 0; i < numTrials; i++) {
+            DungeonManiaController dm = new DungeonManiaController();
+            DungeonMania game = null;
 
-        int spider = -1;
-        while (spider != 0) {
-            int spidercount = 0;
-            dm.newGame("basicmap8", "Hard");
-            game = dm.getLoadedGame();
-            List<Entity> entities = game.getEntities();
-            for (Entity e : entities) {
-                if (e instanceof Spider) {
-                    spidercount++;
+            int spider = -1;
+            while (spider != 0) {
+                int spidercount = 0;
+                dm.newGame("hydratest", "Hard");
+                game = dm.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
                 }
+                spider = spidercount;
             }
-            spider = spidercount;
+
+            dm.tick(null, Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
+            assertDoesNotThrow(() -> {
+                DungeonMania currGame = dm.getLoadedGame();
+                dm.interact(findMercenary(currGame).getId());
+            });
+
+            assertTrue(game.getCharacter().getAllies().size() == 1);
+
+            // wait 48 more ticks, the hydra should spawn on the 50th tick
+            for (int j = 0; j < 24; j++) {
+                dm.tick(null, Direction.LEFT);
+                dm.tick(null, Direction.RIGHT);
+            }
+
+            Entity hydra = findHydra(game);
+            assertTrue(hydra != null);
+            assertTrue(hydra instanceof MovingEntity);
+            int hydraHP = ((MovingEntity) hydra).getHealth();
+
+            int currHP = hydraHP;
+            // do stuff until the hydra comes into a single combat with the player
+            while (currHP == hydraHP) {
+                dm.tick(null, Direction.UP);
+                currHP = ((MovingEntity) hydra).getHealth();
+            }
+
+            if (currHP > hydraHP) {
+                numIncreases += 1;
+            }
         }
 
-        dm.tick(null, Direction.RIGHT);
-        dm.tick(null, Direction.RIGHT);
-        assertDoesNotThrow(() -> {
-            DungeonMania currGame = dm.getLoadedGame();
-            dm.interact(findMercenary(currGame).getId());
-        });
+        // similar to assassin test, given 10000 bernoulli trials
+        // we want to test the hypothesis that p = 0.5
+        // the alternate hypothesis is that p =/= 0.5
+        // z score (0.05, two tailed test) is 1.96
+        double xBar = (double) numIncreases / numTrials;
+        double stdev = Math.sqrt(0.5 * 0.5); // sqrt(p(1-p))
 
-        assertTrue(game.getCharacter().getAllies().size() == 1);
+        // normal approximation
+        double testStatistic = Math.abs((xBar - 0.5) / (stdev / Math.sqrt(numTrials)));
 
-        // TODO wait until a hydra spawns, then test the hydra's mechanic
+        // p value in (-1.96, 1.96) using normal approximation
+        // we shouldn't be able to reject the null hypothesis
+        // by law of large numbers the result should be close enough to E(X) anyway
+        assertTrue(testStatistic < 1.96);
     }
 
     @Test
@@ -222,4 +261,15 @@ public class m3test {
         return null;
     }
 
+    public Entity findHydra(DungeonMania game) {
+        List<Entity> entities = game.getEntities();
+
+        for (Entity entity : entities) {
+            if (entity.getType().compareTo("hydra") == 0) {
+                return entity;
+            }
+        }
+
+        return null;
+    }
 }
