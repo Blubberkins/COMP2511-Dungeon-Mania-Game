@@ -304,6 +304,75 @@ public class m3test {
         assertTrue(inventory.size() == 1);
     }
 
+    @Test
+    public void testAnduril() {
+        Boolean hasAssassin = true;
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+        while (hasAssassin) {
+            int spider = -1;
+            while (spider != 0) {
+                int spidercount = 0;
+                dm.newGame("hydratest2", "Hard");
+                game = dm.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
+                }
+                spider = spidercount;
+                // break the loop if we have not spawned an assassin
+                // we want to compare damage of anduril on non-bosses
+                // so we 100% do NOT want an assassin
+                if (!(findMercenary(game) instanceof Assassin)) {
+                    hasAssassin = false;
+                }
+            }
+        }
+
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+        // should now enter combat with the mercenary
+
+        Mercenary m = findMercenary(game);
+        Boolean hasArmour = m.HasArmour();
+        int mHP = m.getHealth();
+
+        dm.tick(null, Direction.NONE);
+        int nonBossDMG = mHP - m.getHealth();
+
+        // tick 47 more times until a hydra spawns
+        for (int i = 0; i < 47; i++) {
+            dm.tick(null, Direction.NONE);
+        }
+
+        Entity hydra = findHydra(game);
+        assertTrue(hydra != null);
+        int hydraHP = ((MovingEntity) hydra).getHealth();
+
+        int currHP = hydraHP;
+        // do stuff until the hydra comes into a single combat with the player
+        while (currHP == hydraHP) {
+            dm.tick(null, Direction.NONE);
+            currHP = ((MovingEntity) hydra).getHealth();
+        }
+
+        int BossDMG = hydraHP - currHP;
+        // armour will cause damage reduction to the mercenary, but otherwise the
+        // mercenary should take 1/3 the damage
+        // chose boss / 3 rather than non boss * 3 to account for possible rounding
+
+        if (hasArmour) {
+            assertTrue(BossDMG > nonBossDMG);
+        } else {
+            assertTrue(BossDMG / 3 == nonBossDMG);
+        }
+
+        // hydra will never regen a head
+        assertTrue(currHP < hydraHP);
+    }
+
     public Mercenary findMercenary(DungeonMania game) {
         List<Entity> entities = game.getEntities();
 
