@@ -247,6 +247,63 @@ public class m3test {
         assertTrue(m.getPos().equals(new Position(2, 3)));
     }
 
+    @Test
+    public void testSunStone() {
+        Boolean hasAssassin = true;
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+        while (hasAssassin) {
+            // load the game with a mercenary
+            int spider = -1;
+            while (spider != 0) {
+                int spidercount = 0;
+                dm.newGame("sunstoneTest", "Hard");
+                game = dm.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
+                }
+                spider = spidercount;
+            }
+
+            // break the loop if we have not spawned an assassin
+            // just for simplicity's sake, we don't want to have the situation
+            // where we run into an assassin and don't have the one ring
+            if (!(findMercenary(game) instanceof Assassin)) {
+                hasAssassin = false;
+            }
+        }
+
+        String id = findMercenary(game).getId();
+
+        // pick up the sunstone, then move next to the mercenary
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+
+        assertDoesNotThrow(() -> {
+            dm.interact(id);
+        });
+
+        // the player should still have the sun stone after bribing the mercenary
+        List<Entity> inventory = game.getItems();
+        assertTrue(inventory.size() == 1);
+        Character player = game.getCharacter();
+        assertTrue(player.getAllies().size() == 1);
+
+        // there is a door on (7, 1), player should be at (3, 1) currently
+        // there is also an exit on (8, 1)
+        // player should be able to move successfully through the door
+        for (int i = 0; i < 5; i++) {
+            dm.tick(null, Direction.RIGHT);
+        }
+
+        // even after the player opens the door, they should still have the stone
+        inventory = game.getItems();
+        assertTrue(inventory.size() == 1);
+    }
+
     public Mercenary findMercenary(DungeonMania game) {
         List<Entity> entities = game.getEntities();
 
