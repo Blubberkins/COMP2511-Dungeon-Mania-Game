@@ -439,7 +439,7 @@ public class m3test {
         Entity armour = inventory.get(inventory.size() - 1);
         // the last object in the inventory should be the midnight armour
         // this accounts for the off chance we get the one ring
-        assertTrue(armour.getId().compareTo("midnight_armour") == 0);
+        assertTrue(armour.getType().compareTo("midnight_armour") == 0);
 
         // now we move to (3, 0) and fight the mercenary
         dm.tick(null, Direction.RIGHT);
@@ -456,7 +456,58 @@ public class m3test {
 
     @Test
     public void testSceptre() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
 
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("sceptre", "Hard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        // move to the right and pick up all the stuff
+        // to build a sceptre
+        for (int i = 0; i < 3; i++) {
+            dm.tick(null, Direction.RIGHT);
+        }
+
+        dm.build("sceptre");
+        // should now have a sceptre
+        // assume also that the sun stone DOES disappear if you use it as a crafting
+        // material
+        // it doesn't disappear as usual if you use it otherwise
+        List<Entity> inventory = game.getItems();
+        assertTrue(inventory.size() == 1);
+        assertTrue(inventory.get(0).getType().compareTo("sceptre") == 0);
+
+        // player should be on (3, 0)
+        // mercenary on (4, 0)
+        String id = findMercenary(game).getId();
+        dm.interact(id);
+
+        // should now be allied
+        Character player = game.getCharacter();
+        assertTrue(player.getAllies().size() == 1);
+
+        // they should keep the sceptre
+        inventory = game.getItems();
+        assertTrue(inventory.size() == 1);
+        assertTrue(inventory.get(0).getType().compareTo("sceptre") == 0);
+
+        // after more than ten ticks, the mercenary should be hostile again
+        for (int i = 0; i < 11; i++) {
+            dm.tick(null, Direction.RIGHT);
+        }
+
+        assertTrue(player.getAllies().size() == 0);
     }
 
     public Mercenary findMercenary(DungeonMania game) {
