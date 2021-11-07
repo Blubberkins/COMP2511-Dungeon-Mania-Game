@@ -14,6 +14,8 @@ import dungeonmania.response.models.*;
 
 import java.util.List;
 
+// By Liam
+
 public class m3test {
     @Test
     public void testAssassinSpawn() {
@@ -371,6 +373,90 @@ public class m3test {
 
         // hydra will never regen a head
         assertTrue(currHP < hydraHP);
+    }
+
+    @Test
+    public void testMidnight() {
+        // midnight armour test first
+        Boolean hasArmour = false;
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+        Mercenary firstM = null;
+        while (!hasArmour) {
+            int spider = -1;
+            while (spider != 0) {
+                int spidercount = 0;
+                dm.newGame("midnightArmour", "Hard");
+                game = dm.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
+                }
+                spider = spidercount;
+                // break the loop if we spawn a mercenary with armour
+                // this is so we can construct the midnight armour
+                firstM = findMercenary(game);
+                if (firstM.HasArmour()) {
+                    hasArmour = true;
+                }
+            }
+        }
+
+        // ensure that the mercenary in question
+        // is the one we care about at this point in time
+        // (there are two, one at (4, 0) one at (11, 0))
+        assertTrue(firstM.getPos().equals(new Position(4, 0)));
+        assertTrue(firstM.HasArmour());
+
+        // second mercenary at (9, 0)
+        // but right now we are in combat with the first mercenary
+        // on (2, 0), having picked up the sun stone on (1, 0)
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+
+        // the mercenary takes 5 turns to kill (checked by playing the game)
+        int mHP = firstM.getHealth();
+        int dmgGiven = 0;
+        int cHP = game.getCharacter().getHealth();
+        int dmgReceived = 0;
+        for (int i = 0; i < 5; i++) {
+            dm.tick(null, Direction.RIGHT);
+            if (i == 0) {
+                dmgGiven = mHP - firstM.getHealth();
+                dmgReceived = cHP - game.getCharacter().getHealth();
+            }
+        }
+
+        // the second mercenary should now be the only mercenary
+        // it should now be on (4, 0)
+        firstM = findMercenary(game);
+        assertTrue(firstM.getPos().equals(new Position(4, 0)));
+
+        dm.build("midnight_armour");
+        List<Entity> inventory = game.getItems();
+        Entity armour = inventory.get(inventory.size() - 1);
+        // the last object in the inventory should be the midnight armour
+        // this accounts for the off chance we get the one ring
+        assertTrue(armour.getId().compareTo("midnight_armour") == 0);
+
+        // now we move to (3, 0) and fight the mercenary
+        dm.tick(null, Direction.RIGHT);
+        // after a single round of combat
+        // should take less damage and deal more damage
+
+        mHP = firstM.getHealth();
+        cHP = game.getCharacter().getHealth();
+
+        dm.tick(null, Direction.RIGHT);
+        assertTrue(mHP - firstM.getHealth() > dmgGiven);
+        assertTrue(cHP - game.getCharacter().getHealth() < dmgReceived);
+    }
+
+    @Test
+    public void testSceptre() {
+
     }
 
     public Mercenary findMercenary(DungeonMania game) {
