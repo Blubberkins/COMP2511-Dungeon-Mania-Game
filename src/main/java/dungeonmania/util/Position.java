@@ -71,16 +71,17 @@ public final class Position {
     /**
      * Calculates the position vector of b relative to a (ie. the direction from a
      * to b)
+     * 
      * @return The relative position vector
      */
     public static final Position calculatePositionBetween(Position a, Position b) {
         return new Position(b.x - a.x, b.y - a.y);
     }
 
-    public  static final boolean isAdjacent(Position a, Position b) {
+    public static final boolean isAdjacent(Position a, Position b) {
         int x = a.x - b.x;
         int y = a.y - b.y;
-        return x + y == 1;
+        return Math.abs(x) + Math.abs(y) == 1;
     }
 
     // (Note: doesn't include z)
@@ -93,20 +94,21 @@ public final class Position {
         return "Position [x=" + x + ", y=" + y + ", z=" + layer + "]";
     }
 
-    // Return Adjacent positions in an array list with the following element positions:
+    // Return Adjacent positions in an array list with the following element
+    // positions:
     // 0 1 2
     // 7 p 3
     // 6 5 4
     public List<Position> getAdjacentPositions() {
         List<Position> adjacentPositions = new ArrayList<>();
-        adjacentPositions.add(new Position(x-1, y-1));
-        adjacentPositions.add(new Position(x  , y-1));
-        adjacentPositions.add(new Position(x+1, y-1));
-        adjacentPositions.add(new Position(x+1, y));
-        adjacentPositions.add(new Position(x+1, y+1));
-        adjacentPositions.add(new Position(x  , y+1));
-        adjacentPositions.add(new Position(x-1, y+1));
-        adjacentPositions.add(new Position(x-1, y));
+        adjacentPositions.add(new Position(x - 1, y - 1));
+        adjacentPositions.add(new Position(x, y - 1));
+        adjacentPositions.add(new Position(x + 1, y - 1));
+        adjacentPositions.add(new Position(x + 1, y));
+        adjacentPositions.add(new Position(x + 1, y + 1));
+        adjacentPositions.add(new Position(x, y + 1));
+        adjacentPositions.add(new Position(x - 1, y + 1));
+        adjacentPositions.add(new Position(x - 1, y));
         return adjacentPositions;
     }
 }
