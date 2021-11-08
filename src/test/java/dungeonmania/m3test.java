@@ -226,6 +226,14 @@ public class m3test {
         dm.tick(null, Direction.NONE);
         assertTrue(m.getPos().equals(new Position(2, 3)));
 
+        // extra checks
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(3, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(5, 3)));
+
         // loading yet another map. same as the map in testDijkstra
         // but there are now swamp tiles on the upper path
         // enough so that the mercenary should take the lower path
@@ -247,6 +255,19 @@ public class m3test {
         dm.tick(null, Direction.NONE);
         dm.tick(null, Direction.NONE);
         assertTrue(m.getPos().equals(new Position(2, 3)));
+
+        // extra checks
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(3, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 2)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 1)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(5, 1)));
+
     }
 
     @Test
