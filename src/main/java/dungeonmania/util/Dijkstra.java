@@ -38,6 +38,9 @@ public class Dijkstra {
 
         while (!(q.isEmpty())) {
             Position curr = smallest(q, dist);
+            if (curr == null) {
+                break; // implies no other reachable tiles (walls or otherwise)
+            }
             q.remove(curr);
             for (Position p : grid) {
                 // note the only adjacent points are cardinally adjacent

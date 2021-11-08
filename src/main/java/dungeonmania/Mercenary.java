@@ -53,9 +53,14 @@ public class Mercenary extends MovingEntity {
         Map<Position, Position> optimal = Dijkstra.shortestPath(mapPositions(dungeonmania), this.getPos(),
                 dungeonmania);
 
-        // TODO trace the optimal path, then make the move
+        // trace the optimal path, then make the move
         Stack<Position> path = tracePath(optimal, this.getPos(), getPlayer(dungeonmania).getPos());
-
+        if (!path.isEmpty()) { // if not same position as player
+            Position next = path.peek();
+            if (next != null) {
+                this.setPos(next);
+            }
+        }
     }
 
     /**
@@ -111,16 +116,51 @@ public class Mercenary extends MovingEntity {
 
     public List<Position> mapPositions(DungeonMania game) {
         List<Position> grid = new ArrayList<Position>();
-        // TODO: return all positions in the grid
+
+        // fetching the largest bounds for the map
+        int x = 0;
+        int y = 0;
+        List<Entity> entities = game.getEntities();
+        for (Entity entity : entities) {
+            int tmp = entity.getPos().getX();
+            if (tmp > x) {
+                x = tmp;
+            }
+
+            tmp = entity.getPos().getY();
+            if (tmp > y) {
+                y = tmp;
+            }
+        }
+
+        // have to make the plus one adjustment
+        // eg. if the bottom right most entity is at (4, 4)
+        // we need to factor in (4, 4) as a square on the map
+        for (int i = 0; i < x + 1; i++) {
+            for (int j = 0; j < y + 1; j++) {
+                grid.add(new Position(i, j));
+            }
+        }
+
         return grid;
     }
 
     public Stack<Position> tracePath(Map<Position, Position> optimal, Position src, Position dest) {
         Stack<Position> path = new Stack<Position>();
 
-        path.add(dest);
+        Position curr = dest;
+
+        while (!(curr.equals(src))) {
+            path.add(curr);
+            curr = optimal.get(curr);
+
+            if (curr == null) {
+                break;
+                // can't reach the player. if this null is encountered, at the top of the stack
+                // the mercenary stays put, otherwise it moves as far along as it can
+            }
+        }
 
         return path;
     }
-
 }
