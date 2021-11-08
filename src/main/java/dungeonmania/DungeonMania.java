@@ -513,7 +513,12 @@ public class DungeonMania {
             entity = new TreasureEntity(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("mercenary")) {
-            entity = new Mercenary(pos, Type, id);
+            int chance = ThreadLocalRandom.current().nextInt(100);
+            if (chance < 25) {
+                entity = new Assassin(pos, Type, id);
+            } else {
+                entity = new Mercenary(pos, Type, id);
+            }
         }
         if (Type.equalsIgnoreCase("zombie_toast")) {
             entity = new ZombieToast(pos, Type, id);
