@@ -39,9 +39,12 @@ public class Battles {
             characterDamage = characterDamage/2;
             ((ZombieToast) entity).decrementArmourDurability();
         }
-       if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+        if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
             characterDamage = characterDamage/2;
             ((Mercenary) entity).decrementArmourDurability();
+        }
+        if (entity instanceof Hydra || entity instanceof Assassin) {
+            characterDamage *= 3;
         }
         
         entity.receiveDMG(characterDamage);

@@ -28,13 +28,18 @@ All other entities continue movement as normal
 - Mercenaries reverse their direction pathing when invincibility potion occurs
 - Mercenaries have a battle radius of 2 cardinally adjacent squares, same as Bribe radius
 - all mercenaries need 1 gold to be bribed
+- Mercenaries periodically spawn at the entry location every 30 ticks.
+
 **Character**
 - Character has 30 health damage 10;
 - health is 30 for spider, attack is 5
 
 **Miscellaneous**
 - player presumably has more health than the zombie can do in one hit
+- Midnight armour and sceptre has no durability
+- Swamp tile causes enemies to be stuck.
 - interactable entities are  boulder, door,mercenary, all collectables 
+- Hydra only spawns on an empty square
 - armour is localized to zombie and not listed in entities
 - character starting health == 30;
 - saves have the game state, map name and difficulty
