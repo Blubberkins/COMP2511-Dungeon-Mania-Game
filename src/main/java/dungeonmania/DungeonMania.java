@@ -8,6 +8,7 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class DungeonMania {
     private Character character;
@@ -22,6 +23,7 @@ public class DungeonMania {
     private String name;
     private String difficulty;
     private List<SwampTile> swampTiles;
+    private Random random;
 
     public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
@@ -31,6 +33,7 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
+        // TODO this.random = new Random(29);
     }
 
     /**
