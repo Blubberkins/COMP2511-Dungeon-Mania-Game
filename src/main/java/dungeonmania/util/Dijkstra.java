@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import dungeonmania.DungeonMania;
 import dungeonmania.SwampTile;
+import dungeonmania.Entity;
+import dungeonmania.Wall;
 
 public class Dijkstra {
     public Dijkstra() {
@@ -50,9 +52,11 @@ public class Dijkstra {
                         d = (double) game.getSlow(p);
                     }
 
-                    if (dist.get(curr) + d < dist.get(p) && q.contains(p)) {
-                        dist.replace(p, dist.get(curr) + d);
-                        prev.replace(p, curr);
+                    if (!hasWall(game, p)) {
+                        if (dist.get(curr) + d < dist.get(p) && q.contains(p)) {
+                            dist.replace(p, dist.get(curr) + d);
+                            prev.replace(p, curr);
+                        }
                     }
                 }
             }
@@ -83,6 +87,18 @@ public class Dijkstra {
         }
 
         return smallest;
+    }
+
+    public static Boolean hasWall(DungeonMania game, Position position) {
+        List<Entity> entities = game.getEntities();
+
+        for (Entity entity : entities) {
+            if (entity instanceof Wall && entity.getPos().equals(position)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void main(String[] args) {

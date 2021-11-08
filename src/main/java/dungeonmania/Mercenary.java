@@ -25,10 +25,11 @@ public class Mercenary extends MovingEntity {
 
     /**
      * Creates a random chance to generate armor
+     * 
      * @return
      */
     public ArmourEntity ChanceOfArmour() {
-        if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
+        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {
             return new ArmourEntity(null, "armour", "armour" + this.getId());
         }
         return null;
@@ -50,27 +51,27 @@ public class Mercenary extends MovingEntity {
         List<Direction> order = optimalMove(vector, dungeonmania);
 
         // pick the single best move that is valid
-        if(!dungeonmania.getCharacter().getisInvincible()) {
+        if (!dungeonmania.getCharacter().getisInvincible()) {
             for (Direction move : order) {
                 if (validMove(this.getPos(), move, dungeonmania)) {
                     this.setPos(this.getPos().translateBy(move));
                     break;
-                } 
+                }
             }
-        }
-        else{
+        } else {
             for (int i = 0; i < order.size(); i++) {
                 if (validMove(this.getPos(), order.get(order.size() - 1 - i), dungeonmania)) {
                     this.setPos(this.getPos().translateBy(order.get(order.size() - 1 - i)));
                     break;
-                } 
+                }
             }
         }
-        
+
     }
 
     /**
      * Checks if a desired move is valid (not blocked)
+     * 
      * @param position
      * @param direction
      * @param dungeonMania
@@ -92,6 +93,7 @@ public class Mercenary extends MovingEntity {
 
     /**
      * Calculates the optimal movement
+     * 
      * @param vector
      * @param dungeonMania
      * @return List<Direction>
@@ -155,6 +157,7 @@ public class Mercenary extends MovingEntity {
 
     /**
      * Gets the player in a game
+     * 
      * @param dungeonmania
      * @return Entity
      */
@@ -178,14 +181,15 @@ public class Mercenary extends MovingEntity {
         super.setHealth(super.getHealth() - super.getDamage());
 
     }
-    
-    public ArmourEntity getArmour(){
+
+    public ArmourEntity getArmour() {
         return this.armour;
     }
 
     public void decrementArmourDurability() {
         this.armour.decrementDurability();
     }
+
     public Boolean HasArmour() {
         return this.armour != null;
     }
@@ -200,6 +204,12 @@ public class Mercenary extends MovingEntity {
 
     public int getBribe() {
         return this.minBribe;
+    }
+
+    public List<Position> mapPositions() {
+        List<Position> grid = new ArrayList<Position>();
+        // TODO: return all positions in the grid
+        return grid;
     }
 
 }
