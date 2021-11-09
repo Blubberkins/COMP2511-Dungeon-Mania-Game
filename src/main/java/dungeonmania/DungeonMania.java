@@ -589,6 +589,9 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("one_ring")) {
             entity = TheOneRingEntity.getInstance(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("sun_stone")) {
+            entity = new SunStone(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
@@ -634,6 +637,9 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("one_ring")) {
             entity = TheOneRingEntity.getInstance(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("sun_stone")) {
+            entity = new SunStone(null, Type, id);
         }
         if (entity != null) {
             this.Items.add(entity);

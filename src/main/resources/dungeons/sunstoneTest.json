@@ -108,6 +108,10 @@
             "x": 7,
             "y": 1, 
             "type": "door"
+        }, {
+            "x": 8,
+            "y": 1, 
+            "type": "exit"
         }
     ],
     "goal-condition": {
