@@ -2,7 +2,7 @@ package dungeonmania;
 
 import dungeonmania.util.Position;
 
-public class DoorEntity extends dungeonmania.StaticEntity {
+public class DoorEntity extends StaticEntity {
     private Boolean isOpen;
     
     public DoorEntity(Position pos, String type, String id) {

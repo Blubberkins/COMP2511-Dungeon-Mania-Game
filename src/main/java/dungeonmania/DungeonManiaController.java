@@ -25,9 +25,11 @@ import dungeonmania.Battles.BattleOutcome;
 public class DungeonManiaController {
     private ArrayList<DungeonMania> games;
     private DungeonMania loadedgame;
+    private int tick;
 
     public DungeonManiaController() {
         this.games = new ArrayList<>();
+        this.tick = 0;
     }
 
     /**
@@ -364,6 +366,12 @@ public class DungeonManiaController {
         Goal goal = currentGame.getGoal();
         List<Entity> toRemove = new ArrayList<>();
         updateCharacter.updateChar();
+        if (tick % 30 == 0 && tick != 0) {
+            currentGame.spawnMercenary();
+        }
+        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equals("hard")) {
+            currentGame.spawnHydra();
+        }
         if (itemUsed != null) {
             if (currentGame.getItemFromId(itemUsed) == null) {
                 throw new InvalidActionException("Item Not In Inventory");
@@ -519,6 +527,7 @@ public class DungeonManiaController {
         } else {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
         }
+        tick++;
         return new DungeonResponse(id, name, e, i, currentGame.getBuildables(), Goalstring);
 
     }
@@ -545,30 +554,47 @@ public class DungeonManiaController {
         Entity bow = null;
         Entity sword = null;
         Entity treasure = null;
+        Entity one_ring = null;
         for (Entity item : loadedgame.getItems()) {
             if (item.getType().equalsIgnoreCase("Bow")) {
                 bow = item;
             }
-            if (item.getType().equalsIgnoreCase("treasure")) {
+            if (item.getType().equalsIgnoreCase("treasure") || item.getType().equalsIgnoreCase("sun_stone")) {
                 treasure = item;
             }
             if (item.getType().equalsIgnoreCase("sword")) {
                 sword = item;
             }
+            if (item.getType().equalsIgnoreCase("one_ring")) {
+                one_ring = item;
+            }
         }
         if (treasure == null && interactableEntity instanceof Mercenary) {
             throw new InvalidActionException("no treasure");
         }
-
-        if (interactableEntity instanceof Mercenary && treasure != null) {
+        if (one_ring == null && interactableEntity instanceof Assassin) {
+            throw new InvalidActionException("no one ring");
+        }
+        if (interactableEntity instanceof Mercenary) {
             if (!isMercenaryAdjacent(interactableEntity.getPos()) && !RealisAdjacent(interactableEntity.getPos())) {
                 throw new InvalidActionException("not cardinally adjacent within 2 squares");
             }
-            loadedgame.removeItem(treasure);
-            Character updateCharacter = loadedgame.getCharacter();
-            updateCharacter.addAlly((Mercenary) interactableEntity);
-            loadedgame.setCharacter(updateCharacter);
-            ((Mercenary) interactableEntity).setIsBribed(true);
+            if (interactableEntity instanceof Assassin) {    
+                loadedgame.removeItem(one_ring);
+                Character updateCharacter = loadedgame.getCharacter();
+                updateCharacter.addAlly((Assassin) interactableEntity);
+                loadedgame.setCharacter(updateCharacter);
+                ((Assassin) interactableEntity).setIsBribed(true);
+            }
+            else {
+                if (treasure instanceof TreasureEntity) {
+                    loadedgame.removeItem(treasure);
+                }
+                Character updateCharacter = loadedgame.getCharacter();
+                updateCharacter.addAlly((Mercenary) interactableEntity);
+                loadedgame.setCharacter(updateCharacter);
+                ((Mercenary) interactableEntity).setIsBribed(true);
+            }
         }
         if (interactableEntity instanceof ZombieToastSpawner) {
             if (!RealisAdjacent(interactableEntity.getPos())) {
@@ -605,6 +631,76 @@ public class DungeonManiaController {
         if (wood >= 1 && arrows >= 3) {
             if (!dungeon.getBuildables().contains("bow")) {
                 dungeon.addToBuildableEntities("bow");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the character can craft a sceptre
+     * 
+     * @return boolean
+     */
+    public Boolean CheckSceptre() {
+        int wood = 0;
+        int arrows = 0;
+        int keys = 0;
+        int treasure = 0;
+        int stone = 0;
+        DungeonMania dungeon = this.loadedgame;
+        for (Entity item : dungeon.getItems()) {
+            if (item.getType().equals("wood")) {
+                wood++;
+            }
+            if (item.getType().equals("arrow")) {
+                arrows++;
+            }
+            if (item.getType().equals("keys")) {
+                keys++;
+            }
+            if (item.getType().equals("treasure")) {
+                treasure++;
+            }
+            if (item.getType().equals("sun_stone")) {
+                stone++;
+            }
+        }
+        if ((wood >= 1 || arrows >= 2) && (keys >= 1 || treasure >= 1) && stone >= 1) {
+            if (!dungeon.getBuildables().contains("sceptre")) {
+                dungeon.addToBuildableEntities("sceptre");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the character can craft a sceptre
+     * 
+     * @return boolean
+     */
+    public Boolean CheckMidnightArmour() {
+        boolean hasArmour = false;
+        boolean hasZombie = false;
+        int stone = 0;
+        DungeonMania dungeon = this.loadedgame;
+        for (Entity item : dungeon.getItems()) {
+            if (item.getType().equals("armour")) {
+                hasArmour = true;
+            }
+            if (item.getType().equals("sun_stone")) {
+                stone++;
+            }
+        }
+        for (Entity entity : dungeon.getEntities()) {
+            if (entity instanceof ZombieToast) {
+                hasZombie = true;
+            }
+        }
+        if (hasArmour && stone >= 1 && !hasZombie) {
+            if (!dungeon.getBuildables().contains("midnight_armour")) {
+                dungeon.addToBuildableEntities("midnight_armour");
             }
             return true;
         }
