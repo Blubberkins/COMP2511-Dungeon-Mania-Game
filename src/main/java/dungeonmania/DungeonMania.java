@@ -32,7 +32,6 @@ public class DungeonMania {
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
     }
-
     /**
      * Increments the id
      * 
@@ -415,8 +414,9 @@ public class DungeonMania {
      * @return Position
      */
     public Position generateRandomPos() {
-        int spawnX = ThreadLocalRandom.current().nextInt(0, getLargestX() + 1);
-        int spawnY = ThreadLocalRandom.current().nextInt(0, getLargestY() + 1);
+       
+        int spawnX = ThreadLocalRandom.current().nextInt(getLargestX() + 1);
+        int spawnY = ThreadLocalRandom.current().nextInt(getLargestY() + 1);
         return new Position(spawnX, spawnY, 0);
     }
 

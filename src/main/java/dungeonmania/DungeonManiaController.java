@@ -136,7 +136,7 @@ public class DungeonManiaController {
                 dungeonMania.createEntity(pos, type);
             }
         }
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0, 5); i++) {
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0,5); i++) {
             dungeonMania.spawnSpider();
         }
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");

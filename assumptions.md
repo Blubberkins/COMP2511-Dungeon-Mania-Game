@@ -4,6 +4,7 @@ all members contributed assumptions relevant to the parts they coded -- see comm
 ------------------------------------------------------------------------------------------
 Allies do not receive damage in combat for the player
 All other entities continue movement as normal
+passing in seed
 **Zombies**
 - zombies have 20hp and do 5 damage
 - Chance of a zombie spawning is 10% 
