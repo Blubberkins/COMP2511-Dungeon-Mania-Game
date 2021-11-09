@@ -460,6 +460,7 @@ public class DungeonMania {
             for (Entity entity : this.Entities) {
                 if (p.equals(entity.getPos())) {
                     iswall = true;
+                    break;
                 } else {
                     iswall = false;
                 }
@@ -468,9 +469,8 @@ public class DungeonMania {
                 iswall = true;
             }
         }
-        Hydra h = new Hydra (p, "hydra", Integer.toString(this.incrementIntId()));
+        Hydra h = new Hydra(p, "hydra", Integer.toString(this.incrementIntId()));
         Entities.add(h);
-
     }
 
     /**
@@ -481,8 +481,7 @@ public class DungeonMania {
         Entity m;
         if (chance == 0) {
             m = new Assassin(entryPosition, "assassin", Integer.toString(this.incrementIntId()));
-        }
-        else {
+        } else {
             m = new Mercenary(entryPosition, "mercenary", Integer.toString(this.incrementIntId()));
         }
         Entities.add(m);

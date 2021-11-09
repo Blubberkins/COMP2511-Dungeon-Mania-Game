@@ -369,7 +369,7 @@ public class DungeonManiaController {
         if (tick % 30 == 0 && tick != 0) {
             currentGame.spawnMercenary();
         }
-        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equals("hard")) {
+        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equalsIgnoreCase("hard")) {
             currentGame.spawnHydra();
         }
         if (itemUsed != null) {
@@ -579,14 +579,13 @@ public class DungeonManiaController {
             if (!isMercenaryAdjacent(interactableEntity.getPos()) && !RealisAdjacent(interactableEntity.getPos())) {
                 throw new InvalidActionException("not cardinally adjacent within 2 squares");
             }
-            if (interactableEntity instanceof Assassin) {    
+            if (interactableEntity instanceof Assassin) {
                 loadedgame.removeItem(one_ring);
                 Character updateCharacter = loadedgame.getCharacter();
                 updateCharacter.addAlly((Assassin) interactableEntity);
                 loadedgame.setCharacter(updateCharacter);
                 ((Assassin) interactableEntity).setIsBribed(true);
-            }
-            else {
+            } else {
                 if (treasure instanceof TreasureEntity) {
                     loadedgame.removeItem(treasure);
                 }

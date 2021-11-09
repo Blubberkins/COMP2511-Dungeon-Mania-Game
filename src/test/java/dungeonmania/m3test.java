@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.eclipse.jetty.util.MultiPartInputStreamParser.NonCompliance;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.util.Direction;
@@ -14,13 +15,15 @@ import dungeonmania.response.models.*;
 
 import java.util.List;
 
+import javax.swing.plaf.TreeUI;
+
 // By Liam
 
 public class m3test {
     @Test
     public void testAssassinSpawn() {
         int numAssassins = 0;
-        int numTrials = 10000;
+        int numTrials = 2500;
         for (int i = 0; i < numTrials; i++) {
             // load the game with a mercenary
             DungeonManiaController dm = new DungeonManiaController();
@@ -44,7 +47,7 @@ public class m3test {
             }
         }
 
-        // given 10000 bernoulli trials
+        // given 2500 bernoulli trials
         // we want to test the hypothesis that p = 0.25
         // the alternate hypothesis is that p =/= 0.25
         // z score (0.05, two tailed test) is 1.96
@@ -102,23 +105,31 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 10000;
+        int numTrials = 5;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
 
-            int spider = -1;
-            while (spider != 0) {
-                int spidercount = 0;
-                dm.newGame("hydratest", "Hard");
-                game = dm.getLoadedGame();
-                List<Entity> entities = game.getEntities();
-                for (Entity e : entities) {
-                    if (e instanceof Spider) {
-                        spidercount++;
+            Boolean hasAssassin = true;
+            while (hasAssassin) {
+                int spider = -1;
+                while (spider != 0) {
+                    int spidercount = 0;
+                    dm.newGame("hydratest", "Hard");
+                    game = dm.getLoadedGame();
+                    List<Entity> entities = game.getEntities();
+                    for (Entity e : entities) {
+                        if (e instanceof Spider) {
+                            spidercount++;
+                        }
                     }
+                    spider = spidercount;
                 }
-                spider = spidercount;
+
+                if (!(findMercenary(game) instanceof Assassin)) {
+                    hasAssassin = false;
+                    // don't want complications when bribing w/o one ring
+                }
             }
 
             dm.tick(null, Direction.RIGHT);
@@ -136,16 +147,28 @@ public class m3test {
                 dm.tick(null, Direction.RIGHT);
             }
 
-            Entity hydra = findHydra(game);
+            dm.tick(null, Direction.NONE);
+
+            Hydra hydra = findHydra(game);
             assertTrue(hydra != null);
-            assertTrue(hydra instanceof MovingEntity);
-            int hydraHP = ((MovingEntity) hydra).getHealth();
+            int hydraHP = ((Hydra) hydra).getHealth();
 
             int currHP = hydraHP;
             // do stuff until the hydra comes into a single combat with the player
+            Boolean right = true;
             while (currHP == hydraHP) {
-                dm.tick(null, Direction.UP);
-                currHP = ((MovingEntity) hydra).getHealth();
+                if (right) {
+                    dm.tick(null, Direction.RIGHT);
+                } else {
+                    dm.tick(null, Direction.LEFT);
+                }
+
+                if (game.getCharacter().getPos().equals(new Position(6, 1))) {
+                    right = false;
+                } else if (game.getCharacter().getPos().equals(new Position(1, 1))) {
+                    right = true;
+                }
+                currHP = ((Hydra) hydra).getHealth();
             }
 
             if (currHP > hydraHP) {
@@ -153,7 +176,7 @@ public class m3test {
             }
         }
 
-        // similar to assassin test, given 10000 bernoulli trials
+        // similar to assassin test, given 2500 bernoulli trials
         // we want to test the hypothesis that p = 0.5
         // the alternate hypothesis is that p =/= 0.5
         // z score (0.05, two tailed test) is 1.96
@@ -401,12 +424,12 @@ public class m3test {
         dm.tick(null, Direction.NONE);
         int nonBossDMG = mHP - m.getHealth();
 
-        // tick 47 more times until a hydra spawns
-        for (int i = 0; i < 47; i++) {
+        // tick 48 more times until a hydra spawns
+        for (int i = 0; i < 48; i++) {
             dm.tick(null, Direction.NONE);
         }
 
-        Entity hydra = findHydra(game);
+        Hydra hydra = findHydra(game);
         assertTrue(hydra != null);
         int hydraHP = ((MovingEntity) hydra).getHealth();
 
@@ -581,12 +604,12 @@ public class m3test {
         return null;
     }
 
-    public Entity findHydra(DungeonMania game) {
+    public Hydra findHydra(DungeonMania game) {
         List<Entity> entities = game.getEntities();
 
         for (Entity entity : entities) {
-            if (entity.getType().compareTo("hydra") == 0) {
-                return entity;
+            if (entity instanceof Hydra) {
+                return (Hydra) entity;
             }
         }
 
