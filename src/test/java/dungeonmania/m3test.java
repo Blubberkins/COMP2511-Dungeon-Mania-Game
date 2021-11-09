@@ -2,20 +2,16 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.eclipse.jetty.util.MultiPartInputStreamParser.NonCompliance;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.*;
 
 import java.util.List;
-
-import javax.swing.plaf.TreeUI;
 
 // By Liam
 
@@ -370,13 +366,18 @@ public class m3test {
         // there is a door on (7, 1), player should be at (3, 1) currently
         // there is also an exit on (8, 1)
         // player should be able to move successfully through the door
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             dm.tick(null, Direction.RIGHT);
         }
 
         // even after the player opens the door, they should still have the stone
+        assertTrue(dm.getLoadedGame() != null);
         inventory = game.getItems();
         assertTrue(inventory.size() == 1);
+
+        // for completion's sake
+        dm.tick(null, Direction.RIGHT);
+        assertEquals(dm.getLoadedGame(), null);
     }
 
     @Test
@@ -407,14 +408,15 @@ public class m3test {
         }
 
         dm.tick(null, Direction.RIGHT);
-        dm.tick(null, Direction.RIGHT);
-        // should now enter combat with the mercenary
-
+        // should have anduril now
+        assertTrue(game.getItems().get(0) instanceof Anduril);
+        // preliminary set up
         Mercenary m = findMercenary(game);
         Boolean hasArmour = m.HasArmour();
         int mHP = m.getHealth();
+        // should now enter combat with the mercenary after this move
+        dm.tick(null, Direction.RIGHT);
 
-        dm.tick(null, Direction.NONE);
         int nonBossDMG = mHP - m.getHealth();
 
         // tick 48 more times until a hydra spawns
@@ -422,10 +424,15 @@ public class m3test {
             dm.tick(null, Direction.NONE);
         }
 
+        dm.tick(null, Direction.NONE);
+
         Hydra hydra = findHydra(game);
         assertTrue(hydra != null);
         int hydraHP = ((MovingEntity) hydra).getHealth();
 
+        // make sure character's health is back at max of 30
+        // just so we have the same conditions as when fighting the mercenary
+        game.getCharacter().setHealth(30);
         int currHP = hydraHP;
         // do stuff until the hydra comes into a single combat with the player
         while (currHP == hydraHP) {

@@ -93,8 +93,7 @@ public class Mercenary extends MovingEntity {
 
     @Override
     public void receiveDMG(int damage) {
-        super.setHealth(super.getHealth() - super.getDamage());
-
+        super.setHealth(super.getHealth() - damage);
     }
 
     public ArmourEntity getArmour() {

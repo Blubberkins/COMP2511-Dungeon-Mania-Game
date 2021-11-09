@@ -8,7 +8,7 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.Random;
+// import java.util.Random;
 
 public class DungeonMania {
     private Character character;
@@ -592,6 +592,9 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("sun_stone")) {
             entity = new SunStone(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("anduril")) {
+            entity = new Anduril(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
@@ -640,6 +643,9 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("sun_stone")) {
             entity = new SunStone(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("anduril")) {
+            entity = new Anduril(null, Type, id);
         }
         if (entity != null) {
             this.Items.add(entity);
