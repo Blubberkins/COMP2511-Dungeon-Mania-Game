@@ -8,6 +8,7 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class DungeonMania {
     private Character character;
@@ -32,6 +33,7 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
+        // TODO this.random = new Random(29);
     }
 
     /**
@@ -555,7 +557,12 @@ public class DungeonMania {
             entity = new TreasureEntity(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("mercenary")) {
-            entity = new Mercenary(pos, Type, id);
+            int chance = ThreadLocalRandom.current().nextInt(100);
+            if (chance < 25) {
+                entity = new Assassin(pos, Type, id);
+            } else {
+                entity = new Mercenary(pos, Type, id);
+            }
         }
         if (Type.equalsIgnoreCase("zombie_toast")) {
             entity = new ZombieToast(pos, Type, id);

@@ -1,10 +1,13 @@
 package dungeonmania;
 
+import dungeonmania.util.Dijkstra;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 
 // By Liam
@@ -25,10 +28,11 @@ public class Mercenary extends MovingEntity {
 
     /**
      * Creates a random chance to generate armor
+     * 
      * @return
      */
     public ArmourEntity ChanceOfArmour() {
-        if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
+        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {
             return new ArmourEntity(null, "armour", "armour" + this.getId());
         }
         return null;
@@ -43,118 +47,25 @@ public class Mercenary extends MovingEntity {
         if (player == null) {
             return;
         }
-        // get the position vector
-        Position vector = Position.calculatePositionBetween(this.getPos(), player.getPos());
 
-        // based on the vector, decide which direction is best to move in
-        List<Direction> order = optimalMove(vector, dungeonmania);
+        // based on the map, decide which direction is best to move in
+        // using dijkstra's algorithm
+        Map<Position, Position> optimal = Dijkstra.shortestPath(mapPositions(dungeonmania), this.getPos(),
+                dungeonmania);
 
-        // pick the single best move that is valid
-        if(!dungeonmania.getCharacter().getisInvincible()) {
-            for (Direction move : order) {
-                if (validMove(this.getPos(), move, dungeonmania)) {
-                    this.setPos(this.getPos().translateBy(move));
-                    break;
-                } 
+        // trace the optimal path, then make the move
+        Stack<Position> path = tracePath(optimal, this.getPos(), getPlayer(dungeonmania).getPos());
+        if (!path.isEmpty()) { // if not same position as player
+            Position next = path.peek();
+            if (next != null) {
+                this.setPos(next);
             }
         }
-        else{
-            for (int i = 0; i < order.size(); i++) {
-                if (validMove(this.getPos(), order.get(order.size() - 1 - i), dungeonmania)) {
-                    this.setPos(this.getPos().translateBy(order.get(order.size() - 1 - i)));
-                    break;
-                } 
-            }
-        }
-        
-    }
-
-    /**
-     * Checks if a desired move is valid (not blocked)
-     * @param position
-     * @param direction
-     * @param dungeonMania
-     * @return boolean
-     */
-    public Boolean validMove(Position position, Direction direction, DungeonMania dungeonMania) {
-        Position newPos = position.translateBy(direction);
-
-        List<Entity> entities = dungeonMania.getEntities();
-
-        for (Entity entity : entities) {
-            if (entity instanceof Wall && entity.getPos().equals(newPos)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Calculates the optimal movement
-     * @param vector
-     * @param dungeonMania
-     * @return List<Direction>
-     */
-    public List<Direction> optimalMove(Position vector, DungeonMania dungeonMania) {
-        Boolean xPos = vector.getX() >= 0;
-        int xDist = Math.abs(vector.getX());
-        Boolean yPos = vector.getY() >= 0;
-        int yDist = Math.abs(vector.getY());
-
-        List<Direction> optimal = new ArrayList<Direction>();
-
-        if (xDist >= yDist) {
-            if (xPos) {
-                optimal.add(Direction.RIGHT);
-                if (yPos) {
-                    optimal.add(Direction.DOWN);
-                    optimal.add(Direction.UP);
-                } else {
-                    optimal.add(Direction.UP);
-                    optimal.add(Direction.DOWN);
-                }
-                optimal.add(Direction.LEFT);
-            } else {
-                optimal.add(Direction.LEFT);
-                if (yPos) {
-                    optimal.add(Direction.DOWN);
-                    optimal.add(Direction.UP);
-                } else {
-                    optimal.add(Direction.UP);
-                    optimal.add(Direction.DOWN);
-                }
-                optimal.add(Direction.RIGHT);
-            }
-        } else {
-            if (yPos) {
-                optimal.add(Direction.DOWN);
-                if (xPos) {
-                    optimal.add(Direction.RIGHT);
-                    optimal.add(Direction.LEFT);
-                } else {
-                    optimal.add(Direction.LEFT);
-                    optimal.add(Direction.RIGHT);
-                }
-                optimal.add(Direction.UP);
-            } else {
-                optimal.add(Direction.UP);
-                if (xPos) {
-                    optimal.add(Direction.RIGHT);
-                    optimal.add(Direction.LEFT);
-                } else {
-                    optimal.add(Direction.LEFT);
-                    optimal.add(Direction.RIGHT);
-                }
-                optimal.add(Direction.DOWN);
-            }
-        }
-
-        return optimal;
     }
 
     /**
      * Gets the player in a game
+     * 
      * @param dungeonmania
      * @return Entity
      */
@@ -178,14 +89,15 @@ public class Mercenary extends MovingEntity {
         super.setHealth(super.getHealth() - super.getDamage());
 
     }
-    
-    public ArmourEntity getArmour(){
+
+    public ArmourEntity getArmour() {
         return this.armour;
     }
 
     public void decrementArmourDurability() {
         this.armour.decrementDurability();
     }
+
     public Boolean HasArmour() {
         return this.armour != null;
     }
@@ -202,4 +114,53 @@ public class Mercenary extends MovingEntity {
         return this.minBribe;
     }
 
+    public List<Position> mapPositions(DungeonMania game) {
+        List<Position> grid = new ArrayList<Position>();
+
+        // fetching the largest bounds for the map
+        int x = 0;
+        int y = 0;
+        List<Entity> entities = game.getEntities();
+        for (Entity entity : entities) {
+            int tmp = entity.getPos().getX();
+            if (tmp > x) {
+                x = tmp;
+            }
+
+            tmp = entity.getPos().getY();
+            if (tmp > y) {
+                y = tmp;
+            }
+        }
+
+        // have to make the plus one adjustment
+        // eg. if the bottom right most entity is at (4, 4)
+        // we need to factor in (4, 4) as a square on the map
+        for (int i = 0; i < x + 1; i++) {
+            for (int j = 0; j < y + 1; j++) {
+                grid.add(new Position(i, j));
+            }
+        }
+
+        return grid;
+    }
+
+    public Stack<Position> tracePath(Map<Position, Position> optimal, Position src, Position dest) {
+        Stack<Position> path = new Stack<Position>();
+
+        Position curr = dest;
+
+        while (!(curr.equals(src))) {
+            path.add(curr);
+            curr = optimal.get(curr);
+
+            if (curr == null) {
+                break;
+                // can't reach the player. if this null is encountered, at the top of the stack
+                // the mercenary stays put, otherwise it moves as far along as it can
+            }
+        }
+
+        return path;
+    }
 }
