@@ -453,21 +453,9 @@ public class DungeonMania {
      * Spawns a hydra
      */
     public void spawnHydra() {
-        Boolean iswall = true;
-        Position p = null;
-        while (iswall) {
+        Position p = generateRandomPos();
+        while (hasWall(this, p)) {
             p = generateRandomPos();
-            for (Entity entity : this.Entities) {
-                if (p.equals(entity.getPos())) {
-                    iswall = true;
-                    break;
-                } else {
-                    iswall = false;
-                }
-            }
-            if (p.getX() == 0 && p.getY() == 0) {
-                iswall = true;
-            }
         }
         Hydra h = new Hydra(p, "hydra", Integer.toString(this.incrementIntId()));
         Entities.add(h);
@@ -477,7 +465,7 @@ public class DungeonMania {
      * Spawns mercenary at entry position
      */
     public void spawnMercenary() {
-        int chance = ThreadLocalRandom.current().nextInt(0, 4);
+        int chance = ThreadLocalRandom.current().nextInt(0, 5);
         Entity m;
         if (chance == 0) {
             m = new Assassin(entryPosition, "assassin", Integer.toString(this.incrementIntId()));
@@ -665,5 +653,14 @@ public class DungeonMania {
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);
         this.Entities.add(entity);
+    }
+
+    public Boolean hasWall(DungeonMania game, Position pos) {
+        for (Entity entity : game.getEntities()) {
+            if ((entity instanceof Wall) && pos.equals(entity.getPos())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

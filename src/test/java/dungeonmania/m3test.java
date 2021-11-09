@@ -23,7 +23,7 @@ public class m3test {
     @Test
     public void testAssassinSpawn() {
         int numAssassins = 0;
-        int numTrials = 2500;
+        int numTrials = 10000;
         for (int i = 0; i < numTrials; i++) {
             // load the game with a mercenary
             DungeonManiaController dm = new DungeonManiaController();
@@ -105,7 +105,7 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 5;
+        int numTrials = 10000;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
@@ -151,29 +151,21 @@ public class m3test {
 
             Hydra hydra = findHydra(game);
             assertTrue(hydra != null);
-            int hydraHP = ((Hydra) hydra).getHealth();
+            int hydraHP = hydra.getHealth();
 
             int currHP = hydraHP;
             // do stuff until the hydra comes into a single combat with the player
-            Boolean right = true;
             while (currHP == hydraHP) {
-                if (right) {
-                    dm.tick(null, Direction.RIGHT);
-                } else {
-                    dm.tick(null, Direction.LEFT);
-                }
-
-                if (game.getCharacter().getPos().equals(new Position(6, 1))) {
-                    right = false;
-                } else if (game.getCharacter().getPos().equals(new Position(1, 1))) {
-                    right = true;
-                }
-                currHP = ((Hydra) hydra).getHealth();
+                dm.tick(null, Direction.RIGHT);
+                currHP = hydra.getHealth();
             }
 
             if (currHP > hydraHP) {
                 numIncreases += 1;
             }
+
+            // for safety
+            game.removeEntity(hydra);
         }
 
         // similar to assassin test, given 2500 bernoulli trials
@@ -189,6 +181,7 @@ public class m3test {
         // p value in (-1.96, 1.96) using normal approximation
         // we shouldn't be able to reject the null hypothesis
         // by law of large numbers the result should be close enough to E(X) anyway
+
         assertTrue(testStatistic < 1.96);
     }
 
