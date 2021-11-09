@@ -49,6 +49,7 @@ public class ControllerTest {
         dm.tick(null, Direction.DOWN);
         assertTrue(player.getPos().equals(new Position(0, 1)));
     }
+
     @Test
     public void testItem() {
         DungeonManiaController dm = new DungeonManiaController();
@@ -80,56 +81,57 @@ public class ControllerTest {
     }
 
     @Test
-    public void testZombieSpawn(){
+    public void testZombieSpawn() {
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dm.newGame("basicmap6", "Standard");
             game = dm.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
             spider = spidercount;
-    
+
         }
-        
+
         assertThrows(InvalidActionException.class, () -> {
             dm.interact("2");
-          });
-          //no sword error
-          assertTrue(game.getEntities().size() == 21);
-          dm.tick(null, Direction.RIGHT);
-          dm.tick(null, Direction.RIGHT);
-          assertTrue(game.getEntities().size() == 20);
-          //pickup sword
-          dm.tick(null, Direction.RIGHT);
-          dm.tick(null, Direction.RIGHT);
-          dm.tick(null, Direction.RIGHT);
-          dm.interact("2");
-          assert(game.getEntities().size() == 19);
+        });
+        // no sword error
+        assertTrue(game.getEntities().size() == 21);
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+        assertTrue(game.getEntities().size() == 20);
+        // pickup sword
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+        dm.interact("2");
+        assert (game.getEntities().size() == 19);
     }
+
     @Test
     public void TestMercenaryInteractAndThrowingErrors() {
         DungeonManiaController dm = new DungeonManiaController();
         assertThrows(IllegalArgumentException.class, () -> {
             dm.newGame("failure", "Peaceful");
-          });
-          assertThrows(IllegalArgumentException.class, () -> {
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
             dm.newGame("advanced", "pain");
-          });
+        });
         dm.newGame("advanced", "Peaceful");
         assertThrows(IllegalArgumentException.class, () -> {
             dm.interact("HELLO");
-          });
-          assertThrows(IllegalArgumentException.class, () -> {
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
             dm.build("sadness");
-          });
-        DungeonMania game = dm.getLoadedGame(); 
+        });
+        DungeonMania game = dm.getLoadedGame();
         dm.tick(null, Direction.LEFT);
         dm.tick(null, Direction.LEFT);
         dm.tick(null, Direction.LEFT);
@@ -137,10 +139,8 @@ public class ControllerTest {
         dm.tick(null, Direction.LEFT);
         assertThrows(InvalidActionException.class, () -> {
             dm.interact("43");
-          });
+        });
     }
-    
-
 
     @Test
     public void TestSaveLoad() {
@@ -181,14 +181,8 @@ public class ControllerTest {
         DungeonManiaController dm = new DungeonManiaController();
         dm.newGame("basicmap7", "Peaceful");
 
-        DungeonMania game = dm.getLoadedGame();
-        Character player = game.getCharacter();
-
         for (int i = 0; i < 7; i++) {
-            dm.tick(null, Direction.RIGHT);
-            player.setHealth(Integer.MAX_VALUE);
-            game.setCharacter(player);
-            game.setCharacter(player);
+            dm.tick("", Direction.RIGHT);
         }
 
         dm.build("bow");

@@ -226,6 +226,14 @@ public class m3test {
         dm.tick(null, Direction.NONE);
         assertTrue(m.getPos().equals(new Position(2, 3)));
 
+        // extra checks
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(3, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(5, 3)));
+
         // loading yet another map. same as the map in testDijkstra
         // but there are now swamp tiles on the upper path
         // enough so that the mercenary should take the lower path
@@ -247,6 +255,55 @@ public class m3test {
         dm.tick(null, Direction.NONE);
         dm.tick(null, Direction.NONE);
         assertTrue(m.getPos().equals(new Position(2, 3)));
+
+        // extra checks
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(3, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 3)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 2)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(4, 1)));
+        dm.tick(null, Direction.NONE);
+        assertTrue(m.getPos().equals(new Position(5, 1)));
+
+    }
+
+    @Test
+    public void testDijkstraWall() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+
+        // spawns an enclosed dungeon, which is a loop with a wall separating
+        // player and mercenary
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("dijkstraException", "Hard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        // mercenary starts opposite player, blocked by a wall
+        Mercenary m = findMercenary(game);
+        dm.tick(null, Direction.DOWN);
+        // character has moved down, shortest path goes through a wall
+        // so mercenary should ignore that and take the shortest path upwards
+        Position pPos = game.getCharacter().getPos();
+        Position expected = new Position(pPos.getX() + 2, pPos.getY() - 2);
+        assertTrue(m.getPos().equals(expected));
+    }
+
+    @Test
+    public void testNewInvincibility() {
+
     }
 
     @Test

@@ -8,6 +8,7 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 
 public class DungeonMania {
     private Character character;
@@ -22,6 +23,7 @@ public class DungeonMania {
     private String name;
     private String difficulty;
     private List<SwampTile> swampTiles;
+    private Position entryPosition;
 
     public DungeonMania(String difficulty, String name) {
         this.difficulty = difficulty;
@@ -31,6 +33,7 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
+        // TODO this.random = new Random(29);
     }
     /**
      * Increments the id
@@ -129,7 +132,9 @@ public class DungeonMania {
                     woodCount--;
                 }
                 if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) && metalCount > 0) {
-                    toRemove.add(entity);
+                    if (!(entity instanceof SunStone)) {
+                        toRemove.add(entity);
+                    }
                     metalCount--;
                 }
             }
@@ -445,6 +450,45 @@ public class DungeonMania {
     }
 
     /**
+     * Spawns a hydra
+     */
+    public void spawnHydra() {
+        Boolean iswall = true;
+        Position p = null;
+        while (iswall) {
+            p = generateRandomPos();
+            for (Entity entity : this.Entities) {
+                if (p.equals(entity.getPos())) {
+                    iswall = true;
+                } else {
+                    iswall = false;
+                }
+            }
+            if (p.getX() == 0 && p.getY() == 0) {
+                iswall = true;
+            }
+        }
+        Hydra h = new Hydra (p, "hydra", Integer.toString(this.incrementIntId()));
+        Entities.add(h);
+
+    }
+
+    /**
+     * Spawns mercenary at entry position
+     */
+    public void spawnMercenary() {
+        int chance = ThreadLocalRandom.current().nextInt(0, 4);
+        Entity m;
+        if (chance == 0) {
+            m = new Assassin(entryPosition, "assassin", Integer.toString(this.incrementIntId()));
+        }
+        else {
+            m = new Mercenary(entryPosition, "mercenary", Integer.toString(this.incrementIntId()));
+        }
+        Entities.add(m);
+    }
+
+    /**
      * Spawns a zombie given the position of the toast spawner
      * 
      * @param pos
@@ -525,6 +569,7 @@ public class DungeonMania {
         }
         if (Type.equalsIgnoreCase("player")) {
             entity = new Character(pos, Type, id);
+            this.entryPosition = pos;
             this.character = (Character) entity;
         }
         if (Type.equalsIgnoreCase("wood")) {

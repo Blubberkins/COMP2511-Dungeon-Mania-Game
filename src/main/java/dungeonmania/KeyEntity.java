@@ -7,6 +7,7 @@ public class KeyEntity extends CollectableEntities {
     
     public KeyEntity(Position pos, String type, String id) {
         super(pos, type, id);
+        this.setIsUsed(false);
     }
 
     public Boolean getIsUsed() {

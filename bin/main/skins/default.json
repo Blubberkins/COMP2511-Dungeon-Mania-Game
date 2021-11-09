@@ -35,6 +35,8 @@
         "enemies": "images/tileset/entities/zombie_spawner.png", 
         "portal": "images/tileset/entities/portal_00.png", 
         "door": "images/tileset/walls/wooden/door_unlocked.png", 
-        "key": "/images/tileset/items/key_gold.png"
+        "key": "images/tileset/items/key_gold.png",
+        "hydra": "images/tileset/entities/hydra.png",
+        "assassin": "images/tileset/entities/assassin.png"
     }
 }
