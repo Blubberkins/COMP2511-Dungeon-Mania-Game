@@ -60,13 +60,13 @@ public class Mercenary extends MovingEntity {
         if (!path.isEmpty()) { // if not same position as player
             Position next = path.peek();
 
-            Position opposite = Position.calculatePositionBetween(next, this.getPos());
-
             if (next != null) {
+                Position opposite = Position.calculatePositionBetween(next, this.getPos());
+                Position othernext = this.getPos().translateBy(opposite);
                 if (!((Character) getPlayer(dungeonmania)).getisInvincible()) {
                     this.setPos(next);
-                } else {
-                    this.setPos(this.getPos().translateBy(opposite));
+                } else if (!dungeonmania.hasWall(dungeonmania, othernext)) {
+                    this.setPos(othernext);
                 }
             }
         }
