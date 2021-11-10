@@ -819,6 +819,13 @@ public class DungeonManiaController {
                 GoalFactory.goalString(loadedgame.getGoal()));
     }
 
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String gameMode)
+            throws IllegalArgumentException {
+        // TODO
+
+        return null;
+    }
+
     /**
      * Writes the given contents to a given filename
      * 

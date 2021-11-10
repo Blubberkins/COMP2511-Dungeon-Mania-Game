@@ -15,8 +15,8 @@ import java.util.function.Supplier;
 import scintilla.Scintilla;
 
 /**
- * A threadsafe wrapper around your DungeonManiaController.
- * It does this by storing a series of session states
+ * A threadsafe wrapper around your DungeonManiaController. It does this by
+ * storing a series of session states
  * 
  * You shouldn't need to modify this.
  * 
@@ -41,7 +41,7 @@ public class App {
         }
     }
 
-    private static<T> GenericResponseWrapper<T> callWithWrapper(Supplier<T> runnable) {
+    private static <T> GenericResponseWrapper<T> callWithWrapper(Supplier<T> runnable) {
         try {
             return GenericResponseWrapper.Ok(runnable.get());
         } catch (Exception e) {
@@ -50,7 +50,8 @@ public class App {
         }
     }
 
-    private static<T> GenericResponseWrapper<T> callUsingSessionAndArgument(Request request, Function<DungeonManiaController, T> runnable) {
+    private static <T> GenericResponseWrapper<T> callUsingSessionAndArgument(Request request,
+            Function<DungeonManiaController, T> runnable) {
         try {
             DungeonManiaController dmc = getDungeonManiaController(request);
             synchronized (dmc) {
@@ -63,7 +64,7 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
-        Scintilla.initialize(); 
+        Scintilla.initialize();
         GsonBuilder gsonBuilder = new GsonBuilder();
 
         Gson gson = gsonBuilder.create();
@@ -76,14 +77,16 @@ public class App {
         });
 
         Spark.get("/api/dungeons/", "application/json", (request, response) -> {
-            // we don't *need* to globally lock this but we might as well just to keep a nice standard.
+            // we don't *need* to globally lock this but we might as well just to keep a
+            // nice standard.
             synchronized (globalLock) {
                 return callWithWrapper(() -> DungeonManiaController.dungeons());
             }
         }, gson::toJson);
 
         Spark.post("/api/game/new/", "application/json", (request, response) -> {
-            return callUsingSessionAndArgument(request, (dmc) -> dmc.newGame(request.queryParams("dungeonName"), request.queryParams("gameMode")));
+            return callUsingSessionAndArgument(request,
+                    (dmc) -> dmc.newGame(request.queryParams("dungeonName"), request.queryParams("gameMode")));
         }, gson::toJson);
 
         Spark.post("api/game/save/", "application/json", (request, response) -> {
@@ -99,7 +102,8 @@ public class App {
         }, gson::toJson);
 
         Spark.post("/api/game/tick/", "application/json", (request, response) -> {
-            return callUsingSessionAndArgument(request, (dmc) -> dmc.tick(request.queryParams("itemUsed"), Direction.valueOf(request.queryParams("movementDirection").toUpperCase())));
+            return callUsingSessionAndArgument(request, (dmc) -> dmc.tick(request.queryParams("itemUsed"),
+                    Direction.valueOf(request.queryParams("movementDirection").toUpperCase())));
         }, gson::toJson);
 
         Spark.post("/api/game/build/", "application/json", (request, response) -> {
@@ -120,6 +124,14 @@ public class App {
 
         Spark.post("/api/game/interact/", "application/json", (request, response) -> {
             return callUsingSessionAndArgument(request, (dmc) -> dmc.interact(request.queryParams("entityId")));
+        }, gson::toJson);
+
+        Spark.post("/api/game/new/generate", "application/json", (request, response) -> {
+            return callUsingSessionAndArgument(request,
+                    (dmc) -> dmc.generateDungeon(Integer.parseInt(request.queryParams("xStart")),
+                            Integer.parseInt(request.queryParams("yStart")),
+                            Integer.parseInt(request.queryParams("xEnd")),
+                            Integer.parseInt(request.queryParams("yEnd")), request.queryParams("gameMode")));
         }, gson::toJson);
 
         Scintilla.start();
