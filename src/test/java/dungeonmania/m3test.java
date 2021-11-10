@@ -411,6 +411,8 @@ public class m3test {
         dm.tick(null, Direction.RIGHT);
         // should have anduril now
         assertTrue(game.getItems().get(0) instanceof Anduril);
+        // make sure anduril doesn't break just in case the mercenary has armour
+        ((Anduril) game.getItems().get(0)).setDurability(50);
         // preliminary set up
         Mercenary m = findMercenary(game);
         Boolean hasArmour = m.HasArmour();
