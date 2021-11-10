@@ -508,7 +508,7 @@ public class DungeonMania {
      * Spawns mercenary at entry position
      */
     public void spawnMercenary() {
-        int chance = ThreadLocalRandom.current().nextInt(0, 5);
+        int chance = ThreadLocalRandom.current().nextInt(0, 4);
         Entity m;
         if (chance == 0) {
             m = new Assassin(entryPosition, "assassin", Integer.toString(this.incrementIntId()));
