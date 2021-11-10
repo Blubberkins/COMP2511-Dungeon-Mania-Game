@@ -315,7 +315,44 @@ public class m3test {
 
     @Test
     public void testNewInvincibility() {
-        // TODO
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+
+        // spawns an enclosed dungeon, which is a loop with a wall separating
+        // player and mercenary
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("dijkstraException", "Standard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        // hack an invicibility potion into the inventory for the purposes of this test
+        game.AddItem("invincibility_potion");
+        String id = game.getItems().get(0).getId();
+
+        // mercenary starts opposite player, blocked by a wall
+        Mercenary m = findMercenary(game);
+        // make the player invincible
+        dm.tick(id, Direction.NONE);
+        assertTrue(game.getCharacter().getisInvincible());
+        // character has stayed put, shortest path goes through a wall
+        // so mercenary should stay put until the player moves
+        Position pPos = game.getCharacter().getPos();
+        Position expected = new Position(pPos.getX() + 2, pPos.getY());
+        assertTrue(m.getPos().equals(expected));
+
+        // checking one more tick, we move down, and so should the mercenary
+        dm.tick(null, Direction.DOWN);
+        expected = new Position(pPos.getX() + 2, pPos.getY() + 1);
+        assertTrue(m.getPos().equals(expected));
     }
 
     @Test
