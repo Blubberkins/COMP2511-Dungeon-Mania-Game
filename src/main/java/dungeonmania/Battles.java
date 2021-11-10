@@ -36,7 +36,9 @@ public class Battles {
             if (item instanceof Bow) {
                 ((Weapons) item).decrementDurability();
                 entity.receiveDMG(characterDamage);
-
+            }
+            if (item instanceof MidnightArmour) {
+                characterDamage += 5;
             }
         }
         if (entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
@@ -81,6 +83,9 @@ public class Battles {
                 ((Weapons) item).decrementDurability();
                 enemydamage = enemydamage / 2;
 
+            }
+            if (item instanceof MidnightArmour) {
+                enemydamage -= 5;
             }
         }
         character.receiveDMG(enemydamage);
