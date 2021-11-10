@@ -140,6 +140,49 @@ public class DungeonMania {
                 }
             }
         }
+        if (type.equals("midnight_armour")) {
+            this.Items.add(new MidnightArmour(null, type, id));
+            this.Buildables.remove("midnight_armour");
+            int armourCount = 1;
+            int stoneCount = 1;
+            for (Entity entity : this.Items) {
+                if (entity instanceof ArmourEntity && armourCount > 0) {
+                    toRemove.add(entity);
+                    armourCount--;
+                }
+                if ((entity instanceof SunStone) && stoneCount > 0) {
+                    toRemove.add(entity);
+                    stoneCount--;
+                }
+            }
+        }
+        if (type.equals("sceptre")) {
+            this.Items.add(new Sceptre(null, type, id));
+            this.Buildables.remove("sceptre");
+            int metalCount = 1;
+            int woodCount = 2;
+            int stoneCount = 1;
+            for (Entity entity : this.Items) {
+                if (woodCount > 0) {
+                    if (entity instanceof WoodEntity && woodCount % 2 == 0) {
+                        toRemove.add(entity);
+                        woodCount -= 2;
+                    } else if (entity instanceof ArrowsEntity) {
+                        toRemove.add(entity);
+                        woodCount--;
+                    }
+                }
+                if ((entity instanceof SunStone) && stoneCount > 0) {
+                    toRemove.add(entity);
+                    stoneCount--;
+                } else if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) && metalCount > 0) {
+                    toRemove.add(entity);
+                    metalCount--;
+                }
+
+            }
+        }
+
         for (Entity entity : toRemove) {
             this.removeItem(entity);
         }

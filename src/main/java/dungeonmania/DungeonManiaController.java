@@ -424,6 +424,15 @@ public class DungeonManiaController {
         List<Entity> zombieToastSpawners = new ArrayList<>();
         for (Entity entity : currentGame.getEntities()) {
             if (entity instanceof MovingEntity) {
+                if (entity instanceof Mercenary) {
+                    int ticksLeftOnBribe = ((Mercenary) entity).getTicksLeftOnBribe();
+                    if (ticksLeftOnBribe > 0) {
+                        ((Mercenary) entity).setTicksLeftOnBribe(ticksLeftOnBribe - 1);
+                    } else {
+                        updateCharacter.removeAlly((MovingEntity) entity);
+                        ((Mercenary) entity).setIsBribed(false);
+                    }
+                }
                 if (updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
                     ((MovingEntity) entity).move(currentGame);
                 }
@@ -555,44 +564,58 @@ public class DungeonManiaController {
         Entity sword = null;
         Entity treasure = null;
         Entity one_ring = null;
+        Entity sceptre = null;
         for (Entity item : loadedgame.getItems()) {
-            if (item.getType().equalsIgnoreCase("Bow")) {
+            if (item instanceof Bow) {
                 bow = item;
-            }
-            if (item.getType().equalsIgnoreCase("treasure") || item.getType().equalsIgnoreCase("sun_stone")) {
+            } else if (item instanceof TreasureEntity || item instanceof SunStone) {
                 treasure = item;
-            }
-            if (item.getType().equalsIgnoreCase("sword")) {
+            } else if (item instanceof SwordEntity) {
                 sword = item;
-            }
-            if (item.getType().equalsIgnoreCase("one_ring")) {
+            } else if (item instanceof TheOneRingEntity) {
                 one_ring = item;
+            } else if (item instanceof Sceptre) {
+                sceptre = item;
             }
         }
-        if (treasure == null && interactableEntity instanceof Mercenary) {
-            throw new InvalidActionException("no treasure");
+
+        Boolean bribeMPossible = (treasure != null) || (sceptre != null);
+        Boolean bribeAPossible = (one_ring != null) || (sceptre != null);
+
+        if (!bribeMPossible && interactableEntity instanceof Mercenary) {
+            throw new InvalidActionException("insufficient material to bribe");
         }
-        if (one_ring == null && interactableEntity instanceof Assassin) {
-            throw new InvalidActionException("no one ring");
+        if (bribeAPossible && interactableEntity instanceof Assassin) {
+            throw new InvalidActionException("insufficient material to bribe");
         }
         if (interactableEntity instanceof Mercenary) {
             if (!isMercenaryAdjacent(interactableEntity.getPos()) && !RealisAdjacent(interactableEntity.getPos())) {
                 throw new InvalidActionException("not cardinally adjacent within 2 squares");
             }
-            if (interactableEntity instanceof Assassin) {
-                loadedgame.removeItem(one_ring);
-                Character updateCharacter = loadedgame.getCharacter();
-                updateCharacter.addAlly((Assassin) interactableEntity);
-                loadedgame.setCharacter(updateCharacter);
-                ((Assassin) interactableEntity).setIsBribed(true);
-            } else {
-                if (treasure instanceof TreasureEntity) {
-                    loadedgame.removeItem(treasure);
-                }
+            if (sceptre != null) {
+                ((Mercenary) interactableEntity).setTicksLeftOnBribe(10);
                 Character updateCharacter = loadedgame.getCharacter();
                 updateCharacter.addAlly((Mercenary) interactableEntity);
                 loadedgame.setCharacter(updateCharacter);
                 ((Mercenary) interactableEntity).setIsBribed(true);
+            } else {
+                if (interactableEntity instanceof Assassin) {
+                    if (one_ring != null) {
+                        loadedgame.removeItem(one_ring);
+                        Character updateCharacter = loadedgame.getCharacter();
+                        updateCharacter.addAlly((Assassin) interactableEntity);
+                        loadedgame.setCharacter(updateCharacter);
+                        ((Assassin) interactableEntity).setIsBribed(true);
+                    }
+                } else {
+                    if (treasure instanceof TreasureEntity) {
+                        loadedgame.removeItem(treasure);
+                        Character updateCharacter = loadedgame.getCharacter();
+                        updateCharacter.addAlly((Assassin) interactableEntity);
+                        loadedgame.setCharacter(updateCharacter);
+                        ((Assassin) interactableEntity).setIsBribed(true);
+                    }
+                }
             }
         }
         if (interactableEntity instanceof ZombieToastSpawner) {
@@ -747,7 +770,12 @@ public class DungeonManiaController {
      * @throws InvalidActionException
      */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        if (!buildable.equals("bow") && !buildable.equals("shield")) {
+        List<String> builds = new ArrayList<String>();
+        builds.add("bow");
+        builds.add("shield");
+        builds.add("midnight_armour");
+        builds.add("sceptre");
+        if (!builds.contains(buildable)) {
             throw new IllegalArgumentException();
         }
         DungeonMania dungeon = this.loadedgame;
@@ -766,6 +794,23 @@ public class DungeonManiaController {
                 throw new InvalidActionException("cannot build shield");
             }
         }
+
+        if (buildable.equals("midnight_armour")) {
+            if (CheckMidnightArmour()) {
+                dungeon.addBuildable("midnight_armour");
+            } else {
+                throw new InvalidActionException("cannot build midnight armour");
+            }
+        }
+
+        if (buildable.equals("sceptre")) {
+            if (CheckSceptre()) {
+                dungeon.addBuildable("sceptre");
+            } else {
+                throw new InvalidActionException("cannot build sceptre");
+            }
+        }
+
         return new DungeonResponse(loadedgame.getId(), loadedgame.getName(), loadedgame.getEntityResponses(),
                 loadedgame.getItemResponses(), loadedgame.getBuildables(),
                 GoalFactory.goalString(loadedgame.getGoal()));

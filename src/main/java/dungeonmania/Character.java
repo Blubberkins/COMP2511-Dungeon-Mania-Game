@@ -16,7 +16,7 @@ public class Character extends Entity {
     private int invincibleTimer;
     private boolean isInvincible;
 
-    public Character (Position pos, String type, String id){
+    public Character(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
         this.damage = 10;
@@ -30,8 +30,8 @@ public class Character extends Entity {
     }
 
     /**
-     * Updates the characters potential
-     * potion effects, and removes them if they have timed out.
+     * Updates the characters potential potion effects, and removes them if they
+     * have timed out.
      */
     public void updateChar() {
         if (this.getisInvincible()) {
@@ -49,24 +49,25 @@ public class Character extends Entity {
     }
 
     /**
-     * Moves the character in the game given a direction
-     * also checks for blocked movement by walls and boulders
+     * Moves the character in the game given a direction also checks for blocked
+     * movement by walls and boulders
+     * 
      * @param game
      * @param move
      */
     public void move(DungeonMania game, Direction move) {
-        Position newPos =  this.getPos().translateBy(move);
-        for (Entity entity: game.getEntities()) {
+        Position newPos = this.getPos().translateBy(move);
+        for (Entity entity : game.getEntities()) {
             if (entity.getPos().equals(newPos)) {
                 if (entity instanceof Boulder) {
-                    if (((Boulder) entity).checkBoulderMovable(game.getEntities(), move)) { 
+                    if (((Boulder) entity).checkBoulderMovable(game.getEntities(), move)) {
                         entity.setPos(entity.getPos().translateBy(move));
                         this.setPos(newPos);
                         return;
                     }
                 }
                 if (entity instanceof DoorEntity) {
-                    for (Entity item: game.getItems()) {
+                    for (Entity item : game.getItems()) {
                         if (item.getType().equals("key")) {
                             ((DoorEntity) entity).setIsOpen(true);
                             ((KeyEntity) item).setIsUsed(true);
@@ -75,7 +76,7 @@ public class Character extends Entity {
                     }
                 }
                 if (entity instanceof Portal) {
-                    for (Entity otherPortal: game.getEntities()) {
+                    for (Entity otherPortal : game.getEntities()) {
                         if (otherPortal instanceof Portal) {
                             if (!otherPortal.getPos().equals(((Portal) entity).getPos())) {
                                 if (((Portal) otherPortal).getColour().equals(((Portal) entity).getColour())) {
@@ -86,7 +87,7 @@ public class Character extends Entity {
                         }
                     }
                 }
-                if (entity instanceof Wall){
+                if (entity instanceof Wall) {
                     return;
                 }
 
@@ -94,7 +95,7 @@ public class Character extends Entity {
         }
         this.setPos(newPos);
     }
-    
+
     public List<MovingEntity> getAllies() {
         return allies;
     }
@@ -103,9 +104,14 @@ public class Character extends Entity {
         this.allies = allies;
     }
 
-    public void addAlly(MovingEntity entity){
+    public void addAlly(MovingEntity entity) {
         this.allies.add(entity);
     }
+
+    public void removeAlly(MovingEntity entity) {
+        this.allies.remove(entity);
+    }
+
     public Boolean getInBattle() {
         return inBattle;
     }
@@ -166,7 +172,7 @@ public class Character extends Entity {
         this.setHealth(health - damage2);
     }
 
-    public Boolean isAlive(){
+    public Boolean isAlive() {
         return this.health > 0;
     }
 

@@ -16,6 +16,7 @@ public class Mercenary extends MovingEntity {
     private final int minBribe = 1;
     private Boolean isBribed;
     private ArmourEntity armour;
+    private int ticksLeftOnBribe;
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
@@ -24,6 +25,7 @@ public class Mercenary extends MovingEntity {
         super.setDamage(5);
         this.isBribed = false;
         this.armour = ChanceOfArmour();
+        this.ticksLeftOnBribe = -1;
     }
 
     /**
@@ -168,5 +170,13 @@ public class Mercenary extends MovingEntity {
         }
 
         return path;
+    }
+
+    public int getTicksLeftOnBribe() {
+        return this.ticksLeftOnBribe;
+    }
+
+    public void setTicksLeftOnBribe(int ticks) {
+        this.ticksLeftOnBribe = ticks;
     }
 }

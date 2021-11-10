@@ -398,12 +398,13 @@ public class m3test {
                     }
                 }
                 spider = spidercount;
-                // break the loop if we have not spawned an assassin
-                // we want to compare damage of anduril on non-bosses
-                // so we 100% do NOT want an assassin
-                if (!(findMercenary(game) instanceof Assassin)) {
-                    hasAssassin = false;
-                }
+            }
+
+            // break the loop if we have not spawned an assassin
+            // we want to compare damage of anduril on non-bosses
+            // so we 100% do NOT want an assassin
+            if (!(findMercenary(game) instanceof Assassin)) {
+                hasAssassin = false;
             }
         }
 
@@ -459,10 +460,11 @@ public class m3test {
     public void testMidnight() {
         // midnight armour test first
         Boolean hasArmour = false;
+        Boolean hasAssassin = true;
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
         Mercenary firstM = null;
-        while (!hasArmour) {
+        while (!hasArmour || hasAssassin) {
             int spider = -1;
             while (spider != 0) {
                 int spidercount = 0;
@@ -477,10 +479,15 @@ public class m3test {
                 spider = spidercount;
                 // break the loop if we spawn a mercenary with armour
                 // this is so we can construct the midnight armour
-                firstM = findMercenary(game);
-                if (firstM.HasArmour()) {
-                    hasArmour = true;
-                }
+            }
+
+            firstM = findMercenary(game);
+            if (firstM.HasArmour()) {
+                hasArmour = true;
+            }
+
+            if (!(firstM instanceof Assassin)) {
+                hasAssassin = false;
             }
         }
 
@@ -497,6 +504,7 @@ public class m3test {
         dm.tick(null, Direction.RIGHT);
 
         // the mercenary takes 5 turns to kill (checked by playing the game)
+        // TODO currently character dies
         int mHP = firstM.getHealth();
         int dmgGiven = 0;
         int cHP = game.getCharacter().getHealth();
