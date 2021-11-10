@@ -25,6 +25,7 @@ public class Battles {
 
         Boolean anduril = false;
         int characterDamage = (character.getDamage() + character.getHealth()) / 10;
+        Boolean hasBow = false;
         for (Entity item : items) {
             if (item instanceof SwordEntity) {
                 characterDamage += 5;
@@ -34,8 +35,7 @@ public class Battles {
                 }
             }
             if (item instanceof Bow) {
-                ((Weapons) item).decrementDurability();
-                entity.receiveDMG(characterDamage);
+                hasBow = true;
             }
             if (item instanceof MidnightArmour) {
                 characterDamage += 5;
@@ -57,12 +57,23 @@ public class Battles {
 
         if (!(entity instanceof Hydra && anduril)) {
             entity.receiveDMG(characterDamage);
+            if (hasBow) {
+                findBow(items).decrementDurability();
+                entity.receiveDMG(characterDamage);
+            }
         } else {
-            int prev = entity.getHealth();
-            entity.receiveDMG(characterDamage);
-            int next = entity.getHealth();
-            if (next > prev) {
-                entity.setHealth(2 * prev - next);
+            int execute = 1;
+            if (hasBow) {
+                findBow(items).decrementDurability();
+                execute = 2;
+            }
+            for (int i = 0; i < execute; i++) {
+                int prev = entity.getHealth();
+                entity.receiveDMG(characterDamage);
+                int next = entity.getHealth();
+                if (next > prev) {
+                    entity.setHealth(2 * prev - next);
+                }
             }
         }
 
@@ -74,6 +85,7 @@ public class Battles {
             return BattleOutcome.CHARACTER_WINS;
         }
         int enemydamage = (entity.getDamage() + entity.getHealth()) / 5;
+        double multiplier = 1.0;
         for (Entity item : items) {
             if (item instanceof Shield) {
                 enemydamage -= 5;
@@ -81,17 +93,26 @@ public class Battles {
             }
             if (item instanceof ArmourEntity) {
                 ((Weapons) item).decrementDurability();
-                enemydamage = enemydamage / 2;
+                multiplier = multiplier / 2;
 
             }
             if (item instanceof MidnightArmour) {
                 enemydamage -= 5;
             }
         }
-        character.receiveDMG(enemydamage);
+        character.receiveDMG((int) Math.floor(enemydamage * multiplier));
         if (!character.isAlive()) {
             return BattleOutcome.ENEMY_WINS;
         }
         return BattleOutcome.NEITHER;
+    }
+
+    public static Bow findBow(List<Entity> items) {
+        for (Entity e : items) {
+            if (e instanceof Bow) {
+                return (Bow) e;
+            }
+        }
+        return null;
     }
 }

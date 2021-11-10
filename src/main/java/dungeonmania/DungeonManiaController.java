@@ -426,9 +426,10 @@ public class DungeonManiaController {
             if (entity instanceof MovingEntity) {
                 if (entity instanceof Mercenary) {
                     int ticksLeftOnBribe = ((Mercenary) entity).getTicksLeftOnBribe();
-                    if (ticksLeftOnBribe > 0) {
+                    if (ticksLeftOnBribe > 1) {
                         ((Mercenary) entity).setTicksLeftOnBribe(ticksLeftOnBribe - 1);
-                    } else {
+                    } else if (ticksLeftOnBribe == 1) {
+                        ((Mercenary) entity).setTicksLeftOnBribe(ticksLeftOnBribe - 1);
                         updateCharacter.removeAlly((MovingEntity) entity);
                         ((Mercenary) entity).setIsBribed(false);
                     }
@@ -585,7 +586,7 @@ public class DungeonManiaController {
         if (!bribeMPossible && interactableEntity instanceof Mercenary) {
             throw new InvalidActionException("insufficient material to bribe");
         }
-        if (bribeAPossible && interactableEntity instanceof Assassin) {
+        if (!bribeAPossible && interactableEntity instanceof Assassin) {
             throw new InvalidActionException("insufficient material to bribe");
         }
         if (interactableEntity instanceof Mercenary) {
@@ -608,12 +609,14 @@ public class DungeonManiaController {
                         ((Assassin) interactableEntity).setIsBribed(true);
                     }
                 } else {
-                    if (treasure instanceof TreasureEntity) {
-                        loadedgame.removeItem(treasure);
+                    if (treasure instanceof TreasureEntity || treasure instanceof SunStone) {
+                        if (treasure instanceof TreasureEntity) {
+                            loadedgame.removeItem(treasure);
+                        }
                         Character updateCharacter = loadedgame.getCharacter();
-                        updateCharacter.addAlly((Assassin) interactableEntity);
+                        updateCharacter.addAlly((Mercenary) interactableEntity);
                         loadedgame.setCharacter(updateCharacter);
-                        ((Assassin) interactableEntity).setIsBribed(true);
+                        ((Mercenary) interactableEntity).setIsBribed(true);
                     }
                 }
             }
