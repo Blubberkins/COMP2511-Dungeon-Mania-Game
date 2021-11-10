@@ -396,7 +396,7 @@ public class DungeonManiaController {
         if (tick % 30 == 0 && tick != 0) {
             currentGame.spawnMercenary();
         }
-        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equals("hard")) {
+        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equalsIgnoreCase("hard")) {
             currentGame.spawnHydra();
         }
         if (itemUsed != null) {
