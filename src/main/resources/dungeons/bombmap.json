@@ -1,7 +1,7 @@
+
 {
     "width": 4,
-    "height": 4,
-    "seed": 5,
+    "height": 1,
     "entities": [
         {
             "x": 0,
@@ -11,33 +11,34 @@
         {
             "x": 1,
             "y": 0,
-            "type": "wall"
-        },
-        {
-            "x": 1,
-            "y": 1,
-            "type": "wall"
-        },
-        {
-            "x": 1,
-            "y": 2,
-            "type": "wall"
-        },
-        {
-            "x": 2,
-            "y": 1,
-            "type": "wall"
-        },
-        {
-            "x": 2,
-            "y": 2,
-            "type": "wall"
+            "type": "bomb"
         },
         {
             "x": 2,
             "y": 0,
-            "type": "exit"
+            "type": "boulder"
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "type": "wall"
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": "wall"
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "type": "wall"
+        },         
+        {
+            "x": 3,
+            "y": 0,
+            "type": "switch"
         }
+
     ],
     "goal-condition": {
         "goal": "exit"

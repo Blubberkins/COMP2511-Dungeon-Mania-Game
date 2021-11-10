@@ -30,6 +30,46 @@ public class ControllerTest {
         // entities exist in the game
         assertTrue(game.getEntities().size() > 0);
     }
+    @Test
+    public void TestBomb() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
+        int spider = -1;
+        while (spider != 0){
+            int spidercount = 0;
+            dm.newGame("bombmap", "Peaceful");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if(e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+        dm.tick(null, Direction.RIGHT);
+        assertThrows(InvalidActionException.class, () -> {
+            dm.tick("7", Direction.NONE);
+        });
+        dm.tick(null, Direction.RIGHT);
+        dm.tick("7", Direction.NONE);
+        int DestroyedWalls = 0;
+        int preservedWalls = 0;
+        for (Entity entity: game.getEntities()){
+            if (entity.getId().equals("3")) {
+                DestroyedWalls++;
+            }
+            if (entity.getId().equals("4")) {
+                DestroyedWalls++;
+            }
+            if (entity.getId().equals("5")) {
+                preservedWalls++;
+            }
+        }
+        assertTrue(DestroyedWalls == 0);
+        assertTrue(preservedWalls == 1);
+
+    }
 
     @Test
     public void TestTick() {

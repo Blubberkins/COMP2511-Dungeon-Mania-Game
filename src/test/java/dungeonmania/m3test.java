@@ -20,7 +20,7 @@ public class m3test {
     @Test
     public void testAssassinSpawn() {
         int numAssassins = 0;
-        int numTrials = 10000;
+        int numTrials = 1000;
         for (int i = 0; i < numTrials; i++) {
             // load the game with a mercenary
             DungeonManiaController dm = new DungeonManiaController();
@@ -102,23 +102,30 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 10000;
+        int numTrials = 1;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
+            Boolean hasAssassin = true;
+            while (hasAssassin) {
+                int spider = -1;
 
-            int spider = -1;
-            while (spider != 0) {
-                int spidercount = 0;
-                dm.newGame("hydratest", "Hard");
-                game = dm.getLoadedGame();
-                List<Entity> entities = game.getEntities();
-                for (Entity e : entities) {
-                    if (e instanceof Spider) {
-                        spidercount++;
+                while (spider != 0) {
+                    hasAssassin = true;
+                    int spidercount = 0;
+                    dm.newGame("hydratest", "Hard");
+                    game = dm.getLoadedGame();
+                    List<Entity> entities = game.getEntities();
+                    for (Entity e : entities) {
+                        if (e instanceof Spider) {
+                            spidercount++;
+                        }
+                    }
+                    spider = spidercount;
+                    if (!(findMercenary(game) instanceof Assassin)) {
+                        hasAssassin = false;
                     }
                 }
-                spider = spidercount;
             }
 
             dm.tick(null, Direction.RIGHT);
@@ -135,7 +142,7 @@ public class m3test {
                 dm.tick(null, Direction.LEFT);
                 dm.tick(null, Direction.RIGHT);
             }
-
+            dm.tick(null, Direction.NONE);
             Entity hydra = findHydra(game);
             assertTrue(hydra != null);
             assertTrue(hydra instanceof MovingEntity);
@@ -144,7 +151,7 @@ public class m3test {
             int currHP = hydraHP;
             // do stuff until the hydra comes into a single combat with the player
             while (currHP == hydraHP) {
-                dm.tick(null, Direction.UP);
+                dm.tick(null, Direction.RIGHT);
                 currHP = ((MovingEntity) hydra).getHealth();
             }
 

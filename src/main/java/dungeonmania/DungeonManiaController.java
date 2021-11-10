@@ -138,7 +138,7 @@ public class DungeonManiaController {
                 dungeonMania.createEntity(pos, type);
             }
         }
-        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0, 5); i++) {
+        for (int i = 0; i < ThreadLocalRandom.current().nextInt(0,5); i++) {
             dungeonMania.spawnSpider();
         }
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
@@ -302,6 +302,33 @@ public class DungeonManiaController {
         return false;
     }
 
+    public boolean RealisBomb(Position e) {
+        DungeonMania dungeon = this.loadedgame;
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        for (Direction d : directions) {
+            if (dungeon.getCharacter().getPos().translateBy(d).equals(e)) {
+                return true;
+            }
+        }
+        if (dungeon.getCharacter().getPos().translateBy(Direction.UP).translateBy(Direction.LEFT).equals(e)) {
+            return true;
+        }
+        if (dungeon.getCharacter().getPos().translateBy(Direction.UP).translateBy(Direction.RIGHT).equals(e)) {
+            return true;
+        }
+        if (dungeon.getCharacter().getPos().translateBy(Direction.DOWN).translateBy(Direction.LEFT).equals(e)) {
+            return true;
+        }
+        if (dungeon.getCharacter().getPos().translateBy(Direction.DOWN).translateBy(Direction.RIGHT).equals(e)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Checks if a mercenary is adjacent to a given position
      * 
@@ -369,7 +396,7 @@ public class DungeonManiaController {
         if (tick % 30 == 0 && tick != 0) {
             currentGame.spawnMercenary();
         }
-        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equals("hard")) {
+        if (tick % 50 == 0 && tick != 0 && currentGame.getDifficulty().equalsIgnoreCase("hard")) {
             currentGame.spawnHydra();
         }
         if (itemUsed != null) {
@@ -384,11 +411,11 @@ public class DungeonManiaController {
                     }
                 }
                 if (!isActivated) {
-                    throw new InvalidActionException("bomb");
+                    throw new InvalidActionException("not activated");
                 }
                 List<Entity> removable = new ArrayList<>();
                 for (Entity entity : currentGame.getEntities()) {
-                    if (RealisAdjacent(entity.getPos())) {
+                    if (RealisBomb(entity.getPos())) {
                         removable.add(entity);
                     }
                 }
