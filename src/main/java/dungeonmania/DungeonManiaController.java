@@ -822,7 +822,6 @@ public class DungeonManiaController {
 
     public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String gameMode)
             throws IllegalArgumentException {
-
         // checking gameMode
         Boolean peaceful = gameMode.equalsIgnoreCase("peaceful");
         Boolean standard = gameMode.equalsIgnoreCase("standard");
@@ -848,7 +847,7 @@ public class DungeonManiaController {
             }
         }
 
-        JSONObject jsonGoalCondition = new JSONObject("\"goal-condition\": {\"goal\": \"exit\"}");
+        JSONObject jsonGoalCondition = new JSONObject("{\"goal\": \"exit\"}");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
         List<EntityResponse> entityResponses = dungeonMania.getEntityResponses();
         dungeonMania.setId(Integer.toString(this.games.size() + 1));

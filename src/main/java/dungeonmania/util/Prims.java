@@ -25,13 +25,13 @@ public class Prims {
         // add to options all neighbours of 'start' not on boundary that are of distance
         // 2 away and are walls
 
-        List<Position> options = generateNeighbours(grid, start, 2);
+        List<Position> options = generateNeighbours(grid, start, 2, true);
 
         while (!options.isEmpty()) {
             int index = ThreadLocalRandom.current().nextInt(0, options.size());
             Position next = options.remove(index);
 
-            List<Position> neighbours = generateNeighbours(grid, next, 2);
+            List<Position> neighbours = generateNeighbours(grid, next, 2, false);
             if (!neighbours.isEmpty()) {
                 int neighbourIndex = ThreadLocalRandom.current().nextInt(0, neighbours.size());
                 Position neighbour = neighbours.get(neighbourIndex);
@@ -41,8 +41,8 @@ public class Prims {
                 grid.get(neighbour.getX()).set(neighbour.getY(), true);
             }
 
-            for (Position p : neighbours) {
-                Boolean bool = grid.get(p.getX()).set(p.getY(), true);
+            for (Position p : generateNeighbours(grid, next, 2, true)) {
+                Boolean bool = grid.get(p.getX()).get(p.getY());
                 if (!bool) {
                     options.add(p);
                 }
@@ -51,7 +51,7 @@ public class Prims {
 
         if (!grid.get(end.getX()).get(end.getY())) {
             grid.get(end.getX()).set(end.getY(), true);
-            List<Position> endNeighbours = generateNeighbours(grid, end, 1);
+            List<Position> endNeighbours = generateNeighbours(grid, end, 1, true);
 
             Boolean noEmpty = false;
             for (Position p : endNeighbours) {
@@ -59,7 +59,7 @@ public class Prims {
                 noEmpty = (noEmpty || b);
             }
 
-            if (!noEmpty) { // every p checked would have been false
+            if (!noEmpty && endNeighbours.size() > 0) { // every p checked would have been false
                 int endNeighbourIndex = ThreadLocalRandom.current().nextInt(0, endNeighbours.size());
                 Position endNeighbour = endNeighbours.get(endNeighbourIndex);
                 grid.get(endNeighbour.getX()).set(endNeighbour.getY(), true);
@@ -69,13 +69,13 @@ public class Prims {
         return grid;
     }
 
-    public static Boolean away(Position a, Position b, int amt) {
+    public static Boolean cardinalAway(Position a, Position b, int amt) {
         int x = a.getX() - b.getX();
         int y = a.getY() - b.getY();
-        return Math.abs(x) + Math.abs(y) == amt;
+        return (Math.abs(x) == amt) || (Math.abs(y) == amt);
     }
 
-    public static List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist) {
+    public static List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist, Boolean isWall) {
         // starting the indices from one and ending at one less than the boundary
         // ensures we never touch the boundary
         // inner check checks the distance and that said square is a wall
@@ -89,7 +89,7 @@ public class Prims {
         for (int i = 1; i < height - 1; i++) {
             for (int j = 1; j < width - 1; j++) {
                 Position curr = new Position(i, j);
-                if (away(curr, src, dist) && !grid.get(i).get(j)) {
+                if (cardinalAway(curr, src, dist) && grid.get(i).get(j) != isWall) {
                     neighbours.add(curr);
                 }
             }
