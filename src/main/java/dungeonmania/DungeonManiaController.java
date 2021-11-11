@@ -20,6 +20,7 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.Position;
+import dungeonmania.util.Prims;
 import dungeonmania.Battles.BattleOutcome;
 
 public class DungeonManiaController {
@@ -821,9 +822,40 @@ public class DungeonManiaController {
 
     public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String gameMode)
             throws IllegalArgumentException {
-        // TODO
 
-        return null;
+        // checking gameMode
+        Boolean peaceful = gameMode.equalsIgnoreCase("peaceful");
+        Boolean standard = gameMode.equalsIgnoreCase("standard");
+        Boolean hard = gameMode.equalsIgnoreCase("hard");
+        if (!peaceful && !standard && !hard) {
+            throw new IllegalArgumentException("invalid gamemode");
+        }
+
+        Position start = new Position(xStart, yStart);
+        Position end = new Position(xEnd, yEnd);
+        List<List<Boolean>> grid = Prims.generate(50, 50, start, end);
+        DungeonMania dungeonMania = new DungeonMania(gameMode, "RandomDungeon");
+
+        dungeonMania.createEntity(start, "player");
+        dungeonMania.createEntity(end, "exit");
+
+        for (int i = 0; i < 50; i++) {
+            for (int j = 0; j < 50; j++) {
+                if (!grid.get(i).get(j)) {
+                    Position pos = new Position(i, j);
+                    dungeonMania.createEntity(pos, "wall");
+                }
+            }
+        }
+
+        JSONObject jsonGoalCondition = new JSONObject("\"goal-condition\": {\"goal\": \"exit\"}");
+        dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));
+        List<EntityResponse> entityResponses = dungeonMania.getEntityResponses();
+        dungeonMania.setId(Integer.toString(this.games.size() + 1));
+        this.games.add(dungeonMania);
+        this.loadedgame = dungeonMania;
+        return new DungeonResponse(dungeonMania.getId(), "RandomDungeon", entityResponses, new ArrayList<>(),
+                new ArrayList<>(), GoalFactory.goalString(dungeonMania.getGoal()));
     }
 
     /**

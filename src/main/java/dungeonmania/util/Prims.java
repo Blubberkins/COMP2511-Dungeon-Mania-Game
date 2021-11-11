@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Prims {
-    public List<List<Boolean>> generate(int width, int height, Position start, Position end) {
+    public static List<List<Boolean>> generate(int width, int height, Position start, Position end) {
         List<List<Boolean>> grid = new ArrayList<>();
 
         // initialise grid to all walls
@@ -69,13 +69,13 @@ public class Prims {
         return grid;
     }
 
-    public Boolean away(Position a, Position b, int amt) {
+    public static Boolean away(Position a, Position b, int amt) {
         int x = a.getX() - b.getX();
         int y = a.getY() - b.getY();
         return Math.abs(x) + Math.abs(y) == amt;
     }
 
-    public List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist) {
+    public static List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist) {
         // starting the indices from one and ending at one less than the boundary
         // ensures we never touch the boundary
         // inner check checks the distance and that said square is a wall
@@ -98,7 +98,7 @@ public class Prims {
         return neighbours;
     }
 
-    public Position between(Position a, Position b) {
+    public static Position between(Position a, Position b) {
         // assumes we take a and b as two positions cardinal distance two apart
         Position between = null;
         if (Math.abs(b.getX() - a.getX()) % 2 == 0) {
