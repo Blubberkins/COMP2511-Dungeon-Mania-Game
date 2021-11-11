@@ -29,7 +29,7 @@ public class Prims {
 
         while (!options.isEmpty()) {
             int index = ThreadLocalRandom.current().nextInt(0, options.size());
-            Position next = options.get(index);
+            Position next = options.remove(index);
 
             List<Position> neighbours = generateNeighbours(grid, next, 2);
             if (!neighbours.isEmpty()) {
