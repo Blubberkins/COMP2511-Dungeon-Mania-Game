@@ -380,18 +380,27 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0) {
-            int spidercount = 0;
-            dungeonManiaController.newGame("basicmap8", "Standard");
-            game = dungeonManiaController.getLoadedGame();
-            List<Entity> entities = game.getEntities();
-            for (Entity e : entities) {
-                if (e instanceof Spider) {
-                    spidercount++;
+        Boolean hasAssassin = true;
+        while (hasAssassin) {
+            while (spider != 0) {
+                int spidercount = 0;
+                dungeonManiaController.newGame("basicmap8", "Standard");
+                game = dungeonManiaController.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
+                }
+                spider = spidercount;
+
+            }
+
+            for (Entity e : game.getEntities()) {
+                if (e instanceof Mercenary && !(e instanceof Assassin)) {
+                    hasAssassin = false;
                 }
             }
-            spider = spidercount;
-
         }
 
         // pick up the treasure on (2, 1)
