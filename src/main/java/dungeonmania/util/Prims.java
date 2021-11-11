@@ -8,7 +8,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Prims {
     public List<List<Boolean>> generate(int width, int height, Position start, Position end) {
         List<List<Boolean>> grid = new ArrayList<>();
-        List<Position> options = new ArrayList<Position>();
 
         // initialise grid to all walls
         for (int i = 0; i < height; i++) {
@@ -25,80 +24,90 @@ public class Prims {
 
         // add to options all neighbours of 'start' not on boundary that are of distance
         // 2 away and are walls
-        // starting the indices from one and ending at one less than the boundary
-        // ensures we never touch the boundary
-        // inner check checks the distance and that said square is a wall
-        for (int i = 1; i < height - 1; i++) {
-            for (int j = 1; j < width - 1; j++) {
-                Position curr = new Position(i, j);
-                if (twoAway(curr, start) && !grid.get(i).get(j)) {
-                    options.add(curr);
-                }
-            }
-        }
+
+        List<Position> options = generateNeighbours(grid, start, 2);
 
         while (!options.isEmpty()) {
             int index = ThreadLocalRandom.current().nextInt(0, options.size());
             Position next = options.get(index);
+
+            List<Position> neighbours = generateNeighbours(grid, next, 2);
+            if (!neighbours.isEmpty()) {
+                int neighbourIndex = ThreadLocalRandom.current().nextInt(0, neighbours.size());
+                Position neighbour = neighbours.get(neighbourIndex);
+                Position between = between(next, neighbour);
+                grid.get(next.getX()).set(next.getY(), true);
+                grid.get(between.getX()).set(between.getY(), true);
+                grid.get(neighbour.getX()).set(neighbour.getY(), true);
+            }
+
+            for (Position p : neighbours) {
+                Boolean bool = grid.get(p.getX()).set(p.getY(), true);
+                if (!bool) {
+                    options.add(p);
+                }
+            }
+        }
+
+        if (!grid.get(end.getX()).get(end.getY())) {
+            grid.get(end.getX()).set(end.getY(), true);
+            List<Position> endNeighbours = generateNeighbours(grid, end, 1);
+
+            Boolean noEmpty = false;
+            for (Position p : endNeighbours) {
+                Boolean b = grid.get(p.getX()).get(p.getY());
+                noEmpty = (noEmpty || b);
+            }
+
+            if (!noEmpty) { // every p checked would have been false
+                int endNeighbourIndex = ThreadLocalRandom.current().nextInt(0, endNeighbours.size());
+                Position endNeighbour = endNeighbours.get(endNeighbourIndex);
+                grid.get(endNeighbour.getX()).set(endNeighbour.getY(), true);
+            }
         }
 
         return grid;
     }
 
-    public Boolean twoAway(Position a, Position b) {
+    public Boolean away(Position a, Position b, int amt) {
         int x = a.getX() - b.getX();
         int y = a.getY() - b.getY();
-        return Math.abs(x) + Math.abs(y) == 2;
+        return Math.abs(x) + Math.abs(y) == amt;
+    }
+
+    public List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist) {
+        // starting the indices from one and ending at one less than the boundary
+        // ensures we never touch the boundary
+        // inner check checks the distance and that said square is a wall
+
+        // assumes rectangular, at least height 1
+        int height = grid.size();
+        int width = grid.get(0).size();
+
+        List<Position> neighbours = new ArrayList<Position>();
+
+        for (int i = 1; i < height - 1; i++) {
+            for (int j = 1; j < width - 1; j++) {
+                Position curr = new Position(i, j);
+                if (away(curr, src, dist) && !grid.get(i).get(j)) {
+                    neighbours.add(curr);
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
+    public Position between(Position a, Position b) {
+        // assumes we take a and b as two positions cardinal distance two apart
+        Position between = null;
+        if (Math.abs(b.getX() - a.getX()) % 2 == 0) {
+            int newX = (a.getX() + b.getX()) / 2;
+            int newY = (a.getY() + b.getY()) / 2;
+            between = new Position(newX, newY);
+        } else {
+            between = new Position(a.getX(), b.getY());
+        }
+        return between;
     }
 }
-
-// TODO up to here before stopped working 
-
-// let neighbours = each neighbour of distance 2 from next not on boundary that
-// are empty
-// if neighbours is not empty:
-// let neighbour = random from neighbours
-// maze[ next ] = empty (i.e. true)
-// maze[ position inbetween next and neighbour ] = empty (i.e. true)
-// maze[ neighbour ] = empty (i.e. true)
-
-// add to options all neighbours of 'next' not on boundary that are of distance
-// 2 away and are walls
-
-// // at the end there is still a case where our end position isn't connected to
-// the map
-// // we don't necessarily need this, you can just keep randomly generating maps
-// (was original intention)
-// // but this will make it consistently have a pathway between the two.
-// if maze[end] is a wall:
-// maze[end] = empty
-
-// if there are no cells in neighbours that are empty:
-// // let's connect it to the grid
-//
-//
-// maze[neighbour] = empty
-
-//
-
-// Or, in a more wordy fashion;
-
-//
-//
-// Given a grid that consists of a 2D array of states (Wall/Empty) initialised
-// to only walls
-//
-
-//
-// Pick a random position from the list and a random cardinal neighbour of
-// distance 2 that isn't on the boundary and is empty (not a wall)
-// Pick a random neighbour that is a wall and connect the two via 2 empty spa
-// Compute all cardinal positions that are wa
-
-// Mark it as not a wall
-//
-// If it has atleast one neighbour that is a empty cell then don't do anyth
-
-// You can presume:
-
-// Start/End sit outside of the boundary.
