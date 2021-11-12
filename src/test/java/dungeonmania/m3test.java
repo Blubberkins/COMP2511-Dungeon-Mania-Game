@@ -19,7 +19,7 @@ public class m3test {
     @Test
     public void testAssassinSpawn() {
         int numAssassins = 0;
-        int numTrials = 10000;
+        int numTrials = 1000;
         for (int i = 0; i < numTrials; i++) {
             // load the game with a mercenary
             DungeonManiaController dm = new DungeonManiaController();
@@ -101,7 +101,7 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 10000;
+        int numTrials = 1;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;

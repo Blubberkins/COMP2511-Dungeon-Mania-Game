@@ -4,6 +4,7 @@ all members contributed assumptions relevant to the parts they coded -- see comm
 ------------------------------------------------------------------------------------------
 Allies do not receive damage in combat for the player
 All other entities continue movement as normal
+passing in seed
 **Zombies**
 - zombies have 20hp and do 5 damage
 - Chance of a zombie spawning is 10% 
@@ -55,5 +56,7 @@ All other entities continue movement as normal
 - zombie toast spawner is treated as a wall same as boulder
 - enemy goal counts bribing all mercenaries as a win
 - invincibility causes spiders to change direction as if there was a boulder in the way
+- if bomb is not cardinally adjacent to an activated switch, an illegal action error is thrown
+- the game either accepts movement input or item input not both
 
 Link to timeline and minutes: https://docs.google.com/document/d/1DuSlnb45k3kwA7Nsfz6sRFuLpjWA6yu70Jba2Ndr40c/edit?usp=sharing
