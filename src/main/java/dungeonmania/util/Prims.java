@@ -70,9 +70,9 @@ public class Prims {
     }
 
     public static Boolean cardinalAway(Position a, Position b, int amt) {
-        int x = a.getX() - b.getX();
-        int y = a.getY() - b.getY();
-        return (Math.abs(x) == amt) || (Math.abs(y) == amt);
+        int x = Math.abs(a.getX() - b.getX());
+        int y = Math.abs(a.getY() - b.getY());
+        return ((x == amt) || (y == amt)) && x + y == amt;
     }
 
     public static List<Position> generateNeighbours(List<List<Boolean>> grid, Position src, int dist, Boolean isWall) {

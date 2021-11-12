@@ -31,7 +31,8 @@ public class PrimsTest {
 
         DungeonMania game = dm.getLoadedGame();
 
-        assertTrue(game.getEntities().size() > 200);
+        // ensure more than just the boundary, player and exit spawn
+        assertTrue(game.getEntities().size() > 198);
 
         Position source = new Position(1, 1);
         List<Position> grid = new ArrayList<Position>();
@@ -78,6 +79,10 @@ public class PrimsTest {
             dm.generateDungeon(nums.get(0), nums.get(1), nums.get(2), nums.get(3), "Peaceful");
 
             DungeonMania game = dm.getLoadedGame();
+
+            // ensure more than just the boundary, player and exit spawn
+            assertTrue(game.getEntities().size() > 198);
+
             Position source = new Position(nums.get(0), nums.get(1));
             List<Position> grid = new ArrayList<Position>();
 
