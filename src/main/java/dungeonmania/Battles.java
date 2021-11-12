@@ -8,69 +8,111 @@ public class Battles {
     }
 
     /**
-     * Calculates the outcome of a battle between
-     * the character and an enemy.
+     * Calculates the outcome of a battle between the character and an enemy.
+     * 
      * @param character
      * @param entity
      * @param items
      * @return BattleOutcome
      */
-    public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items){
+    public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items) {
         int allyDamage = 0;
-        for (MovingEntity ally: character.getAllies()){
+        for (MovingEntity ally : character.getAllies()) {
             ally.setInBattle(true);
-            allyDamage = (ally.getDamage() + ally.getHealth())/10;
+            allyDamage = (ally.getDamage() + ally.getHealth()) / 10;
             entity.receiveDMG(allyDamage);
         }
 
-        int characterDamage = (character.getDamage() + character.getHealth())/10;
-        for (Entity item: items){
+        Boolean anduril = false;
+        int characterDamage = (character.getDamage() + character.getHealth()) / 10;
+        Boolean hasBow = false;
+        for (Entity item : items) {
             if (item instanceof SwordEntity) {
                 characterDamage += 5;
                 ((Weapons) item).decrementDurability();
+                if (item instanceof Anduril) {
+                    anduril = true;
+                }
             }
-            if(item instanceof Bow){
-                ((Weapons) item).decrementDurability();
-                entity.receiveDMG(characterDamage);
-
+            if (item instanceof Bow) {
+                hasBow = true;
+            }
+            if (item instanceof MidnightArmour) {
+                characterDamage += 5;
             }
         }
-        if(entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
-            characterDamage = characterDamage/2;
+        if (entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
+            characterDamage = characterDamage / 2;
             ((ZombieToast) entity).decrementArmourDurability();
         }
-        if(entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
-            characterDamage = characterDamage/2;
+        if (entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+            characterDamage = characterDamage / 2;
             ((Mercenary) entity).decrementArmourDurability();
         }
         if (entity instanceof Hydra || entity instanceof Assassin) {
-            characterDamage *= 3;
+            if (anduril) {
+                characterDamage *= 3;
+            }
         }
-        
-        entity.receiveDMG(characterDamage);
-        if (!entity.isAlive()){
+
+        if (!(entity instanceof Hydra && anduril)) {
+            entity.receiveDMG(characterDamage);
+            if (hasBow) {
+                findBow(items).decrementDurability();
+                entity.receiveDMG(characterDamage);
+            }
+        } else {
+            int execute = 1;
+            if (hasBow) {
+                findBow(items).decrementDurability();
+                execute = 2;
+            }
+            for (int i = 0; i < execute; i++) {
+                int prev = entity.getHealth();
+                entity.receiveDMG(characterDamage);
+                int next = entity.getHealth();
+                if (next > prev) {
+                    entity.setHealth(2 * prev - next);
+                }
+            }
+        }
+
+        if (!entity.isAlive()) {
             character.setInBattle(false);
-            for (MovingEntity ally: character.getAllies()){
+            for (MovingEntity ally : character.getAllies()) {
                 ally.setInBattle(false);
             }
             return BattleOutcome.CHARACTER_WINS;
         }
-        int enemydamage = (entity.getDamage() + entity.getHealth())/5;
-        for (Entity item: items){
+        int enemydamage = (entity.getDamage() + entity.getHealth()) / 5;
+        double multiplier = 1.0;
+        for (Entity item : items) {
             if (item instanceof Shield) {
                 enemydamage -= 5;
                 ((Weapons) item).decrementDurability();
             }
-            if(item instanceof ArmourEntity){
+            if (item instanceof ArmourEntity) {
                 ((Weapons) item).decrementDurability();
-                enemydamage = enemydamage/2;
+                multiplier = multiplier / 2;
 
             }
+            if (item instanceof MidnightArmour) {
+                enemydamage -= 5;
+            }
         }
-        character.receiveDMG(enemydamage);
-        if(!character.isAlive()) {
+        character.receiveDMG((int) Math.floor(enemydamage * multiplier));
+        if (!character.isAlive()) {
             return BattleOutcome.ENEMY_WINS;
         }
         return BattleOutcome.NEITHER;
+    }
+
+    public static Bow findBow(List<Entity> items) {
+        for (Entity e : items) {
+            if (e instanceof Bow) {
+                return (Bow) e;
+            }
+        }
+        return null;
     }
 }

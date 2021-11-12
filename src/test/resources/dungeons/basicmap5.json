@@ -31,6 +31,19 @@
 
     ],
     "goal-condition": {
-        "goal": "exit OR (treasure AND boulders)"
-    }    
+        "goal": "OR",
+        "subgoals": [
+          {
+            "goal": "exit"
+          },
+          {
+            "goal": "AND",
+            "subgoals": [{
+                "goal": "treasure"
+            }, {
+                "goal": "boulders"
+            }]
+          }
+        ]
+      }
 }

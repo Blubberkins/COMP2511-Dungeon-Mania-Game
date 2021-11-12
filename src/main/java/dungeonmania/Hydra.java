@@ -5,7 +5,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import dungeonmania.util.Position;
 
 public class Hydra extends ZombieToast {
-
     public Hydra(Position pos, String type, String id) {
         super(pos, type, id);
         super.setHealth(40);
@@ -14,11 +13,10 @@ public class Hydra extends ZombieToast {
 
     @Override
     public void receiveDMG(int damage) {
-        int chance = ThreadLocalRandom.current().nextInt(0, 1);
+        int chance = ThreadLocalRandom.current().nextInt(0, 2);
         if (chance == 0) {
             super.setHealth(super.getHealth() - damage);
-        }
-        else { // chance == 1
+        } else { // chance == 1
             super.setHealth(super.getHealth() + damage);
         }
     }

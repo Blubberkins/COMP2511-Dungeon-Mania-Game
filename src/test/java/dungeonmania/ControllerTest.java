@@ -94,8 +94,21 @@ public class ControllerTest {
     public void testItem() {
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
-        dm.newGame("basicmap13", "Standard");
-        game = dm.getLoadedGame();
+
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("basicmap13", "Standard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
         Character player = game.getCharacter();
 
         // player on (0, 0)
@@ -219,10 +232,24 @@ public class ControllerTest {
     @Test
     public void testBuild() {
         DungeonManiaController dm = new DungeonManiaController();
-        dm.newGame("basicmap7", "Peaceful");
+        DungeonMania game = null;
+
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("basicmap7", "Peaceful");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
 
         for (int i = 0; i < 7; i++) {
-            dm.tick("", Direction.RIGHT);
+            dm.tick(null, Direction.RIGHT);
         }
 
         dm.build("bow");

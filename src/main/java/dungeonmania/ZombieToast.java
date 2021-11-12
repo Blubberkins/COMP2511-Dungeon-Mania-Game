@@ -20,10 +20,11 @@ public class ZombieToast extends MovingEntity {
 
     /**
      * Generates a chance for a zombie to spawn with armor
+     * 
      * @return
      */
     public ArmourEntity ChanceOfArmour() {
-        if(ThreadLocalRandom.current().nextInt(0, 11) == 5) {
+        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {
             return new ArmourEntity(null, "armour", "armour" + this.getId());
         }
         return null;
@@ -38,14 +39,16 @@ public class ZombieToast extends MovingEntity {
 
     /**
      * Gets current zombies armour
+     * 
      * @return ArmourEntity
      */
-    public ArmourEntity getArmour(){
+    public ArmourEntity getArmour() {
         return this.armour;
     }
 
     /**
      * Checks if a zombie has armor
+     * 
      * @return boolean
      */
     public Boolean HasArmour() {
@@ -53,30 +56,27 @@ public class ZombieToast extends MovingEntity {
     }
 
     /**
-     * Generates random movement for zombie toasts
-     * and moves the zombie
+     * Generates random movement for zombie toasts and moves the zombie
      */
     @Override
-    public void move(DungeonMania d) {   
-        Boolean isWall = true;
+    public void move(DungeonMania d) {
         List<Direction> directions = new ArrayList<>();
-        directions.add(Direction.UP);
-        directions.add(Direction.DOWN);
-        directions.add(Direction.LEFT);
-        directions.add(Direction.RIGHT);
-        Direction random = null;
-        Position p = null;
-        while (isWall) {
-            isWall = false;
-            random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));
-            for (Entity entity: d.getEntities()) {
-                if ((entity instanceof Wall) && this.getPos().translateBy(random).equals(entity.getPos())) {
-                    isWall = true;
-                }
-            }
+
+        if (!hasWall(d, this.getPos().translateBy(Direction.RIGHT))) {
+            directions.add(Direction.RIGHT);
         }
-        p = this.getPos().translateBy(random);
-        this.setPos(p);
+        if (!hasWall(d, this.getPos().translateBy(Direction.LEFT))) {
+            directions.add(Direction.LEFT);
+        }
+        if (!hasWall(d, this.getPos().translateBy(Direction.UP))) {
+            directions.add(Direction.UP);
+        }
+        if (!hasWall(d, this.getPos().translateBy(Direction.DOWN))) {
+            directions.add(Direction.DOWN);
+        }
+
+        Direction random = directions.get(ThreadLocalRandom.current().nextInt(0, directions.size()));
+        this.setPos(this.getPos().translateBy(random));
     }
 
     /**
@@ -85,5 +85,13 @@ public class ZombieToast extends MovingEntity {
     public void receiveDMG(int damage) {
         super.setHealth(super.getHealth() - damage);
     }
- 
+
+    public Boolean hasWall(DungeonMania game, Position pos) {
+        for (Entity entity : game.getEntities()) {
+            if ((entity instanceof Wall) && pos.equals(entity.getPos())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
