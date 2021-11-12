@@ -9,6 +9,7 @@ import dungeonmania.util.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -126,12 +127,13 @@ public class App {
             return callUsingSessionAndArgument(request, (dmc) -> dmc.interact(request.queryParams("entityId")));
         }, gson::toJson);
 
+        // no forum fix has been presented, so this is a quickfix
+        // running randoms
         Spark.post("/api/game/new/generate/", "application/json", (request, response) -> {
             return callUsingSessionAndArgument(request,
-                    (dmc) -> dmc.generateDungeon(Integer.parseInt(request.queryParams("xStart")),
-                            Integer.parseInt(request.queryParams("yStart")),
-                            Integer.parseInt(request.queryParams("xEnd")),
-                            Integer.parseInt(request.queryParams("yEnd")), request.queryParams("gameMode")));
+                    (dmc) -> dmc.generateDungeon(ThreadLocalRandom.current().nextInt(1, 49),
+                            ThreadLocalRandom.current().nextInt(1, 49), ThreadLocalRandom.current().nextInt(1, 49),
+                            ThreadLocalRandom.current().nextInt(1, 49), request.queryParams("gameMode")));
         }, gson::toJson);
 
         Scintilla.start();

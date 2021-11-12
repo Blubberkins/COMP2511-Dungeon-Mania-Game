@@ -30,6 +30,9 @@ public class PrimsTest {
         dm.generateDungeon(1, 1, 48, 48, "Peaceful");
 
         DungeonMania game = dm.getLoadedGame();
+
+        assertTrue(game.getEntities().size() > 200);
+
         Position source = new Position(1, 1);
         List<Position> grid = new ArrayList<Position>();
 
