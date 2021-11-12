@@ -205,7 +205,7 @@ public class DungeonManiaController {
             String filename = difficulty + "-" + mapName + "-" + Integer.toString(numSaves) + "-" + ".json";
             File f = new File(pathname);
             String absolutePathName = f.getAbsolutePath();
-            File save = new File(absolutePathName + filename);
+            File save = new File(absolutePathName + "/" + filename);
             save.createNewFile();
             writeToFile(conts, absolutePathName + "/" + filename);
         } catch (IOException e) {
@@ -555,6 +555,7 @@ public class DungeonManiaController {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
         }
         tick++;
+        RewindGame();
         return new DungeonResponse(id, name, e, i, currentGame.getBuildables(), Goalstring);
 
     }
@@ -739,6 +740,7 @@ public class DungeonManiaController {
      * 
      * @return boolean
      */
+    
     public Boolean CheckShield() {
         int keys = 0;
         int wood = 0;
@@ -814,7 +816,11 @@ public class DungeonManiaController {
 
         }
     }
-
+    public DungeonResponse rewind(int ticks)
+    throws IllegalArgumentException {
+        return null;
+    }
+    
     /**
      * Turns a given goal the a json file
      * 
@@ -845,5 +851,67 @@ public class DungeonManiaController {
      */
     public DungeonMania getLoadedGame() {
         return this.loadedgame;
+    }
+    public void RewindGame() throws IllegalArgumentException {
+        int numSaves = tick;
+        String difficulty = this.loadedgame.getDifficulty();
+        String mapName = this.loadedgame.getName();
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("difficulty", difficulty);
+        jsonObject.put("mapName", mapName);
+
+        JSONArray entities = new JSONArray();
+        List<Entity> gameEntities = this.loadedgame.getEntities();
+
+        for (Entity entity : gameEntities) {
+            JSONObject newEntity = new JSONObject();
+            int xPos = entity.getPos().getX();
+            int yPos = entity.getPos().getY();
+            String type = entity.getType();
+            newEntity.put("x", xPos);
+            newEntity.put("y", yPos);
+            if(type.equals("player")) {
+                newEntity.put("type", "older_player");    
+            }
+            else {
+            newEntity.put("type", type);
+            }
+            entities.put(newEntity);
+        }
+
+        JSONArray inventory = new JSONArray();
+        List<Entity> gameItems = this.loadedgame.getItems();
+
+        for (Entity item : gameItems) {
+            JSONObject newEntity = new JSONObject();
+            String type = item.getType();
+            newEntity.put("type", type);
+            inventory.put(newEntity);
+        }
+
+        jsonObject.put("entities", entities);
+        jsonObject.put("inventory", inventory);
+
+        Goal gameGoals = this.loadedgame.getGoal();
+        JSONObject goals = goalToJSON(gameGoals);
+        jsonObject.put("goal-condition", goals);
+
+        String conts = jsonObject.toString();
+
+        try {
+            String pathname = "src/main/resources/rewindsaves/";
+            String filename = difficulty + "-" + mapName + "-" + Integer.toString(numSaves) + "-" + ".json";
+            File f = new File(pathname);
+            f.mkdir();
+            String absolutePathName = f.getAbsolutePath();
+            File save = new File(absolutePathName + "/" + filename);
+            save.createNewFile();
+            writeToFile(conts, absolutePathName + "/" + filename);
+        } catch (IOException e) {
+
+        }
+
+        String goalString = GoalFactory.goalString(this.loadedgame.getGoal());
     }
 }
