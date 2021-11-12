@@ -8,7 +8,7 @@ import dungeonmania.util.Position;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.Random;
+// import java.util.Random;
 
 public class DungeonMania {
     private Character character;
@@ -139,6 +139,49 @@ public class DungeonMania {
                 }
             }
         }
+        if (type.equals("midnight_armour")) {
+            this.Items.add(new MidnightArmour(null, type, id));
+            this.Buildables.remove("midnight_armour");
+            int armourCount = 1;
+            int stoneCount = 1;
+            for (Entity entity : this.Items) {
+                if (entity instanceof ArmourEntity && armourCount > 0) {
+                    toRemove.add(entity);
+                    armourCount--;
+                }
+                if ((entity instanceof SunStone) && stoneCount > 0) {
+                    toRemove.add(entity);
+                    stoneCount--;
+                }
+            }
+        }
+        if (type.equals("sceptre")) {
+            this.Items.add(new Sceptre(null, type, id));
+            this.Buildables.remove("sceptre");
+            int metalCount = 1;
+            int woodCount = 2;
+            int stoneCount = 1;
+            for (Entity entity : this.Items) {
+                if (woodCount > 0) {
+                    if (entity instanceof WoodEntity && woodCount % 2 == 0) {
+                        toRemove.add(entity);
+                        woodCount -= 2;
+                    } else if (entity instanceof ArrowsEntity) {
+                        toRemove.add(entity);
+                        woodCount--;
+                    }
+                }
+                if ((entity instanceof SunStone) && stoneCount > 0) {
+                    toRemove.add(entity);
+                    stoneCount--;
+                } else if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) && metalCount > 0) {
+                    toRemove.add(entity);
+                    metalCount--;
+                }
+
+            }
+        }
+
         for (Entity entity : toRemove) {
             this.removeItem(entity);
         }
@@ -453,24 +496,12 @@ public class DungeonMania {
      * Spawns a hydra
      */
     public void spawnHydra() {
-        Boolean iswall = true;
-        Position p = null;
-        while (iswall) {
+        Position p = generateRandomPos();
+        while (hasWall(this, p)) {
             p = generateRandomPos();
-            for (Entity entity : this.Entities) {
-                if (p.equals(entity.getPos())) {
-                    iswall = true;
-                } else {
-                    iswall = false;
-                }
-            }
-            if (p.getX() == 0 && p.getY() == 0) {
-                iswall = true;
-            }
         }
-        Hydra h = new Hydra (p, "hydra", Integer.toString(this.incrementIntId()));
+        Hydra h = new Hydra(p, "hydra", Integer.toString(this.incrementIntId()));
         Entities.add(h);
-
     }
 
     /**
@@ -481,8 +512,7 @@ public class DungeonMania {
         Entity m;
         if (chance == 0) {
             m = new Assassin(entryPosition, "assassin", Integer.toString(this.incrementIntId()));
-        }
-        else {
+        } else {
             m = new Mercenary(entryPosition, "mercenary", Integer.toString(this.incrementIntId()));
         }
         Entities.add(m);
@@ -602,6 +632,12 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("one_ring")) {
             entity = TheOneRingEntity.getInstance(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("sun_stone")) {
+            entity = new SunStone(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("anduril")) {
+            entity = new Anduril(pos, Type, id);
+        }
         if (entity != null) {
             this.Entities.add(entity);
         }
@@ -648,6 +684,12 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("one_ring")) {
             entity = TheOneRingEntity.getInstance(null, Type, id);
         }
+        if (Type.equalsIgnoreCase("sun_stone")) {
+            entity = new SunStone(null, Type, id);
+        }
+        if (Type.equalsIgnoreCase("anduril")) {
+            entity = new Anduril(null, Type, id);
+        }
         if (entity != null) {
             this.Items.add(entity);
         }
@@ -666,5 +708,14 @@ public class DungeonMania {
         Entity entity = new Portal(pos, Type, id);
         ((Portal) entity).setColour(colour);
         this.Entities.add(entity);
+    }
+
+    public Boolean hasWall(DungeonMania game, Position pos) {
+        for (Entity entity : game.getEntities()) {
+            if ((entity instanceof Wall) && pos.equals(entity.getPos())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

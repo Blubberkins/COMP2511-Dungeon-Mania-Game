@@ -21,13 +21,13 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap1", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -36,7 +36,6 @@ public class GoalTest {
         }
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
-        
 
         Position position = new Position(0, 0);
         System.out.println(player.getPos());
@@ -44,20 +43,14 @@ public class GoalTest {
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.DOWN);
-            
-            
         }
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.RIGHT);
-            
-            
         }
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.UP);
-            
-            
         }
 
         position = new Position(3, 0);
@@ -75,13 +68,13 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap2", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -90,8 +83,6 @@ public class GoalTest {
         }
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
-        
-        
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.DOWN);
@@ -107,14 +98,12 @@ public class GoalTest {
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.RIGHT);
-            
-            
+
         }
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.UP);
-            
-            
+
         }
 
         // the player is supposed to reach the final treasure after this move
@@ -133,18 +122,18 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap3", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
             spider = spidercount;
-    
+
         }
         // player on (0, 0)
         dungeonManiaController.tick(null, Direction.RIGHT);
@@ -155,23 +144,24 @@ public class GoalTest {
         // at (3, 0)
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
+
     @Test
     public void testEnemy() {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap6", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
             spider = spidercount;
-    
+
         }
         Character player = game.getCharacter();
         List<ItemResponse> inventory = game.getItemResponses();
@@ -222,23 +212,23 @@ public class GoalTest {
         // if it has moved on top of the spawner on (5, 0), then it is forced to move
         // back to (4, 0)
         // on its second move, where it encounters the player and gets killed regardless
-        while(dungeonManiaController.getLoadedGame().getCharacter().getInBattle()){
-        dungeonManiaController.tick(null, Direction.RIGHT);
+        while (dungeonManiaController.getLoadedGame().getCharacter().getInBattle()) {
+            dungeonManiaController.tick(null, Direction.RIGHT);
         }
         dungeonManiaController.tick(null, Direction.RIGHT);
         // should just now be the player, the spawner, and walls
-        
+
         assertTrue(game.getEntities().size() == 20);
         // player should still have the sword
         inventory = game.getItemResponses();
-        if(!(inventory.size() == 1)) {
+        if (!(inventory.size() == 1)) {
 
             // game should not be complete because the spawner still exists
             assertFalse(dungeonManiaController.getLoadedGame() == null);
 
             // player now destroys the spawner, and beats the level
             dungeonManiaController.interact("2");
-                dungeonManiaController.tick(null, Direction.LEFT);
+            dungeonManiaController.tick(null, Direction.LEFT);
             assertTrue(dungeonManiaController.getLoadedGame() == null);
         }
     }
@@ -249,13 +239,13 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap4", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -264,25 +254,19 @@ public class GoalTest {
         }
         Character player = game.getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
-        
-        
 
         // player on (0, 0)
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         // now next to the treasure on (2, 0), player on (1, 0)
         assertFalse(dungeonManiaController.getLoadedGame() == null);
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         // the player should now be on (2, 0) having picked up the treasure
         assertTrue(game.getItems().size() == 1);
         assertFalse(dungeonManiaController.getLoadedGame() == null);
         // the player should now be moving to the exit
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
@@ -293,13 +277,13 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap5", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -308,31 +292,25 @@ public class GoalTest {
         }
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
-        
-        
 
         // player to head straight to the exit
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
 
         // set up an identical new game
         spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap5", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -341,18 +319,13 @@ public class GoalTest {
         }
         // player to push the boulder (1, 1) onto the switch (2, 1)
         dungeonManiaController.tick(null, Direction.DOWN);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         // go up and take the treasure
         dungeonManiaController.tick(null, Direction.UP);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
@@ -364,13 +337,13 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dungeonManiaController.newGame("basicmap4", "Standard");
             game = dungeonManiaController.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -379,36 +352,25 @@ public class GoalTest {
         }
         Character player = dungeonManiaController.getLoadedGame().getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
-        
-        
 
         // player on (0, 0), will dodge the treasure on (2, 0)
         // and go to the exit on (3, 0)
         dungeonManiaController.tick(null, Direction.DOWN);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.UP);
-        
-        
 
         assertFalse(dungeonManiaController.getLoadedGame() == null);
 
         // but if we track back for the treasure we should complete the game
         dungeonManiaController.tick(null, Direction.LEFT);
-        
-        
+
         dungeonManiaController.tick(null, Direction.RIGHT);
-        
-        
 
         assertTrue(dungeonManiaController.getLoadedGame() == null);
     }
@@ -418,18 +380,27 @@ public class GoalTest {
         DungeonManiaController dungeonManiaController = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
-            int spidercount = 0;
-            dungeonManiaController.newGame("basicmap8", "Standard");
-            game = dungeonManiaController.getLoadedGame();
-            List<Entity> entities = game.getEntities();
-            for (Entity e : entities) {
-                if(e instanceof Spider) {
-                    spidercount++;
+        Boolean hasAssassin = true;
+        while (hasAssassin) {
+            while (spider != 0) {
+                int spidercount = 0;
+                dungeonManiaController.newGame("basicmap8", "Standard");
+                game = dungeonManiaController.getLoadedGame();
+                List<Entity> entities = game.getEntities();
+                for (Entity e : entities) {
+                    if (e instanceof Spider) {
+                        spidercount++;
+                    }
+                }
+                spider = spidercount;
+
+            }
+
+            for (Entity e : game.getEntities()) {
+                if (e instanceof Mercenary && !(e instanceof Assassin)) {
+                    hasAssassin = false;
                 }
             }
-            spider = spidercount;
-
         }
 
         // pick up the treasure on (2, 1)
@@ -448,8 +419,8 @@ public class GoalTest {
 
         // bribe the mercenary
         dungeonManiaController.interact(id);
-        dungeonManiaController.tick(null,Direction.LEFT);
+        dungeonManiaController.tick(null, Direction.LEFT);
         // game should now be complete
         assertTrue(dungeonManiaController.getLoadedGame() == null);
-        }
+    }
 }

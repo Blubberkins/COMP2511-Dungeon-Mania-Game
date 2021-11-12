@@ -1,5 +1,7 @@
 
 {
+    "width": 8,
+    "height": 9,
     "entities": [
       {
         "x": 2,
@@ -119,7 +121,7 @@
       {
         "x": 2,
         "y": 5,
-        "type": "wall"
+        "type": "bomb"
       },
       {
         "x": 4,

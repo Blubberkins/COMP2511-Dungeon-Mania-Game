@@ -1,5 +1,5 @@
 {
-    "width": 10,
+    "width": 8,
     "height": 3,
     "entities": [
         {
@@ -10,7 +10,7 @@
         {
             "x": 2,
             "y": 1,
-            "type": "sun_stone"
+            "type": "treasure"
         },         
         {
             "x": 6,
@@ -49,14 +49,6 @@
             "y": 0, 
             "type": "wall"
         }, {
-            "x": 8,
-            "y": 0, 
-            "type": "wall"
-        }, {
-            "x": 9,
-            "y": 0, 
-            "type": "wall"
-        }, {
             "x": 0,
             "y": 2, 
             "type": "wall"
@@ -89,29 +81,13 @@
             "y": 2, 
             "type": "wall"
         }, {
-            "x": 8,
-            "y": 2, 
-            "type": "wall"
-        }, {
-            "x": 9,
-            "y": 2, 
-            "type": "wall"
-        }, {
             "x": 0,
-            "y": 1, 
-            "type": "wall"
-        }, {
-            "x": 9,
             "y": 1, 
             "type": "wall"
         }, {
             "x": 7,
             "y": 1, 
-            "type": "door"
-        }, {
-            "x": 8,
-            "y": 1, 
-            "type": "exit"
+            "type": "wall"
         }
     ],
     "goal-condition": {

@@ -16,6 +16,7 @@ public class Mercenary extends MovingEntity {
     private final int minBribe = 1;
     private Boolean isBribed;
     private ArmourEntity armour;
+    private int ticksLeftOnBribe;
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
@@ -24,6 +25,7 @@ public class Mercenary extends MovingEntity {
         super.setDamage(5);
         this.isBribed = false;
         this.armour = ChanceOfArmour();
+        this.ticksLeftOnBribe = -1;
     }
 
     /**
@@ -58,13 +60,13 @@ public class Mercenary extends MovingEntity {
         if (!path.isEmpty()) { // if not same position as player
             Position next = path.peek();
 
-            Position opposite = Position.calculatePositionBetween(next, this.getPos());
-
             if (next != null) {
+                Position opposite = Position.calculatePositionBetween(next, this.getPos());
+                Position othernext = this.getPos().translateBy(opposite);
                 if (!((Character) getPlayer(dungeonmania)).getisInvincible()) {
                     this.setPos(next);
-                } else {
-                    this.setPos(this.getPos().translateBy(opposite));
+                } else if (!dungeonmania.hasWall(dungeonmania, othernext)) {
+                    this.setPos(othernext);
                 }
             }
         }
@@ -93,8 +95,7 @@ public class Mercenary extends MovingEntity {
 
     @Override
     public void receiveDMG(int damage) {
-        super.setHealth(super.getHealth() - super.getDamage());
-
+        super.setHealth(super.getHealth() - damage);
     }
 
     public ArmourEntity getArmour() {
@@ -169,5 +170,13 @@ public class Mercenary extends MovingEntity {
         }
 
         return path;
+    }
+
+    public int getTicksLeftOnBribe() {
+        return this.ticksLeftOnBribe;
+    }
+
+    public void setTicksLeftOnBribe(int ticks) {
+        this.ticksLeftOnBribe = ticks;
     }
 }

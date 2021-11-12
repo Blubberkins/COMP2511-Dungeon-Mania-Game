@@ -2,7 +2,7 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.*;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class m3test {
             }
         }
 
-        // given 10000 bernoulli trials
+        // given 2500 bernoulli trials
         // we want to test the hypothesis that p = 0.25
         // the alternate hypothesis is that p =/= 0.25
         // z score (0.05, two tailed test) is 1.96
@@ -106,12 +105,11 @@ public class m3test {
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
+
             Boolean hasAssassin = true;
             while (hasAssassin) {
                 int spider = -1;
-
                 while (spider != 0) {
-                    hasAssassin = true;
                     int spidercount = 0;
                     dm.newGame("hydratest", "Hard");
                     game = dm.getLoadedGame();
@@ -122,9 +120,11 @@ public class m3test {
                         }
                     }
                     spider = spidercount;
-                    if (!(findMercenary(game) instanceof Assassin)) {
-                        hasAssassin = false;
-                    }
+                }
+
+                if (!(findMercenary(game) instanceof Assassin)) {
+                    hasAssassin = false;
+                    // don't want complications when bribing w/o one ring
                 }
             }
 
@@ -142,25 +142,29 @@ public class m3test {
                 dm.tick(null, Direction.LEFT);
                 dm.tick(null, Direction.RIGHT);
             }
+
             dm.tick(null, Direction.NONE);
-            Entity hydra = findHydra(game);
+
+            Hydra hydra = findHydra(game);
             assertTrue(hydra != null);
-            assertTrue(hydra instanceof MovingEntity);
-            int hydraHP = ((MovingEntity) hydra).getHealth();
+            int hydraHP = hydra.getHealth();
 
             int currHP = hydraHP;
             // do stuff until the hydra comes into a single combat with the player
             while (currHP == hydraHP) {
                 dm.tick(null, Direction.RIGHT);
-                currHP = ((MovingEntity) hydra).getHealth();
+                currHP = hydra.getHealth();
             }
 
             if (currHP > hydraHP) {
                 numIncreases += 1;
             }
+
+            // for safety
+            game.removeEntity(hydra);
         }
 
-        // similar to assassin test, given 10000 bernoulli trials
+        // similar to assassin test, given 2500 bernoulli trials
         // we want to test the hypothesis that p = 0.5
         // the alternate hypothesis is that p =/= 0.5
         // z score (0.05, two tailed test) is 1.96
@@ -173,6 +177,7 @@ public class m3test {
         // p value in (-1.96, 1.96) using normal approximation
         // we shouldn't be able to reject the null hypothesis
         // by law of large numbers the result should be close enough to E(X) anyway
+
         assertTrue(testStatistic < 1.96);
     }
 
@@ -310,7 +315,44 @@ public class m3test {
 
     @Test
     public void testNewInvincibility() {
+        DungeonManiaController dm = new DungeonManiaController();
+        DungeonMania game = null;
 
+        // spawns an enclosed dungeon, which is a loop with a wall separating
+        // player and mercenary
+        int spider = -1;
+        while (spider != 0) {
+            int spidercount = 0;
+            dm.newGame("dijkstraException", "Standard");
+            game = dm.getLoadedGame();
+            List<Entity> entities = game.getEntities();
+            for (Entity e : entities) {
+                if (e instanceof Spider) {
+                    spidercount++;
+                }
+            }
+            spider = spidercount;
+        }
+
+        // hack an invicibility potion into the inventory for the purposes of this test
+        game.AddItem("invincibility_potion");
+        String id = game.getItems().get(0).getId();
+
+        // mercenary starts opposite player, blocked by a wall
+        Mercenary m = findMercenary(game);
+        // make the player invincible
+        dm.tick(id, Direction.NONE);
+        assertTrue(game.getCharacter().getisInvincible());
+        // character has stayed put, shortest path goes through a wall
+        // so mercenary should stay put until the player moves
+        Position pPos = game.getCharacter().getPos();
+        Position expected = new Position(pPos.getX() + 2, pPos.getY());
+        assertTrue(m.getPos().equals(expected));
+
+        // checking one more tick, we move down, and so should the mercenary
+        dm.tick(null, Direction.DOWN);
+        expected = new Position(pPos.getX() + 2, pPos.getY() + 1);
+        assertTrue(m.getPos().equals(expected));
     }
 
     @Test
@@ -361,13 +403,18 @@ public class m3test {
         // there is a door on (7, 1), player should be at (3, 1) currently
         // there is also an exit on (8, 1)
         // player should be able to move successfully through the door
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             dm.tick(null, Direction.RIGHT);
         }
 
         // even after the player opens the door, they should still have the stone
+        assertTrue(dm.getLoadedGame() != null);
         inventory = game.getItems();
         assertTrue(inventory.size() == 1);
+
+        // for completion's sake
+        dm.tick(null, Direction.RIGHT);
+        assertEquals(dm.getLoadedGame(), null);
     }
 
     @Test
@@ -388,35 +435,44 @@ public class m3test {
                     }
                 }
                 spider = spidercount;
-                // break the loop if we have not spawned an assassin
-                // we want to compare damage of anduril on non-bosses
-                // so we 100% do NOT want an assassin
-                if (!(findMercenary(game) instanceof Assassin)) {
-                    hasAssassin = false;
-                }
+            }
+
+            // break the loop if we have not spawned an assassin
+            // we want to compare damage of anduril on non-bosses
+            // so we 100% do NOT want an assassin
+            if (!(findMercenary(game) instanceof Assassin)) {
+                hasAssassin = false;
             }
         }
 
         dm.tick(null, Direction.RIGHT);
-        dm.tick(null, Direction.RIGHT);
-        // should now enter combat with the mercenary
-
+        // should have anduril now
+        assertTrue(game.getItems().get(0) instanceof Anduril);
+        // make sure anduril doesn't break just in case the mercenary has armour
+        ((Anduril) game.getItems().get(0)).setDurability(50);
+        // preliminary set up
         Mercenary m = findMercenary(game);
         Boolean hasArmour = m.HasArmour();
         int mHP = m.getHealth();
+        // should now enter combat with the mercenary after this move
+        dm.tick(null, Direction.RIGHT);
 
-        dm.tick(null, Direction.NONE);
         int nonBossDMG = mHP - m.getHealth();
 
-        // tick 47 more times until a hydra spawns
-        for (int i = 0; i < 47; i++) {
+        // tick 48 more times until a hydra spawns
+        for (int i = 0; i < 48; i++) {
             dm.tick(null, Direction.NONE);
         }
 
-        Entity hydra = findHydra(game);
+        dm.tick(null, Direction.NONE);
+
+        Hydra hydra = findHydra(game);
         assertTrue(hydra != null);
         int hydraHP = ((MovingEntity) hydra).getHealth();
 
+        // make sure character's health is back at max of 30
+        // just so we have the same conditions as when fighting the mercenary
+        game.getCharacter().setHealth(30);
         int currHP = hydraHP;
         // do stuff until the hydra comes into a single combat with the player
         while (currHP == hydraHP) {
@@ -443,10 +499,11 @@ public class m3test {
     public void testMidnight() {
         // midnight armour test first
         Boolean hasArmour = false;
+        Boolean hasAssassin = true;
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
         Mercenary firstM = null;
-        while (!hasArmour) {
+        while (!hasArmour || hasAssassin) {
             int spider = -1;
             while (spider != 0) {
                 int spidercount = 0;
@@ -461,10 +518,15 @@ public class m3test {
                 spider = spidercount;
                 // break the loop if we spawn a mercenary with armour
                 // this is so we can construct the midnight armour
-                firstM = findMercenary(game);
-                if (firstM.HasArmour()) {
-                    hasArmour = true;
-                }
+            }
+
+            firstM = findMercenary(game);
+            if (firstM.HasArmour()) {
+                hasArmour = true;
+            }
+
+            if (!(firstM instanceof Assassin)) {
+                hasAssassin = false;
             }
         }
 
@@ -480,13 +542,19 @@ public class m3test {
         dm.tick(null, Direction.RIGHT);
         dm.tick(null, Direction.RIGHT);
 
-        // the mercenary takes 5 turns to kill (checked by playing the game)
+        // to fix issue where the character dies, we'll increase
+        // their damage and health
+        // we're only checking that midnight armor does relatively more/makes them take
+        // relatively less, and we need to break past the mercenary's armour
+        game.getCharacter().setDamage(100);
+        game.getCharacter().setHealth(50);
+
         int mHP = firstM.getHealth();
         int dmgGiven = 0;
         int cHP = game.getCharacter().getHealth();
         int dmgReceived = 0;
         for (int i = 0; i < 5; i++) {
-            dm.tick(null, Direction.RIGHT);
+            dm.tick(null, Direction.NONE);
             if (i == 0) {
                 dmgGiven = mHP - firstM.getHealth();
                 dmgReceived = cHP - game.getCharacter().getHealth();
@@ -588,12 +656,12 @@ public class m3test {
         return null;
     }
 
-    public Entity findHydra(DungeonMania game) {
+    public Hydra findHydra(DungeonMania game) {
         List<Entity> entities = game.getEntities();
 
         for (Entity entity : entities) {
-            if (entity.getType().compareTo("hydra") == 0) {
-                return entity;
+            if (entity instanceof Hydra) {
+                return (Hydra) entity;
             }
         }
 
