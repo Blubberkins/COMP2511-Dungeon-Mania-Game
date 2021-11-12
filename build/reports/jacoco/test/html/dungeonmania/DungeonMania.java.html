@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DungeonMania.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">DungeonMania.java</span></div><h1>DungeonMania.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.ItemResponse;
+import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+// import java.util.Random;
+
+public class DungeonMania {
+    private Character character;
+    private int height;
+    private int width;
+    private List&lt;Entity&gt; Entities;
+    private List&lt;Entity&gt; Items;
+    private List&lt;String&gt; Buildables;
+    private Goal goal;
+    private String id;
+    private int intId;
+    private String name;
+    private String difficulty;
+    private List&lt;SwampTile&gt; swampTiles;
+    private Position entryPosition;
+
+<span class="fc" id="L28">    public DungeonMania(String difficulty, String name) {</span>
+<span class="fc" id="L29">        this.difficulty = difficulty;</span>
+<span class="fc" id="L30">        this.name = name;</span>
+<span class="fc" id="L31">        this.Entities = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L32">        this.Items = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        this.Buildables = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L34">        this.intId = 0;</span>
+<span class="fc" id="L35">        this.swampTiles = new ArrayList&lt;SwampTile&gt;();</span>
+        // TODO this.random = new Random(29);
+<span class="fc" id="L37">    }</span>
+    /**
+     * Increments the id
+     * 
+     * @return int
+     */
+    public int incrementIntId() {
+<span class="fc" id="L44">        return this.intId++;</span>
+    }
+
+    /**
+     * Sets difficulty of the game
+     * 
+     * @param difficulty
+     */
+    public void setDifficulty(String difficulty) {
+<span class="nc" id="L53">        this.difficulty = difficulty;</span>
+<span class="nc" id="L54">    }</span>
+
+    /**
+     * Adds a given string to the list of buildable entities
+     * 
+     * @param s
+     */
+    public void addToBuildableEntities(String s) {
+<span class="fc" id="L62">        this.Buildables.add((s));</span>
+<span class="fc" id="L63">    }</span>
+
+    /**
+     * Gets the list of buildable entities
+     * 
+     * @return List&lt;String&gt;
+     */
+    public List&lt;String&gt; getBuildables() {
+<span class="fc" id="L71">        return this.Buildables;</span>
+    }
+
+    /**
+     * Removes a given entity from items list
+     * 
+     * @param e
+     */
+    public void removeItem(Entity e) {
+<span class="fc" id="L80">        this.Items.remove(e);</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Gets an instance of entity given the id
+     * 
+     * @param id
+     * @return Entity
+     */
+    public Entity getItemFromId(String id) {
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">        for (Entity item : this.Items) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            if (item.getId().equals(id)) {</span>
+<span class="fc" id="L92">                return item;</span>
+            }
+<span class="fc" id="L94">        }</span>
+<span class="nc" id="L95">        return null;</span>
+
+    }
+
+    /**
+     * Given a string of the desired item, crafts the item and consumes necessary
+     * materials
+     * 
+     * @param type
+     */
+    public void addBuildable(String type) {
+<span class="fc" id="L106">        String id = Integer.toString(Buildables.size());</span>
+<span class="fc" id="L107">        List&lt;Entity&gt; toRemove = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (type.equals(&quot;bow&quot;)) {</span>
+<span class="fc" id="L109">            this.Items.add(new Bow(null, type, id));</span>
+<span class="fc" id="L110">            this.Buildables.remove(&quot;bow&quot;);</span>
+<span class="fc" id="L111">            int woodCount = 1;</span>
+<span class="fc" id="L112">            int arrowCount = 3;</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (Entity entity : this.Items) {</span>
+<span class="fc bfc" id="L114" title="All 4 branches covered.">                if (entity instanceof WoodEntity &amp;&amp; woodCount &gt; 0) {</span>
+<span class="fc" id="L115">                    toRemove.add(entity);</span>
+<span class="fc" id="L116">                    woodCount--;</span>
+                }
+<span class="pc bpc" id="L118" title="1 of 4 branches missed.">                if (entity instanceof ArrowsEntity &amp;&amp; arrowCount &gt; 0) {</span>
+<span class="fc" id="L119">                    toRemove.add(entity);</span>
+<span class="fc" id="L120">                    arrowCount--;</span>
+                }
+<span class="fc" id="L122">            }</span>
+        }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (type.equals(&quot;shield&quot;)) {</span>
+<span class="fc" id="L125">            this.Items.add(new Shield(null, type, id));</span>
+<span class="fc" id="L126">            this.Buildables.remove(&quot;shield&quot;);</span>
+<span class="fc" id="L127">            int metalCount = 1;</span>
+<span class="fc" id="L128">            int woodCount = 2;</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">            for (Entity entity : this.Items) {</span>
+<span class="pc bpc" id="L130" title="1 of 4 branches missed.">                if (entity instanceof WoodEntity &amp;&amp; woodCount &gt; 0) {</span>
+<span class="fc" id="L131">                    toRemove.add(entity);</span>
+<span class="fc" id="L132">                    woodCount--;</span>
+                }
+<span class="pc bpc" id="L134" title="2 of 6 branches missed.">                if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) &amp;&amp; metalCount &gt; 0) {</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">                    if (!(entity instanceof SunStone)) {</span>
+<span class="fc" id="L136">                        toRemove.add(entity);</span>
+                    }
+<span class="fc" id="L138">                    metalCount--;</span>
+                }
+<span class="fc" id="L140">            }</span>
+        }
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (type.equals(&quot;midnight_armour&quot;)) {</span>
+<span class="fc" id="L143">            this.Items.add(new MidnightArmour(null, type, id));</span>
+<span class="fc" id="L144">            this.Buildables.remove(&quot;midnight_armour&quot;);</span>
+<span class="fc" id="L145">            int armourCount = 1;</span>
+<span class="fc" id="L146">            int stoneCount = 1;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">            for (Entity entity : this.Items) {</span>
+<span class="pc bpc" id="L148" title="1 of 4 branches missed.">                if (entity instanceof ArmourEntity &amp;&amp; armourCount &gt; 0) {</span>
+<span class="fc" id="L149">                    toRemove.add(entity);</span>
+<span class="fc" id="L150">                    armourCount--;</span>
+                }
+<span class="pc bpc" id="L152" title="1 of 4 branches missed.">                if ((entity instanceof SunStone) &amp;&amp; stoneCount &gt; 0) {</span>
+<span class="fc" id="L153">                    toRemove.add(entity);</span>
+<span class="fc" id="L154">                    stoneCount--;</span>
+                }
+<span class="fc" id="L156">            }</span>
+        }
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        if (type.equals(&quot;sceptre&quot;)) {</span>
+<span class="fc" id="L159">            this.Items.add(new Sceptre(null, type, id));</span>
+<span class="fc" id="L160">            this.Buildables.remove(&quot;sceptre&quot;);</span>
+<span class="fc" id="L161">            int metalCount = 1;</span>
+<span class="fc" id="L162">            int woodCount = 2;</span>
+<span class="fc" id="L163">            int stoneCount = 1;</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">            for (Entity entity : this.Items) {</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">                if (woodCount &gt; 0) {</span>
+<span class="pc bpc" id="L166" title="1 of 4 branches missed.">                    if (entity instanceof WoodEntity &amp;&amp; woodCount % 2 == 0) {</span>
+<span class="fc" id="L167">                        toRemove.add(entity);</span>
+<span class="fc" id="L168">                        woodCount -= 2;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">                    } else if (entity instanceof ArrowsEntity) {</span>
+<span class="nc" id="L170">                        toRemove.add(entity);</span>
+<span class="nc" id="L171">                        woodCount--;</span>
+                    }
+                }
+<span class="pc bpc" id="L174" title="1 of 4 branches missed.">                if ((entity instanceof SunStone) &amp;&amp; stoneCount &gt; 0) {</span>
+<span class="fc" id="L175">                    toRemove.add(entity);</span>
+<span class="fc" id="L176">                    stoneCount--;</span>
+<span class="pc bpc" id="L177" title="2 of 6 branches missed.">                } else if ((entity instanceof KeyEntity || entity instanceof TreasureEntity) &amp;&amp; metalCount &gt; 0) {</span>
+<span class="fc" id="L178">                    toRemove.add(entity);</span>
+<span class="fc" id="L179">                    metalCount--;</span>
+                }
+
+<span class="fc" id="L182">            }</span>
+        }
+
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        for (Entity entity : toRemove) {</span>
+<span class="fc" id="L186">            this.removeItem(entity);</span>
+<span class="fc" id="L187">        }</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Removes items that have either been consumed, or run out of durability from
+     * the items list.
+     */
+    public void removeUsedItems() {
+<span class="fc" id="L195">        List&lt;Entity&gt; useditems = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        for (Entity item : this.Items) {</span>
+<span class="pc bpc" id="L197" title="1 of 4 branches missed.">            if (item instanceof Weapons &amp;&amp; ((Weapons) item).getDurability() == 0) {</span>
+<span class="nc" id="L198">                useditems.add(item);</span>
+            }
+<span class="pc bpc" id="L200" title="3 of 4 branches missed.">            if (item instanceof TheOneRingEntity &amp;&amp; ((TheOneRingEntity) item).getIsUsed()) {</span>
+<span class="nc" id="L201">                useditems.add(item);</span>
+            }
+<span class="fc" id="L203">        }</span>
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">        for (Entity usedup : useditems) {</span>
+<span class="nc" id="L205">            this.Items.remove(usedup);</span>
+<span class="nc" id="L206">        }</span>
+<span class="fc" id="L207">    }</span>
+
+    /**
+     * Gets the list of Items
+     * 
+     * @return List&lt;Entity&gt;
+     */
+    public List&lt;Entity&gt; getItems() {
+<span class="fc" id="L215">        return Items;</span>
+    }
+
+    /**
+     * Sets the list of items to a specific list.
+     * 
+     * @param items
+     */
+    public void setItems(List&lt;Entity&gt; items) {
+<span class="nc" id="L224">        Items = items;</span>
+<span class="nc" id="L225">    }</span>
+
+    public List&lt;Position&gt; getSwampTilePos() {
+<span class="fc" id="L228">        List&lt;Position&gt; pos = new ArrayList&lt;Position&gt;();</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        for (SwampTile tile : this.swampTiles) {</span>
+<span class="fc" id="L230">            pos.add(tile.getPos());</span>
+<span class="fc" id="L231">        }</span>
+
+<span class="fc" id="L233">        return pos;</span>
+    }
+
+    public int getSlow(Position pos) {
+<span class="fc" id="L237">        SwampTile tile = null;</span>
+<span class="pc bpc" id="L238" title="1 of 2 branches missed.">        for (SwampTile tiles : this.swampTiles) {</span>
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            if (pos.equals(tiles.getPos())) {</span>
+<span class="fc" id="L240">                tile = tiles;</span>
+<span class="fc" id="L241">                break;</span>
+            }
+<span class="fc" id="L243">        }</span>
+
+<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (tile == null) {</span>
+<span class="nc" id="L246">            return 1;</span>
+        }
+
+<span class="fc" id="L249">        return tile.getFactor();</span>
+    }
+
+    public void addSwampTile(SwampTile tile) {
+<span class="fc" id="L253">        this.swampTiles.add(tile);</span>
+<span class="fc" id="L254">    }</span>
+
+    public void setSwampTiles(List&lt;SwampTile&gt; tiles) {
+<span class="nc" id="L257">        this.swampTiles = tiles;</span>
+<span class="nc" id="L258">    }</span>
+
+    /**
+     * Gets the difficulty of the game
+     * 
+     * @return String
+     */
+    public String getDifficulty() {
+<span class="fc" id="L266">        return this.difficulty;</span>
+    }
+
+    /**
+     * Gets the item responses for all items in the items list
+     * 
+     * @return List&lt;ItemResponse&gt;
+     */
+    public List&lt;ItemResponse&gt; getItemResponses() {
+<span class="fc" id="L275">        List&lt;ItemResponse&gt; items = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        for (Entity item : this.Items) {</span>
+<span class="fc" id="L277">            items.add(new ItemResponse(item.getId(), item.getType()));</span>
+<span class="fc" id="L278">        }</span>
+<span class="fc" id="L279">        return items;</span>
+    }
+
+    /**
+     * Gets the instance of character in the game
+     * 
+     * @return Character
+     */
+    public Character getCharacter() {
+<span class="fc" id="L288">        return character;</span>
+    }
+
+    /**
+     * Sets the character
+     * 
+     * @param character
+     */
+    public void setCharacter(Character character) {
+<span class="fc" id="L297">        this.character = character;</span>
+<span class="fc" id="L298">    }</span>
+
+    /**
+     * Updates a given entity.
+     * 
+     * @param e
+     */
+    public void updateEntities(Entity e) {
+<span class="fc bfc" id="L306" title="All 2 branches covered.">        for (Entity entity : this.Entities) {</span>
+<span class="fc bfc" id="L307" title="All 2 branches covered.">            if (entity.getId().equals(e.getId())) {</span>
+<span class="fc" id="L308">                entity = e;</span>
+            }
+<span class="fc" id="L310">        }</span>
+<span class="fc" id="L311">    }</span>
+
+    /**
+     * Gets the largest x value of the map
+     * 
+     * @return int
+     */
+    public int getLargestX() {
+<span class="fc" id="L319">        int x = 0;</span>
+<span class="fc bfc" id="L320" title="All 2 branches covered.">        for (Entity entity : this.Entities) {</span>
+<span class="fc" id="L321">            int newX = entity.getPos().getX();</span>
+<span class="fc bfc" id="L322" title="All 2 branches covered.">            if (newX &gt; x) {</span>
+<span class="fc" id="L323">                x = newX;</span>
+            }
+<span class="fc" id="L325">        }</span>
+<span class="fc" id="L326">        return x;</span>
+    }
+
+    /**
+     * Gets the largest y value of the map
+     * 
+     * @return int
+     */
+    public int getLargestY() {
+<span class="fc" id="L335">        int y = 0;</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        for (Entity entity : this.Entities) {</span>
+<span class="fc" id="L337">            int newY = entity.getPos().getY();</span>
+<span class="fc bfc" id="L338" title="All 2 branches covered.">            if (newY &gt; y) {</span>
+<span class="fc" id="L339">                y = newY;</span>
+            }
+<span class="fc" id="L341">        }</span>
+<span class="fc" id="L342">        return y;</span>
+
+    }
+
+    /**
+     * Gets the name of the dungeon
+     * 
+     * @return String
+     */
+    public String getName() {
+<span class="fc" id="L352">        return name;</span>
+    }
+
+    /**
+     * Sets the name of the dungeon
+     * 
+     * @param name
+     */
+    public void setName(String name) {
+<span class="nc" id="L361">        this.name = name;</span>
+<span class="nc" id="L362">    }</span>
+
+    /**
+     * Gets the id of the dungeon
+     * 
+     * @return String
+     */
+    public String getId() {
+<span class="fc" id="L370">        return id;</span>
+    }
+
+    /**
+     * Sets the id of the dungeon
+     * 
+     * @param id
+     */
+    public void setId(String id) {
+<span class="fc" id="L379">        this.id = id;</span>
+<span class="fc" id="L380">    }</span>
+
+    /**
+     * Gets the height of the dungeon
+     * 
+     * @return int
+     */
+    public int getHeight() {
+<span class="nc" id="L388">        return height;</span>
+    }
+
+    /**
+     * Gets the width of the dungeon
+     * 
+     * @return int
+     */
+    public int getWidth() {
+<span class="nc" id="L397">        return width;</span>
+    }
+
+    /**
+     * Returns a list of entity responses for all entities in the game
+     * 
+     * @return List&lt;EntityResponse&gt;
+     */
+    public List&lt;EntityResponse&gt; getEntityResponses() {
+<span class="fc" id="L406">        List&lt;EntityResponse&gt; e = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L407" title="All 2 branches covered.">        for (Entity entity : this.Entities) {</span>
+<span class="fc" id="L408">            e.add(new EntityResponse(entity.getId(), entity.getType(), entity.getPos(), entity.getIsInteractable()));</span>
+<span class="fc" id="L409">        }</span>
+<span class="fc" id="L410">        return e;</span>
+    }
+
+    /**
+     * Gets the List of entities
+     * 
+     * @return List&lt;Entity&gt;
+     */
+    public List&lt;Entity&gt; getEntities() {
+<span class="fc" id="L419">        return this.Entities;</span>
+    }
+
+    /**
+     * Sets the list of entities in the game
+     * 
+     * @param entities
+     */
+    public void setEntities(List&lt;Entity&gt; entities) {
+<span class="nc" id="L428">        Entities = entities;</span>
+<span class="nc" id="L429">    }</span>
+
+    /**
+     * Gets the goal of the game
+     * 
+     * @return Goal
+     */
+    public Goal getGoal() {
+<span class="fc" id="L437">        return goal;</span>
+    }
+
+    /**
+     * Sets the goal of the game
+     * 
+     * @param goal
+     */
+    public void setGoal(Goal goal) {
+<span class="fc" id="L446">        this.goal = goal;</span>
+<span class="fc" id="L447">    }</span>
+
+    /**
+     * If a battle is won and an item is collected from the battle, add it to items
+     * list
+     * 
+     * @param e
+     */
+    public void winItem(Entity e) {
+<span class="fc" id="L456">        this.Items.add(e);</span>
+<span class="fc" id="L457">    }</span>
+
+    /**
+     * Creates a random position within the map boundaries
+     * 
+     * @return Position
+     */
+    public Position generateRandomPos() {
+       
+<span class="fc" id="L466">        int spawnX = ThreadLocalRandom.current().nextInt(getLargestX() + 1);</span>
+<span class="fc" id="L467">        int spawnY = ThreadLocalRandom.current().nextInt(getLargestY() + 1);</span>
+<span class="fc" id="L468">        return new Position(spawnX, spawnY, 0);</span>
+    }
+
+    /**
+     * Spawns a spider
+     */
+    public void spawnSpider() {
+<span class="fc" id="L475">        Boolean isBoulder = true;</span>
+<span class="fc" id="L476">        Position p = null;</span>
+<span class="fc bfc" id="L477" title="All 2 branches covered.">        while (isBoulder) {</span>
+<span class="fc" id="L478">            p = generateRandomPos();</span>
+<span class="fc bfc" id="L479" title="All 2 branches covered.">            for (Entity entity : this.Entities) {</span>
+<span class="fc bfc" id="L480" title="All 4 branches covered.">                if (p.equals(entity.getPos()) &amp;&amp; entity.getType().equals(&quot;boulder&quot;)) {</span>
+<span class="fc" id="L481">                    isBoulder = true;</span>
+                } else {
+<span class="fc" id="L483">                    isBoulder = false;</span>
+                }
+<span class="fc" id="L485">            }</span>
+<span class="fc bfc" id="L486" title="All 4 branches covered.">            if (p.getX() == 0 &amp;&amp; p.getY() == 0) {</span>
+<span class="fc" id="L487">                isBoulder = true;</span>
+            }
+        }
+<span class="fc" id="L490">        Spider s = new Spider(p, &quot;spider&quot;, Integer.toString(this.incrementIntId()));</span>
+<span class="fc" id="L491">        Entities.add(s);</span>
+
+<span class="fc" id="L493">    }</span>
+
+    /**
+     * Spawns a hydra
+     */
+    public void spawnHydra() {
+<span class="fc" id="L499">        Position p = generateRandomPos();</span>
+<span class="fc bfc" id="L500" title="All 2 branches covered.">        while (hasWall(this, p)) {</span>
+<span class="fc" id="L501">            p = generateRandomPos();</span>
+        }
+<span class="fc" id="L503">        Hydra h = new Hydra(p, &quot;hydra&quot;, Integer.toString(this.incrementIntId()));</span>
+<span class="fc" id="L504">        Entities.add(h);</span>
+<span class="fc" id="L505">    }</span>
+
+    /**
+     * Spawns mercenary at entry position
+     */
+    public void spawnMercenary() {
+<span class="fc" id="L511">        int chance = ThreadLocalRandom.current().nextInt(0, 4);</span>
+        Entity m;
+<span class="fc bfc" id="L513" title="All 2 branches covered.">        if (chance == 0) {</span>
+<span class="fc" id="L514">            m = new Assassin(entryPosition, &quot;assassin&quot;, Integer.toString(this.incrementIntId()));</span>
+        } else {
+<span class="fc" id="L516">            m = new Mercenary(entryPosition, &quot;mercenary&quot;, Integer.toString(this.incrementIntId()));</span>
+        }
+<span class="fc" id="L518">        Entities.add(m);</span>
+<span class="fc" id="L519">    }</span>
+
+    /**
+     * Spawns a zombie given the position of the toast spawner
+     * 
+     * @param pos
+     */
+    public void spawnZombie(Position pos) {
+<span class="fc" id="L527">        Boolean isWall = true;</span>
+<span class="fc" id="L528">        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L529">        directions.add(Direction.UP);</span>
+<span class="fc" id="L530">        directions.add(Direction.DOWN);</span>
+<span class="fc" id="L531">        directions.add(Direction.LEFT);</span>
+<span class="fc" id="L532">        directions.add(Direction.RIGHT);</span>
+<span class="fc" id="L533">        Direction random = null;</span>
+<span class="fc" id="L534">        Position p = null;</span>
+<span class="fc bfc" id="L535" title="All 2 branches covered.">        while (isWall) {</span>
+<span class="fc" id="L536">            isWall = false;</span>
+<span class="fc" id="L537">            random = directions.get(ThreadLocalRandom.current().nextInt(0, 3));</span>
+<span class="fc bfc" id="L538" title="All 2 branches covered.">            for (Entity entity : this.Entities) {</span>
+<span class="pc bpc" id="L539" title="1 of 4 branches missed.">                if ((entity instanceof Wall) &amp;&amp; pos.translateBy(random).equals(entity.getPos())) {</span>
+<span class="nc" id="L540">                    isWall = true;</span>
+                }
+<span class="fc" id="L542">            }</span>
+        }
+<span class="fc" id="L544">        p = pos.translateBy(random);</span>
+<span class="fc" id="L545">        createEntity(p, &quot;zombie_toast&quot;);</span>
+<span class="fc" id="L546">    }</span>
+
+    /**
+     * Removes a specific entity from the Entities list
+     * 
+     * @param e
+     */
+    public void removeEntity(Entity e) {
+<span class="fc" id="L554">        this.Entities.remove(e);</span>
+<span class="fc" id="L555">    }</span>
+
+    /**
+     * Given a position and a string type, create an entity with respective class
+     * and add to entities list
+     * 
+     * @param pos
+     * @param Type
+     */
+    public void createEntity(Position pos, String Type) {
+<span class="fc" id="L565">        String id = Integer.toString(this.incrementIntId());</span>
+<span class="fc" id="L566">        Entity entity = null;</span>
+        // Static entities
+<span class="fc bfc" id="L568" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;wall&quot;)) {</span>
+<span class="fc" id="L569">            entity = new Wall(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L571" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;exit&quot;)) {</span>
+<span class="fc" id="L572">            entity = new Exit(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L574" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;boulder&quot;)) {</span>
+<span class="fc" id="L575">            entity = new Boulder(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L577" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;switch&quot;)) {</span>
+<span class="fc" id="L578">            entity = new FloorSwitch(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L580" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;door&quot;)) {</span>
+<span class="fc" id="L581">            entity = new DoorEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L583" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;zombie_toast_spawner&quot;)) {</span>
+<span class="fc" id="L584">            entity = new ZombieToastSpawner(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L586" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;treasure&quot;)) {</span>
+<span class="fc" id="L587">            entity = new TreasureEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L589" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;mercenary&quot;)) {</span>
+<span class="fc" id="L590">            int chance = ThreadLocalRandom.current().nextInt(100);</span>
+<span class="fc bfc" id="L591" title="All 2 branches covered.">            if (chance &lt; 25) {</span>
+<span class="fc" id="L592">                entity = new Assassin(pos, Type, id);</span>
+            } else {
+<span class="fc" id="L594">                entity = new Mercenary(pos, Type, id);</span>
+            }
+        }
+<span class="fc bfc" id="L597" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;zombie_toast&quot;)) {</span>
+<span class="fc" id="L598">            entity = new ZombieToast(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L600" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;player&quot;)) {</span>
+<span class="fc" id="L601">            entity = new Character(pos, Type, id);</span>
+<span class="fc" id="L602">            this.entryPosition = pos;</span>
+<span class="fc" id="L603">            this.character = (Character) entity;</span>
+        }
+<span class="fc bfc" id="L605" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;wood&quot;)) {</span>
+<span class="fc" id="L606">            entity = new WoodEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L608" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;arrow&quot;)) {</span>
+<span class="fc" id="L609">            entity = new ArrowsEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L611" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;key&quot;)) {</span>
+<span class="fc" id="L612">            entity = new KeyEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L614" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;health_potion&quot;)) {</span>
+<span class="fc" id="L615">            entity = new HealthPotionEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L617" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;invincibility_potion&quot;)) {</span>
+<span class="fc" id="L618">            entity = new InvincibilityPotionEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L620" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;invisibility_potion&quot;)) {</span>
+<span class="fc" id="L621">            entity = new InvisibilityPotionEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L623" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;bomb&quot;)) {</span>
+<span class="fc" id="L624">            entity = new BombEntity(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L626" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;sword&quot;)) {</span>
+<span class="fc" id="L627">            entity = new SwordEntity(pos, Type, id);</span>
+        }
+<span class="pc bpc" id="L629" title="1 of 2 branches missed.">        if (Type.equalsIgnoreCase(&quot;armour&quot;)) {</span>
+<span class="nc" id="L630">            entity = new ArmourEntity(pos, Type, id);</span>
+        }
+<span class="pc bpc" id="L632" title="1 of 2 branches missed.">        if (Type.equalsIgnoreCase(&quot;one_ring&quot;)) {</span>
+<span class="nc" id="L633">            entity = TheOneRingEntity.getInstance(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L635" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;sun_stone&quot;)) {</span>
+<span class="fc" id="L636">            entity = new SunStone(pos, Type, id);</span>
+        }
+<span class="fc bfc" id="L638" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;anduril&quot;)) {</span>
+<span class="fc" id="L639">            entity = new Anduril(pos, Type, id);</span>
+        }
+<span class="pc bpc" id="L641" title="1 of 2 branches missed.">        if (entity != null) {</span>
+<span class="fc" id="L642">            this.Entities.add(entity);</span>
+        }
+<span class="fc" id="L644">    }</span>
+
+    /**
+     * Given a string type, add respective class to items list
+     * 
+     * @param Type
+     */
+    public void AddItem(String Type) {
+<span class="fc" id="L652">        String id = Integer.toString(this.incrementIntId());</span>
+<span class="fc" id="L653">        Entity entity = null;</span>
+<span class="fc bfc" id="L654" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;wood&quot;)) {</span>
+<span class="fc" id="L655">            entity = new WoodEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L657" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;arrow&quot;)) {</span>
+<span class="fc" id="L658">            entity = new ArrowsEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L660" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;key&quot;)) {</span>
+<span class="fc" id="L661">            entity = new KeyEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L663" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;treasure&quot;)) {</span>
+<span class="fc" id="L664">            entity = new TreasureEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L666" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;bomb&quot;)) {</span>
+<span class="fc" id="L667">            entity = new BombEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L669" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;sword&quot;)) {</span>
+<span class="fc" id="L670">            entity = new SwordEntity(null, Type, id);</span>
+        }
+<span class="pc bpc" id="L672" title="1 of 2 branches missed.">        if (Type.equalsIgnoreCase(&quot;armour&quot;)) {</span>
+<span class="nc" id="L673">            entity = new ArmourEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L675" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;health_potion&quot;)) {</span>
+<span class="fc" id="L676">            entity = new HealthPotionEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L678" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;invincibility_potion&quot;)) {</span>
+<span class="fc" id="L679">            entity = new InvincibilityPotionEntity(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L681" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;invisibility_potion&quot;)) {</span>
+<span class="fc" id="L682">            entity = new InvisibilityPotionEntity(null, Type, id);</span>
+        }
+<span class="pc bpc" id="L684" title="1 of 2 branches missed.">        if (Type.equalsIgnoreCase(&quot;one_ring&quot;)) {</span>
+<span class="nc" id="L685">            entity = TheOneRingEntity.getInstance(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L687" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;sun_stone&quot;)) {</span>
+<span class="fc" id="L688">            entity = new SunStone(null, Type, id);</span>
+        }
+<span class="fc bfc" id="L690" title="All 2 branches covered.">        if (Type.equalsIgnoreCase(&quot;anduril&quot;)) {</span>
+<span class="fc" id="L691">            entity = new Anduril(null, Type, id);</span>
+        }
+<span class="pc bpc" id="L693" title="1 of 2 branches missed.">        if (entity != null) {</span>
+<span class="fc" id="L694">            this.Items.add(entity);</span>
+        }
+
+<span class="fc" id="L697">    }</span>
+
+    /**
+     * Creates a portal given position type and colour of the portal
+     * 
+     * @param pos
+     * @param Type
+     * @param colour
+     */
+    public void createPortal(Position pos, String Type, String colour) {
+<span class="fc" id="L707">        String id = Integer.toString(this.incrementIntId());</span>
+<span class="fc" id="L708">        Entity entity = new Portal(pos, Type, id);</span>
+<span class="fc" id="L709">        ((Portal) entity).setColour(colour);</span>
+<span class="fc" id="L710">        this.Entities.add(entity);</span>
+<span class="fc" id="L711">    }</span>
+
+    public Boolean hasWall(DungeonMania game, Position pos) {
+<span class="fc bfc" id="L714" title="All 2 branches covered.">        for (Entity entity : game.getEntities()) {</span>
+<span class="fc bfc" id="L715" title="All 4 branches covered.">            if ((entity instanceof Wall) &amp;&amp; pos.equals(entity.getPos())) {</span>
+<span class="fc" id="L716">                return true;</span>
+            }
+<span class="fc" id="L718">        }</span>
+<span class="fc" id="L719">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

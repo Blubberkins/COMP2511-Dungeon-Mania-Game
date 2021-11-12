@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="dungeonmania.m3test" tests="11" skipped="0" failures="0" errors="0" timestamp="2021-11-12T08:42:06" hostname="DESKTOP-6SB42GV" time="7.364">
+  <properties/>
+  <testcase name="testNewInvincibility()" classname="dungeonmania.m3test" time="0.006"/>
+  <testcase name="testDijkstraVariations()" classname="dungeonmania.m3test" time="0.052"/>
+  <testcase name="testAnduril()" classname="dungeonmania.m3test" time="0.006"/>
+  <testcase name="testHydra()" classname="dungeonmania.m3test" time="0.026"/>
+  <testcase name="testSunStone()" classname="dungeonmania.m3test" time="0.026"/>
+  <testcase name="testMidnight()" classname="dungeonmania.m3test" time="0.073"/>
+  <testcase name="testDijkstraWall()" classname="dungeonmania.m3test" time="0.003"/>
+  <testcase name="testFailedBribe()" classname="dungeonmania.m3test" time="0.006"/>
+  <testcase name="testDijkstra()" classname="dungeonmania.m3test" time="0.016"/>
+  <testcase name="testSceptre()" classname="dungeonmania.m3test" time="0.044"/>
+  <testcase name="testAssassinSpawn()" classname="dungeonmania.m3test" time="7.098"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

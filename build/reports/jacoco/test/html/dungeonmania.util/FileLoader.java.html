@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania.util</a> &gt; <span class="el_source">FileLoader.java</span></div><h1>FileLoader.java</h1><pre class="source lang-java linenums">package dungeonmania.util;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+<span class="nc" id="L12">public final class FileLoader {</span>
+    /**
+     * Loads a resource file given a certain path that is relative to resources/
+     * for example `/dungeons/maze.json`.  Will add a `/` prefix to path if it's not specified.
+     * 
+     * @param path Relative to resources/ will add an implicit `/` prefix if not given.
+     * @return The textual content of the given file.
+     * @throws IOException If the file doesn't exist / some other IO exception.
+     */
+    public static String loadResourceFile(String path) throws IOException {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        if (!path.startsWith(&quot;/&quot;))</span>
+<span class="nc" id="L23">            path = &quot;/&quot; + path;</span>
+        try {
+<span class="nc" id="L25">            return new String(Files.readAllBytes(Path.of(FileLoader.class.getResource(path).toURI())));</span>
+<span class="nc" id="L26">        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L27">            throw new FileNotFoundException(path);</span>
+        }
+    }
+
+    /**
+     * Lists file names (without extension) within a specified resource directory.
+     * 
+     * @param directory The directory relative to `resources` to look for files.  Will add a `/` prefix if it doesn't exist.
+     *                  Typically is something like `/dungeons`
+     * 
+     * @return A list of *only* filenames with no extensions nor relative/absolute paths i.e. [maze, otherFile]
+     * 
+     * @throws IOException If directory path is invalid or some other sort of IO issue occurred.
+     */
+    public static List&lt;String&gt; listFileNamesInResourceDirectory(String directory) throws IOException {
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (!directory.startsWith(&quot;/&quot;))</span>
+<span class="nc" id="L43">            directory = &quot;/&quot; + directory;</span>
+        try {
+<span class="fc" id="L45">            Path root = Paths.get(FileLoader.class.getResource(directory).toURI());</span>
+<span class="fc" id="L46">            return Files.walk(root).filter(Files::isRegularFile).map(x -&gt; {</span>
+<span class="fc" id="L47">                String nameAndExt = x.toFile().getName();</span>
+<span class="fc" id="L48">                int extIndex = nameAndExt.lastIndexOf('.');</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">                return nameAndExt.substring(0, extIndex &gt; -1 ? extIndex : nameAndExt.length());</span>
+<span class="fc" id="L50">            }).collect(Collectors.toList());</span>
+<span class="nc" id="L51">        } catch (URISyntaxException e) {</span>
+<span class="nc" id="L52">            throw new FileNotFoundException(directory);</span>
+        }
+    }
+
+    /**
+     * Lists file names (without extension) within a specified non-resource directory.
+     * 
+     * @param directory A normal directory such as &quot;mydirectory&quot;, relative to current working directory
+     * 
+     * @return A list of *only* filenames with no extensions nor relative/absolute paths i.e. [maze, otherFile]
+     * 
+     * @throws IOException If directory path is invalid or some other sort of IO issue occurred.
+     */
+    public static List&lt;String&gt; listFileNamesInDirectoryOutsideOfResources(String directory) throws IOException {
+<span class="nc" id="L66">        Path root = Paths.get(directory);</span>
+<span class="nc" id="L67">        return Files.walk(root).filter(Files::isRegularFile).map(x -&gt; {</span>
+<span class="nc" id="L68">            String nameAndExt = x.toFile().getName();</span>
+<span class="nc" id="L69">            int extIndex = nameAndExt.lastIndexOf('.');</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            return nameAndExt.substring(0, extIndex &gt; -1 ? extIndex : nameAndExt.length());</span>
+<span class="nc" id="L71">        }).collect(Collectors.toList());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

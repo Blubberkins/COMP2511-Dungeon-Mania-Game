@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnimationQueue.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania.response.models</a> &gt; <span class="el_source">AnimationQueue.java</span></div><h1>AnimationQueue.java</h1><pre class="source lang-java linenums">package dungeonmania.response.models;
+
+import java.util.List;
+
+public class AnimationQueue {
+    private final String when;
+    private final String entityId;
+    private final List&lt;String&gt; queue;
+    private final boolean loop;
+    private final double duration;
+    
+<span class="nc" id="L12">    public AnimationQueue(String when, String entityId, List&lt;String&gt; queue, boolean loop, double duration) {</span>
+<span class="nc" id="L13">        this.when = when;</span>
+<span class="nc" id="L14">        this.entityId = entityId;</span>
+<span class="nc" id="L15">        this.queue = queue;</span>
+<span class="nc" id="L16">        this.loop = loop;</span>
+<span class="nc" id="L17">        this.duration = duration;</span>
+<span class="nc" id="L18">    }</span>
+
+    public String getWhen() {
+<span class="nc" id="L21">        return when;</span>
+    }
+
+    public String getEntityId() {
+<span class="nc" id="L25">        return entityId;</span>
+    }
+
+    public List&lt;String&gt; getQueue() {
+<span class="nc" id="L29">        return queue;</span>
+    }
+
+    public boolean isLoop() {
+<span class="nc" id="L33">        return loop;</span>
+    }
+
+    public double getDuration() {
+<span class="nc" id="L37">        return duration;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dijkstra.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania.util</a> &gt; <span class="el_source">Dijkstra.java</span></div><h1>Dijkstra.java</h1><pre class="source lang-java linenums">package dungeonmania.util;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
+
+import dungeonmania.DungeonMania;
+import dungeonmania.SwampTile;
+import dungeonmania.Entity;
+import dungeonmania.Wall;
+
+// By Liam
+
+public class Dijkstra {
+    public Dijkstra() {
+<span class="nc" id="L19">        super();</span>
+<span class="nc" id="L20">    }</span>
+
+    public static Map&lt;Position, Position&gt; shortestPath(List&lt;Position&gt; grid, Position source, DungeonMania game) {
+<span class="fc" id="L23">        Map&lt;Position, Position&gt; prev = new HashMap&lt;Position, Position&gt;();</span>
+<span class="fc" id="L24">        Map&lt;Position, Double&gt; dist = new HashMap&lt;Position, Double&gt;();</span>
+
+<span class="fc" id="L26">        Queue&lt;Position&gt; q = new LinkedList&lt;Position&gt;();</span>
+
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if (!(grid.contains(source))) {</span>
+<span class="nc" id="L29">            return null; // can't generate if source doesn't exist</span>
+        }
+
+        // setting up
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (Position p : grid) {</span>
+<span class="fc" id="L34">            dist.put(p, Double.MAX_VALUE);</span>
+<span class="fc" id="L35">            prev.put(p, null);</span>
+<span class="fc" id="L36">            q.add(p);</span>
+<span class="fc" id="L37">        }</span>
+
+<span class="fc" id="L39">        dist.replace(source, (double) 0);</span>
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        while (!(q.isEmpty())) {</span>
+<span class="fc" id="L42">            Position curr = smallest(q, dist);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (curr == null) {</span>
+<span class="fc" id="L44">                break; // implies no other reachable tiles (walls or otherwise)</span>
+            }
+<span class="fc" id="L46">            q.remove(curr);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            for (Position p : grid) {</span>
+                // note the only adjacent points are cardinally adjacent
+                // we don't have the notion of a graph structure where points of
+                // non-cardinal distance &gt;= 1 and cardinal distance &gt; 1 can be linked
+                // we could have used absDistance(a, b) == 1, but same difference
+                // note that distance will be counted as the no. of ticks to traverse
+                // the square
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                if (Position.isAdjacent(p, curr)) {</span>
+<span class="fc" id="L55">                    Double d = 1.0; // by default</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">                    if (game.getSwampTilePos().contains(p)) {</span>
+<span class="fc" id="L57">                        d = (double) game.getSlow(p);</span>
+                    }
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                    if (!hasWall(game, p)) {</span>
+<span class="pc bpc" id="L61" title="1 of 4 branches missed.">                        if (dist.get(curr) + d &lt; dist.get(p) &amp;&amp; q.contains(p)) {</span>
+<span class="fc" id="L62">                            dist.replace(p, dist.get(curr) + d);</span>
+<span class="fc" id="L63">                            prev.replace(p, curr);</span>
+                        }
+                    }
+                }
+<span class="fc" id="L67">            }</span>
+<span class="fc" id="L68">        }</span>
+
+<span class="fc" id="L70">        return prev;</span>
+    }
+
+    // finding the absolute cardinal distance (not euclidean distance!)
+    public static int absDistance(Position a, Position b) {
+<span class="nc" id="L75">        Position vector = Position.calculatePositionBetween(a, b);</span>
+<span class="nc" id="L76">        return Math.abs(vector.getX()) + Math.abs(vector.getY());</span>
+    }
+
+    // finding the smallest distance in a queue that has elements as keys in a
+    // distance map
+    public static Position smallest(Queue&lt;Position&gt; q, Map&lt;Position, Double&gt; dist) {
+<span class="fc" id="L82">        int size = q.size();</span>
+<span class="fc" id="L83">        Double smallestDist = Double.MAX_VALUE;</span>
+<span class="fc" id="L84">        Position smallest = null;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (int i = 0; i &lt; size; i++) {</span>
+<span class="fc" id="L86">            Position curr = q.remove();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (dist.get(curr) &lt; smallestDist) {</span>
+<span class="fc" id="L88">                smallest = new Position(curr.getX(), curr.getY());</span>
+<span class="fc" id="L89">                smallestDist = dist.get(curr);</span>
+            }
+<span class="fc" id="L91">            q.add(curr); // we don't want to alter the queue</span>
+        }
+
+<span class="fc" id="L94">        return smallest;</span>
+    }
+
+    public static Boolean hasWall(DungeonMania game, Position position) {
+<span class="fc" id="L98">        List&lt;Entity&gt; entities = game.getEntities();</span>
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
+<span class="fc bfc" id="L101" title="All 4 branches covered.">            if (entity instanceof Wall &amp;&amp; entity.getPos().equals(position)) {</span>
+<span class="fc" id="L102">                return true;</span>
+            }
+<span class="fc" id="L104">        }</span>
+
+<span class="fc" id="L106">        return false;</span>
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L110">        DungeonMania game = new DungeonMania(&quot;Peaceful&quot;, &quot;mydungeon&quot;);</span>
+
+<span class="nc" id="L112">        List&lt;Position&gt; grid = new ArrayList&lt;Position&gt;();</span>
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        for (int i = 0; i &lt; 2; i++) {</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            for (int j = 0; j &lt; 2; j++) {</span>
+<span class="nc" id="L116">                grid.add(new Position(i, j));</span>
+            }
+        }
+
+<span class="nc" id="L120">        game.addSwampTile(new SwampTile(new Position(1, 0)));</span>
+
+<span class="nc" id="L122">        Map&lt;Position, Position&gt; prev = shortestPath(grid, new Position(0, 0), game);</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        for (Map.Entry&lt;Position, Position&gt; entry : prev.entrySet()) {</span>
+<span class="nc" id="L124">            System.out.println(&quot;-------------------------&quot;);</span>
+<span class="nc" id="L125">            System.out.println(entry.getKey());</span>
+<span class="nc" id="L126">            System.out.println(entry.getValue());</span>
+<span class="nc" id="L127">        }</span>
+<span class="nc" id="L128">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

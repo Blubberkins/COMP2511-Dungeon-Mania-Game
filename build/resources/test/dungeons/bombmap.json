@@ -1,0 +1,46 @@
+
+{
+    "width": 4,
+    "height": 1,
+    "entities": [
+        {
+            "x": 0,
+            "y": 0,
+            "type": "player"
+        },
+        {
+            "x": 1,
+            "y": 0,
+            "type": "bomb"
+        },
+        {
+            "x": 2,
+            "y": 0,
+            "type": "boulder"
+        },
+        {
+            "x": 3,
+            "y": 1,
+            "type": "wall"
+        },
+        {
+            "x": 2,
+            "y": 1,
+            "type": "wall"
+        },
+        {
+            "x": 4,
+            "y": 1,
+            "type": "wall"
+        },         
+        {
+            "x": 3,
+            "y": 0,
+            "type": "switch"
+        }
+
+    ],
+    "goal-condition": {
+        "goal": "exit"
+    }    
+}

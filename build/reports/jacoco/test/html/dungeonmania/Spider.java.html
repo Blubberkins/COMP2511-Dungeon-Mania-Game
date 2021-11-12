@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Spider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">Spider.java</span></div><h1>Spider.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
+
+public class Spider extends MovingEntity {
+    private Position spawn_point;
+    Boolean clockwise;
+
+    public Spider(Position pos, String type, String id) {
+<span class="fc" id="L11">        super(pos, type, id);</span>
+<span class="fc" id="L12">        super.setIsInteractable(false);</span>
+<span class="fc" id="L13">        this.spawn_point = pos;</span>
+<span class="fc" id="L14">        this.clockwise = true;</span>
+<span class="fc" id="L15">        this.setPos(pos.translateBy(Direction.UP));</span>
+<span class="fc" id="L16">        this.clockwise = true;</span>
+<span class="fc" id="L17">        super.setHealth(30);</span>
+<span class="fc" id="L18">        super.setDamage(5);</span>
+<span class="fc" id="L19">    }</span>
+    
+    /**
+     * Checks if the current spider's desired move
+     * moves towards the character.
+     * @param originalPos
+     * @param newPos
+     * @param dungeonmania
+     * @return boolean
+     */
+    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania){
+<span class="nc" id="L30">            Position CharacterPos = dungeonmania.getCharacter().getPos();</span>
+<span class="nc" id="L31">            int CharacterX = CharacterPos.getX();</span>
+<span class="nc" id="L32">            int CharacterY = CharacterPos.getY();</span>
+<span class="nc" id="L33">            int OldPosX = originalPos.getX();</span>
+<span class="nc" id="L34">            int OldPosY = originalPos.getY();</span>
+<span class="nc" id="L35">            int NewPosX = originalPos.getX();</span>
+<span class="nc" id="L36">            int NewPosY = originalPos.getY();</span>
+<span class="nc" id="L37">            int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));</span>
+<span class="nc" id="L38">            int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            return (NewDistance &gt; OldDistance);</span>
+    }
+
+    /**
+     * Calculates movement for spider
+     */
+    @Override
+    public void move(DungeonMania dungeonmania) {
+<span class="fc" id="L47">        Position newPosition = this.getPos();</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (this.clockwise) {</span>
+<span class="fc" id="L49">            newPosition = nextSquare(dungeonmania);</span>
+        } else {
+<span class="fc" id="L51">            newPosition = previousSquare(dungeonmania);</span>
+        }
+
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (newPosition == null) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (this.clockwise) {</span>
+<span class="fc" id="L56">                newPosition = previousSquare(dungeonmania);</span>
+<span class="fc" id="L57">                setDirection(false);</span>
+            } else {
+<span class="nc" id="L59">                newPosition = nextSquare(dungeonmania);</span>
+<span class="nc" id="L60">                setDirection(true);</span>
+            }
+
+        }
+
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (newPosition != null) {</span>
+<span class="fc" id="L66">            this.setPos(newPosition);</span>
+        }
+<span class="fc" id="L68">    }</span>
+
+    /**
+     * Gets the next spiders next square and returns it
+     * @param dungeonmania
+     * @return Position
+     */
+    public Position nextSquare(DungeonMania dungeonmania) {
+<span class="fc" id="L76">        int spawnX = this.spawn_point.getX();</span>
+<span class="fc" id="L77">        int spawnY = this.spawn_point.getY();</span>
+<span class="fc" id="L78">        int currX = this.getPos().getX();</span>
+<span class="fc" id="L79">        int currY = this.getPos().getY();</span>
+<span class="fc" id="L80">        Position newPos = null;</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L82">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
+<span class="fc bfc" id="L83" title="All 4 branches covered.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
+<span class="fc" id="L84">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
+<span class="fc bfc" id="L85" title="All 4 branches covered.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L86">            newPos = (this.getPos().translateBy(Direction.UP));</span>
+        } else {
+<span class="fc" id="L88">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
+        }
+<span class="pc bpc" id="L90" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
+<span class="nc" id="L91">            newPos = null;</span>
+        }
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
+<span class="fc" id="L94">            newPos = null;</span>
+        }
+
+<span class="fc" id="L97">        return newPos;</span>
+    }
+
+    /**
+     * Gets the spiders previous square and returns it
+     * @param dungeonmania
+     * @return Position
+     */
+    public Position previousSquare(DungeonMania dungeonmania) {
+<span class="fc" id="L106">        int spawnX = this.spawn_point.getX();</span>
+<span class="fc" id="L107">        int spawnY = this.spawn_point.getY();</span>
+<span class="fc" id="L108">        int currX = this.getPos().getX();</span>
+<span class="fc" id="L109">        int currY = this.getPos().getY();</span>
+<span class="fc" id="L110">        Position newPos = null;</span>
+<span class="pc bpc" id="L111" title="3 of 4 branches missed.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="nc" id="L112">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
+<span class="pc bpc" id="L113" title="1 of 4 branches missed.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
+<span class="fc" id="L114">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
+<span class="pc bpc" id="L115" title="2 of 4 branches missed.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L116">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
+        } else {
+<span class="nc" id="L118">            newPos = (this.getPos().translateBy(Direction.UP));</span>
+        }
+<span class="pc bpc" id="L120" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
+<span class="nc" id="L121">            newPos = null;</span>
+        }
+
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
+<span class="nc" id="L125">            newPos = null;</span>
+        }
+
+<span class="fc" id="L128">        return newPos;</span>
+    }
+
+    @Override
+    public void receiveDMG(int damage) {
+<span class="nc" id="L133">        super.setHealth(super.getHealth() - super.getDamage());</span>
+<span class="nc" id="L134">    }</span>
+
+    public void setDirection(Boolean direction) {
+<span class="fc" id="L137">        this.clockwise = direction;</span>
+<span class="fc" id="L138">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

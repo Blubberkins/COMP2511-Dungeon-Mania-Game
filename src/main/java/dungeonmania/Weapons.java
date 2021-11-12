@@ -2,10 +2,10 @@ package dungeonmania;
 
 import dungeonmania.util.Position;
 
-public class Weapons extends CollectableEntities{
-
+public abstract class Weapons extends CollectableEntities {
     private int durability;
-    
+    private int damage_modif;
+
     public Weapons(Position pos, String type, String id) {
         super(pos, type, id);
     }
@@ -22,4 +22,9 @@ public class Weapons extends CollectableEntities{
         this.durability--;
     }
 
+    public int getDamage() {
+        return this.damage_modif;
+    }
+
+    public abstract double calculateDamage();
 }
