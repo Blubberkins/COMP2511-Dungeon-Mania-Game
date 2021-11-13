@@ -142,18 +142,20 @@ public class DungeonMania {
             }
         }
         if (type.equals("midnight_armour")) {
-            this.Items.add(new MidnightArmour(null, type, id));
-            this.Buildables.remove("midnight_armour");
-            int armourCount = 1;
-            int stoneCount = 1;
-            for (Entity entity : this.Items) {
-                if (entity instanceof ArmourEntity && armourCount > 0) {
-                    toRemove.add(entity);
-                    armourCount--;
-                }
-                if ((entity instanceof SunStone) && stoneCount > 0) {
-                    toRemove.add(entity);
-                    stoneCount--;
+            if (hasZombie(this)) {
+                this.Items.add(new MidnightArmour(null, type, id));
+                this.Buildables.remove("midnight_armour");
+                int armourCount = 1;
+                int stoneCount = 1;
+                for (Entity entity : this.Items) {
+                    if (entity instanceof ArmourEntity && armourCount > 0) {
+                        toRemove.add(entity);
+                        armourCount--;
+                    }
+                    if ((entity instanceof SunStone) && stoneCount > 0) {
+                        toRemove.add(entity);
+                        stoneCount--;
+                    }
                 }
             }
         }
@@ -717,6 +719,15 @@ public class DungeonMania {
     public Boolean hasWall(DungeonMania game, Position pos) {
         for (Entity entity : game.getEntities()) {
             if ((entity instanceof Wall) && pos.equals(entity.getPos())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean hasZombie(DungeonMania game) {
+        for (Entity entity : game.getEntities()) {
+            if (entity instanceof ZombieToast) {
                 return true;
             }
         }
