@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GoalComposite.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">GoalComposite.java</span></div><h1>GoalComposite.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import java.util.List;
+import java.util.ArrayList;
+
+// for logical operators on goals
+// By Liam 
+
+public class GoalComposite implements Goal {
+    private String name;
+<span class="fc" id="L11">    private List&lt;Goal&gt; subgoals = new ArrayList&lt;Goal&gt;();</span>
+
+    public GoalComposite(String name) {
+<span class="fc" id="L14">        super();</span>
+<span class="fc" id="L15">        this.name = name;</span>
+<span class="fc" id="L16">    }</span>
+
+    /**
+     * Gets the name of the goal
+     * @return String
+     */
+    public String getName() {
+<span class="fc" id="L23">        return this.name;</span>
+    }
+
+    /**
+     * Checks if the goal has been completed
+     * @param game
+     * @return boolean
+     */
+    public Boolean isComplete(DungeonMania game) {
+<span class="pc bpc" id="L32" title="1 of 3 branches missed.">        switch (name) {</span>
+        case &quot;AND&quot;:
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (Goal goal : subgoals) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                if (!(goal.isComplete(game))) {</span>
+<span class="fc" id="L36">                    return false;</span>
+                }
+<span class="fc" id="L38">            }</span>
+<span class="fc" id="L39">            return true;</span>
+        case &quot;OR&quot;:
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            for (Goal goal : subgoals) {</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                if (goal.isComplete(game)) {</span>
+<span class="fc" id="L43">                    return true;</span>
+                }
+<span class="fc" id="L45">            }</span>
+<span class="fc" id="L46">            return false;</span>
+        }
+<span class="nc" id="L48">        return false;</span>
+    }
+
+    /**
+     * Adds a goal.
+     * @param g
+     * @return boolean
+     */
+    public Boolean add(Goal g) {
+<span class="fc" id="L57">        subgoals.add(g);</span>
+<span class="fc" id="L58">        return true;</span>
+    }
+
+    /**
+     * Removes a specific goal
+     * @param g
+     * @return boolean
+     */
+    public Boolean remove(Goal g) {
+<span class="nc" id="L67">        subgoals.remove(g);</span>
+<span class="nc" id="L68">        return true;</span>
+    }
+
+    public List&lt;Goal&gt; getSubgoals() {
+<span class="fc" id="L72">        return this.subgoals;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L76">        this.name = name;</span>
+<span class="nc" id="L77">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

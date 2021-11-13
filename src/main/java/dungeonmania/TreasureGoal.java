@@ -12,7 +12,7 @@ public class TreasureGoal extends GoalLeaf {
         List<Entity> entities = game.getEntities();
 
         for (Entity entity : entities) {
-            if (entity.getType().compareTo("treasure") == 0) {
+            if (entity instanceof TreasureEntity) {
                 return false;
             }
         }

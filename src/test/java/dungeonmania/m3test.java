@@ -19,7 +19,7 @@ public class m3test {
     @Test
     public void testAssassinSpawn() {
         int numAssassins = 0;
-        int numTrials = 1000;
+        int numTrials = 2500;
         for (int i = 0; i < numTrials; i++) {
             // load the game with a mercenary
             DungeonManiaController dm = new DungeonManiaController();
@@ -101,7 +101,7 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 1;
+        int numTrials = 2500;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
@@ -139,11 +139,14 @@ public class m3test {
 
             // wait 48 more ticks, the hydra should spawn on the 50th tick
             for (int j = 0; j < 24; j++) {
+                dm.getLoadedGame().getCharacter().setHealth(30);
                 dm.tick(null, Direction.LEFT);
+                dm.getLoadedGame().getCharacter().setHealth(30);
                 dm.tick(null, Direction.RIGHT);
             }
 
             dm.tick(null, Direction.NONE);
+            dm.getLoadedGame().getCharacter().setHealth(30);
 
             Hydra hydra = findHydra(game);
             assertTrue(hydra != null);
@@ -462,6 +465,7 @@ public class m3test {
         // tick 48 more times until a hydra spawns
         for (int i = 0; i < 48; i++) {
             dm.tick(null, Direction.NONE);
+            game.getCharacter().setHealth(30); // so player doesn't die to mercenary
         }
 
         dm.tick(null, Direction.NONE);
@@ -571,7 +575,7 @@ public class m3test {
         Entity armour = inventory.get(inventory.size() - 1);
         // the last object in the inventory should be the midnight armour
         // this accounts for the off chance we get the one ring
-        assertTrue(armour.getType().compareTo("midnight_armour") == 0);
+        assertTrue(armour instanceof MidnightArmour);
 
         // now we move to (3, 0) and fight the mercenary
         dm.tick(null, Direction.RIGHT);
