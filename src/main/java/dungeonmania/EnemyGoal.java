@@ -23,21 +23,16 @@ public class EnemyGoal extends GoalLeaf {
 
     /**
      * Checks if a given entity is an enemy
+     * 
      * @param entity
      * @return boolean
      */
     public Boolean isEnemy(Entity entity) {
-        List<String> enemies = new ArrayList<String>();
-
-        enemies.add("spider");
-        enemies.add("zombie_toast_spawner");
-        enemies.add("zombie_toast");
-
-        if (enemies.contains(entity.getType())) {
+        if (entity instanceof MovingEntity && !(entity instanceof Mercenary) && !(entity instanceof Character)) {
             return true;
         }
 
-        if (entity.getType().compareTo("mercenary") == 0) {
+        if (entity instanceof Mercenary) {
             if (!((Mercenary) entity).getIsBribed()) {
                 return true;
             }
