@@ -32,6 +32,10 @@ public class EnemyGoal extends GoalLeaf {
             return true;
         }
 
+        if (entity instanceof ZombieToastSpawner) {
+            return true;
+        }
+
         if (entity instanceof Mercenary) {
             if (!((Mercenary) entity).getIsBribed()) {
                 return true;

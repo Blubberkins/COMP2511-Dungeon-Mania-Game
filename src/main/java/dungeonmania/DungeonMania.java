@@ -142,7 +142,7 @@ public class DungeonMania {
             }
         }
         if (type.equals("midnight_armour")) {
-            if (hasZombie(this)) {
+            if (!hasZombie(this)) {
                 this.Items.add(new MidnightArmour(null, type, id));
                 this.Buildables.remove("midnight_armour");
                 int armourCount = 1;
@@ -501,7 +501,7 @@ public class DungeonMania {
      */
     public void spawnHydra() {
         Position p = generateRandomPos();
-        while (hasWall(this, p)) {
+        while (hasWall(this, p) || hasEntity(this, p)) {
             p = generateRandomPos();
         }
         Hydra h = new Hydra(p, "hydra", Integer.toString(this.incrementIntId()));
@@ -728,6 +728,15 @@ public class DungeonMania {
     public Boolean hasZombie(DungeonMania game) {
         for (Entity entity : game.getEntities()) {
             if (entity instanceof ZombieToast) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean hasEntity(DungeonMania game, Position pos) {
+        for (Entity entity : game.getEntities()) {
+            if (pos.equals(entity.getPos())) {
                 return true;
             }
         }
