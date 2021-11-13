@@ -29,7 +29,7 @@ public class Battles {
         for (Entity item : items) {
             if (item instanceof SwordEntity) {
                 characterDamage += 5;
-                ((Weapons) item).decrementDurability();
+                ((Damage) item).decrementDurability();
                 if (item instanceof Anduril) {
                     anduril = true;
                 }
@@ -89,10 +89,10 @@ public class Battles {
         for (Entity item : items) {
             if (item instanceof Shield) {
                 enemydamage -= 5;
-                ((Weapons) item).decrementDurability();
+                ((Damage) item).decrementDurability();
             }
             if (item instanceof ArmourEntity) {
-                ((Weapons) item).decrementDurability();
+                ((Damage) item).decrementDurability();
                 multiplier = multiplier / 2;
 
             }

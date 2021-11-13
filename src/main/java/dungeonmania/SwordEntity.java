@@ -3,7 +3,7 @@ package dungeonmania;
 import dungeonmania.util.Position;
 
 public class SwordEntity extends Weapons {
-    Weapons weapon;
+    Damage weapon;
 
     public SwordEntity(Position pos, String type, String id) {
         super(pos, type, id);

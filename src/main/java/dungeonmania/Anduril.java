@@ -4,7 +4,7 @@ import dungeonmania.util.Position;
 
 public class Anduril extends SwordEntity {
 
-    Weapons weapon;
+    Damage weapon;
 
     public Anduril(Position pos, String type, String id) {
         super(pos, type, id);

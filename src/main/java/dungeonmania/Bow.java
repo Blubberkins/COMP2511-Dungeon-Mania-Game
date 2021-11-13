@@ -4,7 +4,7 @@ import dungeonmania.util.Position;
 
 public class Bow extends Weapons {
 
-    Weapons weapon;
+    Damage weapon;
 
     public Bow(Position pos, String type, String id) {
         super(pos, type, id);

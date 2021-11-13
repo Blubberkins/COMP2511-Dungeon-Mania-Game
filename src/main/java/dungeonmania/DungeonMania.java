@@ -35,6 +35,7 @@ public class DungeonMania {
         this.swampTiles = new ArrayList<SwampTile>();
         // TODO this.random = new Random(29);
     }
+
     /**
      * Increments the id
      * 
@@ -194,7 +195,7 @@ public class DungeonMania {
     public void removeUsedItems() {
         List<Entity> useditems = new ArrayList<>();
         for (Entity item : this.Items) {
-            if (item instanceof Weapons && ((Weapons) item).getDurability() == 0) {
+            if (item instanceof Damage && ((Damage) item).getDurability() == 0) {
                 useditems.add(item);
             }
             if (item instanceof TheOneRingEntity && ((TheOneRingEntity) item).getIsUsed()) {
@@ -462,7 +463,7 @@ public class DungeonMania {
      * @return Position
      */
     public Position generateRandomPos() {
-       
+
         int spawnX = ThreadLocalRandom.current().nextInt(getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(getLargestY() + 1);
         return new Position(spawnX, spawnY, 0);

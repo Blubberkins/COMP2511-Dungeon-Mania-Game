@@ -4,7 +4,7 @@ import dungeonmania.util.Position;
 
 public class ArmourEntity extends Weapons {
 
-    Weapons weapon;
+    Damage weapon;
 
     public ArmourEntity(Position pos, String type, String id) {
         super(pos, type, id);
