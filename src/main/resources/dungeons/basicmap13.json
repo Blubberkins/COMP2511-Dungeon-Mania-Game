@@ -26,9 +26,13 @@
             "x": 6,
             "y": 0,
             "type": "invisibility_potion"
+        }, {
+            "x": 10, 
+            "y": 10,
+            "type": "treasure"
         }
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }    
 }

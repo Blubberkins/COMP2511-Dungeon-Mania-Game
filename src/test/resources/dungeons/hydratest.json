@@ -77,10 +77,6 @@
             "y": 2, 
             "type": "wall"
         }, {
-            "x": 7,
-            "y": 2, 
-            "type": "wall"
-        }, {
             "x": 0,
             "y": 1, 
             "type": "wall"
@@ -88,9 +84,13 @@
             "x": 7,
             "y": 1, 
             "type": "wall"
+        }, {
+            "x": 7, 
+            "y": 2,
+            "type": "treasure"
         }
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }    
 }

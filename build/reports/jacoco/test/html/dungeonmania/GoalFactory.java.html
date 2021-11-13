@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GoalFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">GoalFactory.java</span></div><h1>GoalFactory.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+
+import java.util.List;
+
+// string to goals
+// assumes that the string passed in is valid
+// By Liam
+
+<span class="nc" id="L12">public class GoalFactory {</span>
+    public static Goal generate(String goals) {
+<span class="fc" id="L14">        Goal newGoal = null;</span>
+
+        // assumes by contract that it can in fact be converted to json
+<span class="fc" id="L17">        JSONObject goalJSON = new JSONObject(goals);</span>
+
+<span class="pc bpc" id="L19" title="1 of 2 branches missed.">        if (goalJSON.has(&quot;goal&quot;)) {</span>
+<span class="fc" id="L20">            Object goal = goalJSON.get(&quot;goal&quot;);</span>
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">            if (goal instanceof String) {</span>
+<span class="pc bpc" id="L22" title="1 of 7 branches missed.">                switch ((String) goal) {</span>
+                case &quot;AND&quot;:
+<span class="fc" id="L24">                    newGoal = new GoalComposite(&quot;AND&quot;);</span>
+<span class="fc" id="L25">                    addSubGoal(newGoal, goalJSON);</span>
+<span class="fc" id="L26">                    break;</span>
+                case &quot;OR&quot;:
+<span class="fc" id="L28">                    newGoal = new GoalComposite(&quot;OR&quot;);</span>
+<span class="fc" id="L29">                    addSubGoal(newGoal, goalJSON);</span>
+<span class="fc" id="L30">                    break;</span>
+                case &quot;enemies&quot;:
+<span class="fc" id="L32">                    newGoal = new EnemyGoal();</span>
+<span class="fc" id="L33">                    break;</span>
+                case &quot;treasure&quot;:
+<span class="fc" id="L35">                    newGoal = new TreasureGoal();</span>
+<span class="fc" id="L36">                    break;</span>
+                case &quot;boulders&quot;:
+<span class="fc" id="L38">                    newGoal = new BoulderGoal();</span>
+<span class="fc" id="L39">                    break;</span>
+                case &quot;exit&quot;:
+<span class="fc" id="L41">                    newGoal = new ExitGoal();</span>
+                    break;
+                }
+            }
+        }
+
+<span class="fc" id="L47">        return newGoal;</span>
+    }
+
+    /**
+     * Creates a subgoal
+     * @param goal
+     * @param jsonObject
+     */
+    public static void addSubGoal(Goal goal, JSONObject jsonObject) {
+<span class="fc" id="L56">        JSONArray subgoals = jsonObject.getJSONArray(&quot;subgoals&quot;);</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (int i = 0; i &lt; subgoals.length(); i++) {</span>
+<span class="fc" id="L59">            JSONObject subgoal = subgoals.getJSONObject(i);</span>
+<span class="fc" id="L60">            goal.add(generate(subgoal.toString()));</span>
+        }
+<span class="fc" id="L62">    }</span>
+
+    /**
+     * Turns a given goal into a string
+     * @param goal
+     * @return String
+     */
+    public static String goalString(Goal goal) {
+        // do a pretty print
+
+<span class="fc" id="L72">        String string = &quot;&quot;;</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (goal instanceof GoalComposite) {</span>
+<span class="fc" id="L75">            List&lt;Goal&gt; subgoals = ((GoalComposite) goal).getSubgoals();</span>
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            for (int i = 0; i &lt; subgoals.size(); i++) {</span>
+<span class="fc" id="L78">                string += &quot;:&quot; + (subgoals.get(i)).getName();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                if (i != subgoals.size() - 1) {</span>
+<span class="fc" id="L80">                    string += goal.getName();</span>
+                }
+            }
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        } else if (goal instanceof GoalLeaf) {</span>
+<span class="fc" id="L84">            string += &quot;:&quot; + goal.getName();</span>
+        }
+
+<span class="fc" id="L87">        return string;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

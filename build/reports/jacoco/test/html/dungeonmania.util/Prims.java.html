@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Prims.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania.util</a> &gt; <span class="el_source">Prims.java</span></div><h1>Prims.java</h1><pre class="source lang-java linenums">package dungeonmania.util;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+<span class="nc" id="L8">public class Prims {</span>
+    public static List&lt;List&lt;Boolean&gt;&gt; generate(int width, int height, Position start, Position end) {
+<span class="fc" id="L10">        List&lt;List&lt;Boolean&gt;&gt; grid = new ArrayList&lt;&gt;();</span>
+
+        // initialise grid to all walls
+<span class="fc bfc" id="L13" title="All 2 branches covered.">        for (int i = 0; i &lt; height; i++) {</span>
+<span class="fc" id="L14">            grid.add(new ArrayList&lt;Boolean&gt;());</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">            for (int j = 0; j &lt; width; j++) {</span>
+<span class="fc" id="L16">                grid.get(i).add(false);</span>
+            }
+        }
+
+        // make the starting point empty space
+<span class="fc" id="L21">        int x = start.getX();</span>
+<span class="fc" id="L22">        int y = start.getY();</span>
+<span class="fc" id="L23">        grid.get(x).set(y, true);</span>
+
+        // add to options all neighbours of 'start' not on boundary that are of distance
+        // 2 away and are walls
+
+<span class="fc" id="L28">        List&lt;Position&gt; options = generateNeighbours(grid, start, 2, true);</span>
+
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        while (!options.isEmpty()) {</span>
+<span class="fc" id="L31">            int index = ThreadLocalRandom.current().nextInt(0, options.size());</span>
+<span class="fc" id="L32">            Position next = options.remove(index);</span>
+
+<span class="fc" id="L34">            List&lt;Position&gt; neighbours = generateNeighbours(grid, next, 2, false);</span>
+<span class="pc bpc" id="L35" title="1 of 2 branches missed.">            if (!neighbours.isEmpty()) {</span>
+<span class="fc" id="L36">                int neighbourIndex = ThreadLocalRandom.current().nextInt(0, neighbours.size());</span>
+<span class="fc" id="L37">                Position neighbour = neighbours.get(neighbourIndex);</span>
+<span class="fc" id="L38">                Position between = between(next, neighbour);</span>
+<span class="fc" id="L39">                grid.get(next.getX()).set(next.getY(), true);</span>
+<span class="fc" id="L40">                grid.get(between.getX()).set(between.getY(), true);</span>
+<span class="fc" id="L41">                grid.get(neighbour.getX()).set(neighbour.getY(), true);</span>
+            }
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            for (Position p : generateNeighbours(grid, next, 2, true)) {</span>
+<span class="fc" id="L45">                Boolean bool = grid.get(p.getX()).get(p.getY());</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">                if (!bool) {</span>
+<span class="fc" id="L47">                    options.add(p);</span>
+                }
+<span class="fc" id="L49">            }</span>
+<span class="fc" id="L50">        }</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (!grid.get(end.getX()).get(end.getY())) {</span>
+<span class="fc" id="L53">            grid.get(end.getX()).set(end.getY(), true);</span>
+<span class="fc" id="L54">            List&lt;Position&gt; endNeighbours = generateNeighbours(grid, end, 1, true);</span>
+
+<span class="fc" id="L56">            Boolean noEmpty = false;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            for (Position p : endNeighbours) {</span>
+<span class="fc" id="L58">                Boolean b = grid.get(p.getX()).get(p.getY());</span>
+<span class="pc bpc" id="L59" title="2 of 4 branches missed.">                noEmpty = (noEmpty || b);</span>
+<span class="fc" id="L60">            }</span>
+
+<span class="pc bpc" id="L62" title="2 of 4 branches missed.">            if (!noEmpty &amp;&amp; endNeighbours.size() &gt; 0) { // every p checked would have been false</span>
+<span class="fc" id="L63">                int endNeighbourIndex = ThreadLocalRandom.current().nextInt(0, endNeighbours.size());</span>
+<span class="fc" id="L64">                Position endNeighbour = endNeighbours.get(endNeighbourIndex);</span>
+<span class="fc" id="L65">                grid.get(endNeighbour.getX()).set(endNeighbour.getY(), true);</span>
+            }
+        }
+
+<span class="fc" id="L69">        return grid;</span>
+    }
+
+    public static Boolean cardinalAway(Position a, Position b, int amt) {
+<span class="fc" id="L73">        int x = Math.abs(a.getX() - b.getX());</span>
+<span class="fc" id="L74">        int y = Math.abs(a.getY() - b.getY());</span>
+<span class="fc bfc" id="L75" title="All 6 branches covered.">        return ((x == amt) || (y == amt)) &amp;&amp; x + y == amt;</span>
+    }
+
+    public static List&lt;Position&gt; generateNeighbours(List&lt;List&lt;Boolean&gt;&gt; grid, Position src, int dist, Boolean isWall) {
+        // starting the indices from one and ending at one less than the boundary
+        // ensures we never touch the boundary
+        // inner check checks the distance and that said square is a wall
+
+        // assumes rectangular, at least height 1
+<span class="fc" id="L84">        int height = grid.size();</span>
+<span class="fc" id="L85">        int width = grid.get(0).size();</span>
+
+<span class="fc" id="L87">        List&lt;Position&gt; neighbours = new ArrayList&lt;Position&gt;();</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        for (int i = 1; i &lt; height - 1; i++) {</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">            for (int j = 1; j &lt; width - 1; j++) {</span>
+<span class="fc" id="L91">                Position curr = new Position(i, j);</span>
+<span class="fc bfc" id="L92" title="All 4 branches covered.">                if (cardinalAway(curr, src, dist) &amp;&amp; grid.get(i).get(j) != isWall) {</span>
+<span class="fc" id="L93">                    neighbours.add(curr);</span>
+                }
+            }
+        }
+
+<span class="fc" id="L98">        return neighbours;</span>
+    }
+
+    public static Position between(Position a, Position b) {
+        // assumes we take a and b as two positions cardinal distance two apart
+<span class="fc" id="L103">        Position between = null;</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">        if (Math.abs(b.getX() - a.getX()) % 2 == 0) {</span>
+<span class="fc" id="L105">            int newX = (a.getX() + b.getX()) / 2;</span>
+<span class="fc" id="L106">            int newY = (a.getY() + b.getY()) / 2;</span>
+<span class="fc" id="L107">            between = new Position(newX, newY);</span>
+<span class="fc" id="L108">        } else {</span>
+<span class="nc" id="L109">            between = new Position(a.getX(), b.getY());</span>
+        }
+<span class="fc" id="L111">        return between;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

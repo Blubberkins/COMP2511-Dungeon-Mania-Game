@@ -5,6 +5,7 @@ import dungeonmania.util.Position;
 
 public class Spider extends MovingEntity {
     private Position spawn_point;
+    private Damage damage;
     Boolean clockwise;
 
     public Spider(Position pos, String type, String id) {
@@ -15,28 +16,28 @@ public class Spider extends MovingEntity {
         this.setPos(pos.translateBy(Direction.UP));
         this.clockwise = true;
         super.setHealth(30);
-        super.setDamage(5);
+        this.damage = new BaseDamage(5, null, null, null);
     }
-    
+
     /**
-     * Checks if the current spider's desired move
-     * moves towards the character.
+     * Checks if the current spider's desired move moves towards the character.
+     * 
      * @param originalPos
      * @param newPos
      * @param dungeonmania
      * @return boolean
      */
-    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania){
-            Position CharacterPos = dungeonmania.getCharacter().getPos();
-            int CharacterX = CharacterPos.getX();
-            int CharacterY = CharacterPos.getY();
-            int OldPosX = originalPos.getX();
-            int OldPosY = originalPos.getY();
-            int NewPosX = originalPos.getX();
-            int NewPosY = originalPos.getY();
-            int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));
-            int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));
-            return (NewDistance > OldDistance);
+    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania) {
+        Position CharacterPos = dungeonmania.getCharacter().getPos();
+        int CharacterX = CharacterPos.getX();
+        int CharacterY = CharacterPos.getY();
+        int OldPosX = originalPos.getX();
+        int OldPosY = originalPos.getY();
+        int NewPosX = originalPos.getX();
+        int NewPosY = originalPos.getY();
+        int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));
+        int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));
+        return (NewDistance > OldDistance);
     }
 
     /**
@@ -69,6 +70,7 @@ public class Spider extends MovingEntity {
 
     /**
      * Gets the next spiders next square and returns it
+     * 
      * @param dungeonmania
      * @return Position
      */
@@ -99,6 +101,7 @@ public class Spider extends MovingEntity {
 
     /**
      * Gets the spiders previous square and returns it
+     * 
      * @param dungeonmania
      * @return Position
      */
@@ -130,7 +133,7 @@ public class Spider extends MovingEntity {
 
     @Override
     public void receiveDMG(int damage) {
-        super.setHealth(super.getHealth() - super.getDamage());
+        super.setHealth(super.getHealth() - super.getDamage().calculateDamage());
     }
 
     public void setDirection(Boolean direction) {

@@ -9,12 +9,13 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ZombieToast extends MovingEntity {
     private ArmourEntity armour;
+    private Damage damage;
 
     public ZombieToast(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
         super.setHealth(20);
-        super.setDamage(5);
+        this.damage = new BaseDamage(5, null, null, null);
         this.armour = ChanceOfArmour();
     }
 
@@ -34,7 +35,7 @@ public class ZombieToast extends MovingEntity {
      * Decrements armor durability
      */
     public void decrementArmourDurability() {
-        this.armour.decrementDurability();
+        this.armour.setDurability(this.armour.getDurability() - 1);
     }
 
     /**
@@ -53,6 +54,14 @@ public class ZombieToast extends MovingEntity {
      */
     public Boolean HasArmour() {
         return this.armour != null;
+    }
+
+    public void setDamage(int damage) {
+        this.damage.setDamage(damage);
+    }
+
+    public Damage getDamage() {
+        return this.damage;
     }
 
     /**

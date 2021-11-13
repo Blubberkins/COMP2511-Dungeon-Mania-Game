@@ -37,10 +37,14 @@
             "x": 3,
             "y": 0,
             "type": "switch"
+        }, {
+            "x": 10,
+            "y": 0,
+            "type": "treasure"
         }
 
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }    
 }

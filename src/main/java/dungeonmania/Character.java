@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Character extends Entity {
     private int health;
-    private int damage;
+    private Damage damage;
     private Boolean inBattle;
     private List<MovingEntity> allies;
     private boolean isInvisible;
@@ -19,7 +19,7 @@ public class Character extends Entity {
     public Character(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
-        this.damage = 10;
+        this.damage = new BaseDamage(10, null, null, null);
         this.health = 30;
         this.allies = new ArrayList<>();
         this.inBattle = false;
@@ -160,12 +160,44 @@ public class Character extends Entity {
         this.health = health;
     }
 
-    public int getDamage() {
-        return damage;
+    public Damage getDamage() {
+        return this.damage;
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
+        this.damage.setDamage(damage);
+    }
+
+    public void setWeapon(Damage weapon) {
+        this.damage = weapon;
+    }
+
+    public void addWeapon(String type) {
+        Damage weapon = this.damage;
+
+        // these are multipliers, so we need to unwrap
+        if (this.damage instanceof Bow) {
+            weapon = ((Bow) this.damage).getWeapon();
+        }
+
+        Position pos = weapon.getPos();
+        String wtype = weapon.getType();
+        String id = weapon.getId();
+
+        if (type.equalsIgnoreCase("bow")) {
+            weapon = new Bow(weapon, pos, wtype, id);
+        } else if (type.equalsIgnoreCase("sword")) {
+            weapon = new SwordEntity(weapon, pos, wtype, id);
+        } else if (type.equalsIgnoreCase("anduril")) {
+            weapon = new Anduril(weapon, pos, wtype, id);
+        } else if (type.equalsIgnoreCase("shield")) {
+            weapon = new Shield(weapon, pos, wtype, id);
+        }
+
+        // rewrapping
+        if (this.damage instanceof Bow) {
+            weapon = new Bow(weapon, pos, wtype, id);
+        }
     }
 
     public void receiveDMG(int damage2) {

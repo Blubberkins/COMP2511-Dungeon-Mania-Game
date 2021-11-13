@@ -2,24 +2,8 @@ package dungeonmania;
 
 import dungeonmania.util.Position;
 
-public class Weapons extends CollectableEntities{
-
-    private int durability;
-    
+public abstract class Weapons extends Damage {
     public Weapons(Position pos, String type, String id) {
         super(pos, type, id);
     }
-
-    public int getDurability() {
-        return durability;
-    }
-
-    public void setDurability(int durability) {
-        this.durability = durability;
-    }
-
-    public void decrementDurability() {
-        this.durability--;
-    }
-
 }

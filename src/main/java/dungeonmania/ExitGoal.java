@@ -13,8 +13,10 @@ public class ExitGoal extends GoalLeaf {
     public Boolean isComplete(DungeonMania game) {
         List<Entity> entities = game.getEntities();
 
+        Boolean exitExists = false;
         for (Entity entity : entities) {
-            if (entity.getType().compareTo("exit") == 0) {
+            if (entity instanceof Exit) {
+                exitExists = true;
                 Position exitposition = entity.getPos();
                 if (exitposition.equals(getPlayerPosition(game))) {
                     return true;
@@ -22,11 +24,16 @@ public class ExitGoal extends GoalLeaf {
             }
         }
 
+        if (!exitExists) {
+            return true;
+        }
+
         return false;
     }
 
     /**
      * Gets the current players position in the given game
+     * 
      * @param game
      * @return Position
      */

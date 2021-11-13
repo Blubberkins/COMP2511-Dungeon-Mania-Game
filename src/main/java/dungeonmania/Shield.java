@@ -4,9 +4,16 @@ import dungeonmania.util.Position;
 
 public class Shield extends Weapons {
 
-    public Shield(Position pos, String type, String id) {
+    Damage weapon;
+
+    public Shield(Damage weapon, Position pos, String type, String id) {
         super(pos, type, id);
         super.setDurability(4);
+        this.weapon = weapon;
     }
-    
+
+    @Override
+    public int calculateDamage() {
+        return weapon.calculateDamage() - 5;
+    }
 }

@@ -17,12 +17,13 @@ public class Mercenary extends MovingEntity {
     private Boolean isBribed;
     private ArmourEntity armour;
     private int ticksLeftOnBribe;
+    private Damage damage;
 
     public Mercenary(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(true);
         super.setHealth(30);
-        super.setDamage(5);
+        this.damage = new BaseDamage(5, null, null, null);
         this.isBribed = false;
         this.armour = ChanceOfArmour();
         this.ticksLeftOnBribe = -1;
@@ -103,7 +104,7 @@ public class Mercenary extends MovingEntity {
     }
 
     public void decrementArmourDurability() {
-        this.armour.decrementDurability();
+        this.armour.setDurability(this.armour.getDurability() - 1);
     }
 
     public Boolean HasArmour() {
@@ -120,6 +121,14 @@ public class Mercenary extends MovingEntity {
 
     public int getBribe() {
         return this.minBribe;
+    }
+
+    public void setDamage(int damage) {
+        this.damage.setDamage(damage);
+    }
+
+    public Damage getDamage() {
+        return this.damage;
     }
 
     public List<Position> mapPositions(DungeonMania game) {

@@ -4,8 +4,9 @@ import dungeonmania.util.Position;
 
 public abstract class MovingEntity extends Entity {
     private int health;
-    private int damage;
-    private Boolean InBattle;   
+    private Damage damage;
+    private Boolean InBattle;
+
     public MovingEntity(Position pos, String type, String id) {
         super(pos, type, id);
         super.setIsInteractable(false);
@@ -13,17 +14,17 @@ public abstract class MovingEntity extends Entity {
     }
 
     /**
-     * Checks if a Mercenary is bribed,
-     * else is hostile
+     * Checks if a Mercenary is bribed, else is hostile
+     * 
      * @return boolean
      */
-    public Boolean isHostile(){
-        if(this instanceof Mercenary && ((Mercenary) this).getIsBribed()){
+    public Boolean isHostile() {
+        if (this instanceof Mercenary && ((Mercenary) this).getIsBribed()) {
             return false;
         }
         return true;
     }
-    
+
     public int getHealth() {
         return health;
     }
@@ -41,18 +42,19 @@ public abstract class MovingEntity extends Entity {
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
+        this.damage.setDamage(damage);
     }
-    public int getDamage() {
+
+    public Damage getDamage() {
         return this.damage;
     }
 
     public abstract void move(DungeonMania d);
+
     public abstract void receiveDMG(int damage);
-    
-    public Boolean isAlive(){
+
+    public Boolean isAlive() {
         return this.health > 0;
     }
-
 
 }

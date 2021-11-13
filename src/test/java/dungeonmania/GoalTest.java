@@ -183,6 +183,8 @@ public class GoalTest {
             dungeonManiaController.tick(null, Direction.LEFT);
         }
 
+        game.getCharacter().setHealth(30);
+
         // player is currently on (1, 0), 19 ticks have passed
         dungeonManiaController.tick(null, Direction.RIGHT);
 
@@ -219,7 +221,8 @@ public class GoalTest {
         // should just now be the player, the spawner, and walls
 
         assertTrue(game.getEntities().size() == 20);
-        // player should still have the sword
+        // give player a sword if it broke
+        game.AddItem("sword");
         inventory = game.getItemResponses();
         if (!(inventory.size() == 1)) {
 

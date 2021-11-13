@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Battles.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">Battles.java</span></div><h1>Battles.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import java.util.List;
+
+<span class="nc" id="L5">public class Battles {</span>
+<span class="fc" id="L6">    public static enum BattleOutcome {</span>
+<span class="fc" id="L7">        CHARACTER_WINS, ENEMY_WINS, NEITHER</span>
+    }
+
+    /**
+     * Calculates the outcome of a battle between the character and an enemy.
+     * 
+     * @param character
+     * @param entity
+     * @param items
+     * @return BattleOutcome
+     */
+    public static BattleOutcome Battle(Character character, MovingEntity entity, List&lt;Entity&gt; items) {
+<span class="fc" id="L19">        int allyDamage = 0;</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        for (MovingEntity ally : character.getAllies()) {</span>
+<span class="fc" id="L21">            ally.setInBattle(true);</span>
+<span class="fc" id="L22">            allyDamage = (ally.getDamage() + ally.getHealth()) / 10;</span>
+<span class="fc" id="L23">            entity.receiveDMG(allyDamage);</span>
+<span class="fc" id="L24">        }</span>
+
+<span class="fc" id="L26">        Boolean anduril = false;</span>
+<span class="fc" id="L27">        int characterDamage = (character.getDamage() + character.getHealth()) / 10;</span>
+<span class="fc" id="L28">        Boolean hasBow = false;</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (Entity item : items) {</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">            if (item instanceof SwordEntity) {</span>
+<span class="fc" id="L31">                characterDamage += 5;</span>
+<span class="fc" id="L32">                ((Weapons) item).decrementDurability();</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                if (item instanceof Anduril) {</span>
+<span class="fc" id="L34">                    anduril = true;</span>
+                }
+            }
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">            if (item instanceof Bow) {</span>
+<span class="nc" id="L38">                hasBow = true;</span>
+            }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            if (item instanceof MidnightArmour) {</span>
+<span class="fc" id="L41">                characterDamage += 5;</span>
+            }
+<span class="fc" id="L43">        }</span>
+<span class="pc bpc" id="L44" title="1 of 4 branches missed.">        if (entity instanceof ZombieToast &amp;&amp; ((ZombieToast) entity).HasArmour()) {</span>
+<span class="nc" id="L45">            characterDamage = characterDamage / 2;</span>
+<span class="nc" id="L46">            ((ZombieToast) entity).decrementArmourDurability();</span>
+        }
+<span class="fc bfc" id="L48" title="All 4 branches covered.">        if (entity instanceof Mercenary &amp;&amp; ((Mercenary) entity).HasArmour()) {</span>
+<span class="fc" id="L49">            characterDamage = characterDamage / 2;</span>
+<span class="fc" id="L50">            ((Mercenary) entity).decrementArmourDurability();</span>
+        }
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">        if (entity instanceof Hydra || entity instanceof Assassin) {</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">            if (anduril) {</span>
+<span class="fc" id="L54">                characterDamage *= 3;</span>
+            }
+        }
+
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        if (!(entity instanceof Hydra &amp;&amp; anduril)) {</span>
+<span class="fc" id="L59">            entity.receiveDMG(characterDamage);</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">            if (hasBow) {</span>
+<span class="nc" id="L61">                findBow(items).decrementDurability();</span>
+<span class="nc" id="L62">                entity.receiveDMG(characterDamage);</span>
+            }
+        } else {
+<span class="fc" id="L65">            int execute = 1;</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">            if (hasBow) {</span>
+<span class="nc" id="L67">                findBow(items).decrementDurability();</span>
+<span class="nc" id="L68">                execute = 2;</span>
+            }
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            for (int i = 0; i &lt; execute; i++) {</span>
+<span class="fc" id="L71">                int prev = entity.getHealth();</span>
+<span class="fc" id="L72">                entity.receiveDMG(characterDamage);</span>
+<span class="fc" id="L73">                int next = entity.getHealth();</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">                if (next &gt; prev) {</span>
+<span class="nc" id="L75">                    entity.setHealth(2 * prev - next);</span>
+                }
+            }
+        }
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (!entity.isAlive()) {</span>
+<span class="fc" id="L81">            character.setInBattle(false);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">            for (MovingEntity ally : character.getAllies()) {</span>
+<span class="fc" id="L83">                ally.setInBattle(false);</span>
+<span class="fc" id="L84">            }</span>
+<span class="fc" id="L85">            return BattleOutcome.CHARACTER_WINS;</span>
+        }
+<span class="fc" id="L87">        int enemydamage = (entity.getDamage() + entity.getHealth()) / 5;</span>
+<span class="fc" id="L88">        double multiplier = 1.0;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">        for (Entity item : items) {</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (item instanceof Shield) {</span>
+<span class="nc" id="L91">                enemydamage -= 5;</span>
+<span class="nc" id="L92">                ((Weapons) item).decrementDurability();</span>
+            }
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">            if (item instanceof ArmourEntity) {</span>
+<span class="nc" id="L95">                ((Weapons) item).decrementDurability();</span>
+<span class="nc" id="L96">                multiplier = multiplier / 2;</span>
+
+            }
+<span class="fc bfc" id="L99" title="All 2 branches covered.">            if (item instanceof MidnightArmour) {</span>
+<span class="fc" id="L100">                enemydamage -= 5;</span>
+            }
+<span class="fc" id="L102">        }</span>
+<span class="fc" id="L103">        character.receiveDMG((int) Math.floor(enemydamage * multiplier));</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (!character.isAlive()) {</span>
+<span class="fc" id="L105">            return BattleOutcome.ENEMY_WINS;</span>
+        }
+<span class="fc" id="L107">        return BattleOutcome.NEITHER;</span>
+    }
+
+    public static Bow findBow(List&lt;Entity&gt; items) {
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        for (Entity e : items) {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (e instanceof Bow) {</span>
+<span class="nc" id="L113">                return (Bow) e;</span>
+            }
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

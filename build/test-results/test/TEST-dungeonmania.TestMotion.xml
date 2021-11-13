@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="dungeonmania.TestMotion" tests="2" skipped="0" failures="0" errors="0" timestamp="2021-11-12T08:42:31" hostname="DESKTOP-6SB42GV" time="0.018">
+  <properties/>
+  <testcase name="testDoorPortal()" classname="dungeonmania.TestMotion" time="0.015"/>
+  <testcase name="reverse()" classname="dungeonmania.TestMotion" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

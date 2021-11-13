@@ -136,9 +136,13 @@
             "x": 3,
             "y": 2,
             "type": "wall"
+        }, {
+            "x": 10, 
+            "y": 10,
+            "type": "treasure"
         }
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }
 }

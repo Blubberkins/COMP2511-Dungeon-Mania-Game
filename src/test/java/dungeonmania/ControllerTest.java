@@ -30,32 +30,36 @@ public class ControllerTest {
         // entities exist in the game
         assertTrue(game.getEntities().size() > 0);
     }
+
     @Test
     public void TestBomb() {
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dm.newGame("bombmap", "Peaceful");
             game = dm.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
             spider = spidercount;
         }
+
         dm.tick(null, Direction.RIGHT);
         assertThrows(InvalidActionException.class, () -> {
-            dm.tick("7", Direction.NONE);
+            String bid = dm.getLoadedGame().getItems().get(0).getId();
+            dm.tick(bid, Direction.NONE);
         });
         dm.tick(null, Direction.RIGHT);
-        dm.tick("7", Direction.NONE);
+        String id = dm.getLoadedGame().getItems().get(0).getId();
+        dm.tick(id, Direction.NONE);
         int DestroyedWalls = 0;
         int preservedWalls = 0;
-        for (Entity entity: game.getEntities()){
+        for (Entity entity : game.getEntities()) {
             if (entity.getId().equals("3")) {
                 DestroyedWalls++;
             }
@@ -124,13 +128,18 @@ public class ControllerTest {
         // should have picked up three potions, decrements as we use them
         assertTrue(game.getItems().size() == 4);
         // health maxes out
-        dm.tick("6", Direction.NONE);
+        String id = game.getItems().get(1).getId();
+        dm.tick(id, Direction.NONE);
         assertTrue(player.getHealth() == 30);
         assertTrue(game.getItems().size() == 3);
-        dm.tick("7", Direction.NONE);
+        id = game.getItems().get(1).getId();
+        dm.tick(id, Direction.NONE);
         assertTrue(game.getItems().size() == 2);
-        dm.tick("8", Direction.NONE);
+        assertTrue(game.getCharacter().getisInvincible());
+        id = game.getItems().get(1).getId();
+        dm.tick(id, Direction.NONE);
         assertTrue(game.getItems().size() == 1);
+        assertTrue(game.getCharacter().getisInvisible());
     }
 
     @Test

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoulderGoal.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">BoulderGoal.java</span></div><h1>BoulderGoal.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import dungeonmania.util.Position;
+
+public class BoulderGoal extends GoalLeaf {
+    public BoulderGoal() {
+<span class="fc" id="L10">        super(&quot;boulders&quot;);</span>
+<span class="fc" id="L11">    }</span>
+
+    @Override
+    public Boolean isComplete(DungeonMania game) {
+<span class="fc" id="L15">        List&lt;Entity&gt; entities = game.getEntities();</span>
+
+<span class="fc" id="L17">        List&lt;Entity&gt; switches = new ArrayList&lt;Entity&gt;();</span>
+
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">            if (entity.getType().compareTo(&quot;switch&quot;) == 0) {</span>
+<span class="fc" id="L21">                switches.add(entity);</span>
+            }
+<span class="fc" id="L23">        }</span>
+
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (Entity switchEntity : switches) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            if (!hasBoulder(game, switchEntity.getPos())) {</span>
+<span class="fc" id="L27">                return false;</span>
+            }
+<span class="fc" id="L29">        }</span>
+<span class="fc" id="L30">        return true;</span>
+    }
+
+    /**
+     * Checks if the current game map has boulders
+     * @param game
+     * @param position
+     * @return boolean
+     */
+    public static Boolean hasBoulder(DungeonMania game, Position position) {
+<span class="fc" id="L40">        List&lt;Entity&gt; entities = game.getEntities();</span>
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            if (entity.getType().compareTo(&quot;boulder&quot;) == 0) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                if (position.equals(entity.getPos())) {</span>
+<span class="fc" id="L45">                    return true;</span>
+                }
+            }
+<span class="fc" id="L48">        }</span>
+<span class="fc" id="L49">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

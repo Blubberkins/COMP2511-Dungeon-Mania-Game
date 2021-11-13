@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Character.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">project</a> &gt; <a href="index.source.html" class="el_package">dungeonmania</a> &gt; <span class="el_source">Character.java</span></div><h1>Character.java</h1><pre class="source lang-java linenums">package dungeonmania;
+
+import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Character extends Entity {
+    private int health;
+    private int damage;
+    private Boolean inBattle;
+    private List&lt;MovingEntity&gt; allies;
+    private boolean isInvisible;
+    private int invisibleTimer;
+    private int invincibleTimer;
+    private boolean isInvincible;
+
+    public Character(Position pos, String type, String id) {
+<span class="fc" id="L20">        super(pos, type, id);</span>
+<span class="fc" id="L21">        super.setIsInteractable(false);</span>
+<span class="fc" id="L22">        this.damage = 10;</span>
+<span class="fc" id="L23">        this.health = 30;</span>
+<span class="fc" id="L24">        this.allies = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L25">        this.inBattle = false;</span>
+<span class="fc" id="L26">        this.isInvincible = false;</span>
+<span class="fc" id="L27">        this.invincibleTimer = 0;</span>
+<span class="fc" id="L28">        this.invisibleTimer = 0;</span>
+<span class="fc" id="L29">        this.isInvisible = false;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Updates the characters potential potion effects, and removes them if they
+     * have timed out.
+     */
+    public void updateChar() {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (this.getisInvincible()) {</span>
+<span class="fc" id="L38">            this.setInvincibleTimer(this.getInvincibleTimer() - 1);</span>
+        }
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (this.getisInvisible()) {</span>
+<span class="nc" id="L41">            this.setInvisibleTimer(this.getInvisibleTimer() - 1);</span>
+        }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (this.getInvincibleTimer() == 0) {</span>
+<span class="fc" id="L44">            this.setInvincible(false);</span>
+        }
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (this.getInvisibleTimer() == 0) {</span>
+<span class="fc" id="L47">            this.setInvisible(false);</span>
+        }
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Moves the character in the game given a direction also checks for blocked
+     * movement by walls and boulders
+     * 
+     * @param game
+     * @param move
+     */
+    public void move(DungeonMania game, Direction move) {
+<span class="fc" id="L59">        Position newPos = this.getPos().translateBy(move);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Entity entity : game.getEntities()) {</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (entity.getPos().equals(newPos)) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">                if (entity instanceof Boulder) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">                    if (((Boulder) entity).checkBoulderMovable(game.getEntities(), move)) {</span>
+<span class="fc" id="L64">                        entity.setPos(entity.getPos().translateBy(move));</span>
+<span class="fc" id="L65">                        this.setPos(newPos);</span>
+<span class="fc" id="L66">                        return;</span>
+                    }
+                }
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                if (entity instanceof DoorEntity) {</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">                    for (Entity item : game.getItems()) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                        if (item.getType().equals(&quot;key&quot;)) {</span>
+<span class="fc" id="L72">                            ((DoorEntity) entity).setIsOpen(true);</span>
+<span class="fc" id="L73">                            ((KeyEntity) item).setIsUsed(true);</span>
+
+                        }
+<span class="fc" id="L76">                    }</span>
+                }
+<span class="fc bfc" id="L78" title="All 2 branches covered.">                if (entity instanceof Portal) {</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                    for (Entity otherPortal : game.getEntities()) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                        if (otherPortal instanceof Portal) {</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                            if (!otherPortal.getPos().equals(((Portal) entity).getPos())) {</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">                                if (((Portal) otherPortal).getColour().equals(((Portal) entity).getColour())) {</span>
+<span class="fc" id="L83">                                    this.setPos(otherPortal.getPos());</span>
+<span class="fc" id="L84">                                    return;</span>
+                                }
+                            }
+                        }
+<span class="fc" id="L88">                    }</span>
+                }
+<span class="fc bfc" id="L90" title="All 2 branches covered.">                if (entity instanceof Wall) {</span>
+<span class="fc" id="L91">                    return;</span>
+                }
+
+            }
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        this.setPos(newPos);</span>
+<span class="fc" id="L97">    }</span>
+
+    public List&lt;MovingEntity&gt; getAllies() {
+<span class="fc" id="L100">        return allies;</span>
+    }
+
+    public void setAllies(List&lt;MovingEntity&gt; allies) {
+<span class="nc" id="L104">        this.allies = allies;</span>
+<span class="nc" id="L105">    }</span>
+
+    public void addAlly(MovingEntity entity) {
+<span class="fc" id="L108">        this.allies.add(entity);</span>
+<span class="fc" id="L109">    }</span>
+
+    public void removeAlly(MovingEntity entity) {
+<span class="fc" id="L112">        this.allies.remove(entity);</span>
+<span class="fc" id="L113">    }</span>
+
+    public Boolean getInBattle() {
+<span class="fc" id="L116">        return inBattle;</span>
+    }
+
+    public void setInBattle(Boolean inBattle) {
+<span class="fc" id="L120">        this.inBattle = inBattle;</span>
+<span class="fc" id="L121">    }</span>
+
+    public int getHealth() {
+<span class="fc" id="L124">        return health;</span>
+    }
+
+    public boolean getisInvisible() {
+<span class="fc" id="L128">        return isInvisible;</span>
+    }
+
+    public void setInvisible(boolean isInvisible) {
+<span class="fc" id="L132">        this.isInvisible = isInvisible;</span>
+<span class="fc" id="L133">    }</span>
+
+    public boolean getisInvincible() {
+<span class="fc" id="L136">        return isInvincible;</span>
+    }
+
+    public int getInvisibleTimer() {
+<span class="fc" id="L140">        return invisibleTimer;</span>
+    }
+
+    public void setInvisibleTimer(int invisibleTimer) {
+<span class="fc" id="L144">        this.invisibleTimer = invisibleTimer;</span>
+<span class="fc" id="L145">    }</span>
+
+    public int getInvincibleTimer() {
+<span class="fc" id="L148">        return invincibleTimer;</span>
+    }
+
+    public void setInvincibleTimer(int invincibleTimer) {
+<span class="fc" id="L152">        this.invincibleTimer = invincibleTimer;</span>
+<span class="fc" id="L153">    }</span>
+
+    public void setInvincible(boolean isInvincible) {
+<span class="fc" id="L156">        this.isInvincible = isInvincible;</span>
+<span class="fc" id="L157">    }</span>
+
+    public void setHealth(int health) {
+<span class="fc" id="L160">        this.health = health;</span>
+<span class="fc" id="L161">    }</span>
+
+    public int getDamage() {
+<span class="fc" id="L164">        return damage;</span>
+    }
+
+    public void setDamage(int damage) {
+<span class="fc" id="L168">        this.damage = damage;</span>
+<span class="fc" id="L169">    }</span>
+
+    public void receiveDMG(int damage2) {
+<span class="fc" id="L172">        this.setHealth(health - damage2);</span>
+<span class="fc" id="L173">    }</span>
+
+    public Boolean isAlive() {
+<span class="fc bfc" id="L176" title="All 2 branches covered.">        return this.health &gt; 0;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

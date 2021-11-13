@@ -19,17 +19,16 @@ public class Battles {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
             ally.setInBattle(true);
-            allyDamage = (ally.getDamage() + ally.getHealth()) / 10;
+            allyDamage = (ally.getDamage().calculateDamage() + ally.getHealth()) / 10;
             entity.receiveDMG(allyDamage);
         }
 
         Boolean anduril = false;
-        int characterDamage = (character.getDamage() + character.getHealth()) / 10;
+        int characterDamage = (character.getDamage().calculateDamage() + character.getHealth()) / 10;
         Boolean hasBow = false;
         for (Entity item : items) {
             if (item instanceof SwordEntity) {
-                characterDamage += 5;
-                ((Weapons) item).decrementDurability();
+                ((Damage) item).decrementDurability();
                 if (item instanceof Anduril) {
                     anduril = true;
                 }
@@ -62,18 +61,14 @@ public class Battles {
                 entity.receiveDMG(characterDamage);
             }
         } else {
-            int execute = 1;
             if (hasBow) {
                 findBow(items).decrementDurability();
-                execute = 2;
             }
-            for (int i = 0; i < execute; i++) {
-                int prev = entity.getHealth();
-                entity.receiveDMG(characterDamage);
-                int next = entity.getHealth();
-                if (next > prev) {
-                    entity.setHealth(2 * prev - next);
-                }
+            int prev = entity.getHealth();
+            entity.receiveDMG(characterDamage);
+            int next = entity.getHealth();
+            if (next > prev) {
+                entity.setHealth(2 * prev - next);
             }
         }
 
@@ -84,20 +79,13 @@ public class Battles {
             }
             return BattleOutcome.CHARACTER_WINS;
         }
-        int enemydamage = (entity.getDamage() + entity.getHealth()) / 5;
+        int enemydamage = (entity.getDamage().calculateDamage() + entity.getHealth()) / 5;
         double multiplier = 1.0;
         for (Entity item : items) {
-            if (item instanceof Shield) {
-                enemydamage -= 5;
-                ((Weapons) item).decrementDurability();
-            }
             if (item instanceof ArmourEntity) {
-                ((Weapons) item).decrementDurability();
+                ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
                 multiplier = multiplier / 2;
 
-            }
-            if (item instanceof MidnightArmour) {
-                enemydamage -= 5;
             }
         }
         character.receiveDMG((int) Math.floor(enemydamage * multiplier));

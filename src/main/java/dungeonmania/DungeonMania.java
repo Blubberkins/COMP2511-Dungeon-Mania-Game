@@ -33,8 +33,8 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
-        // TODO this.random = new Random(29);
     }
+
     /**
      * Increments the id
      * 
@@ -106,7 +106,8 @@ public class DungeonMania {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
         if (type.equals("bow")) {
-            this.Items.add(new Bow(null, type, id));
+            this.Items.add(new Bow(null, null, type, id));
+            this.getCharacter().addWeapon("bow");
             this.Buildables.remove("bow");
             int woodCount = 1;
             int arrowCount = 3;
@@ -122,7 +123,8 @@ public class DungeonMania {
             }
         }
         if (type.equals("shield")) {
-            this.Items.add(new Shield(null, type, id));
+            this.Items.add(new Shield(null, null, type, id));
+            this.getCharacter().addWeapon("shield");
             this.Buildables.remove("shield");
             int metalCount = 1;
             int woodCount = 2;
@@ -140,18 +142,20 @@ public class DungeonMania {
             }
         }
         if (type.equals("midnight_armour")) {
-            this.Items.add(new MidnightArmour(null, type, id));
-            this.Buildables.remove("midnight_armour");
-            int armourCount = 1;
-            int stoneCount = 1;
-            for (Entity entity : this.Items) {
-                if (entity instanceof ArmourEntity && armourCount > 0) {
-                    toRemove.add(entity);
-                    armourCount--;
-                }
-                if ((entity instanceof SunStone) && stoneCount > 0) {
-                    toRemove.add(entity);
-                    stoneCount--;
+            if (!hasZombie(this)) {
+                this.Items.add(new MidnightArmour(null, type, id));
+                this.Buildables.remove("midnight_armour");
+                int armourCount = 1;
+                int stoneCount = 1;
+                for (Entity entity : this.Items) {
+                    if (entity instanceof ArmourEntity && armourCount > 0) {
+                        toRemove.add(entity);
+                        armourCount--;
+                    }
+                    if ((entity instanceof SunStone) && stoneCount > 0) {
+                        toRemove.add(entity);
+                        stoneCount--;
+                    }
                 }
             }
         }
@@ -194,7 +198,7 @@ public class DungeonMania {
     public void removeUsedItems() {
         List<Entity> useditems = new ArrayList<>();
         for (Entity item : this.Items) {
-            if (item instanceof Weapons && ((Weapons) item).getDurability() == 0) {
+            if (item instanceof Damage && ((Damage) item).getDurability() == 0) {
                 useditems.add(item);
             }
             if (item instanceof TheOneRingEntity && ((TheOneRingEntity) item).getIsUsed()) {
@@ -462,7 +466,7 @@ public class DungeonMania {
      * @return Position
      */
     public Position generateRandomPos() {
-       
+
         int spawnX = ThreadLocalRandom.current().nextInt(getLargestX() + 1);
         int spawnY = ThreadLocalRandom.current().nextInt(getLargestY() + 1);
         return new Position(spawnX, spawnY, 0);
@@ -497,7 +501,7 @@ public class DungeonMania {
      */
     public void spawnHydra() {
         Position p = generateRandomPos();
-        while (hasWall(this, p)) {
+        while (hasWall(this, p) || hasEntity(this, p)) {
             p = generateRandomPos();
         }
         Hydra h = new Hydra(p, "hydra", Integer.toString(this.incrementIntId()));
@@ -624,7 +628,7 @@ public class DungeonMania {
             entity = new BombEntity(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("sword")) {
-            entity = new SwordEntity(pos, Type, id);
+            entity = new SwordEntity(null, pos, Type, id);
         }
         if (Type.equalsIgnoreCase("armour")) {
             entity = new ArmourEntity(pos, Type, id);
@@ -636,7 +640,7 @@ public class DungeonMania {
             entity = new SunStone(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("anduril")) {
-            entity = new Anduril(pos, Type, id);
+            entity = new Anduril(null, pos, Type, id);
         }
         if (entity != null) {
             this.Entities.add(entity);
@@ -667,7 +671,8 @@ public class DungeonMania {
             entity = new BombEntity(null, Type, id);
         }
         if (Type.equalsIgnoreCase("sword")) {
-            entity = new SwordEntity(null, Type, id);
+            entity = new SwordEntity(null, null, Type, id);
+            this.getCharacter().addWeapon("sword");
         }
         if (Type.equalsIgnoreCase("armour")) {
             entity = new ArmourEntity(null, Type, id);
@@ -688,7 +693,8 @@ public class DungeonMania {
             entity = new SunStone(null, Type, id);
         }
         if (Type.equalsIgnoreCase("anduril")) {
-            entity = new Anduril(null, Type, id);
+            entity = new Anduril(null, null, Type, id);
+            this.getCharacter().addWeapon("anduril");
         }
         if (entity != null) {
             this.Items.add(entity);
@@ -713,6 +719,24 @@ public class DungeonMania {
     public Boolean hasWall(DungeonMania game, Position pos) {
         for (Entity entity : game.getEntities()) {
             if ((entity instanceof Wall) && pos.equals(entity.getPos())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean hasZombie(DungeonMania game) {
+        for (Entity entity : game.getEntities()) {
+            if (entity instanceof ZombieToast) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Boolean hasEntity(DungeonMania game, Position pos) {
+        for (Entity entity : game.getEntities()) {
+            if (pos.equals(entity.getPos())) {
                 return true;
             }
         }
