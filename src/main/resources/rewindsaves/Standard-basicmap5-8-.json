@@ -1,0 +1,1 @@
+{"difficulty":"Standard","entities":[{"x":0,"y":2,"type":"older_player"},{"x":3,"y":0,"type":"exit"},{"x":1,"y":1,"type":"boulder"},{"x":2,"y":1,"type":"switch"}],"goal-condition":{"goal":"OR","subgoals":[{"goal":"exit"},{"goal":"AND","subgoals":[{"goal":"treasure"},{"goal":"boulders"}]}]},"mapName":"basicmap5","inventory":[{"type":"treasure"}]}

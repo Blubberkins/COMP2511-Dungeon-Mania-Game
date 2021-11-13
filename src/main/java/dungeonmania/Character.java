@@ -55,7 +55,7 @@ public class Character extends Entity {
      * @param game
      * @param move
      */
-    public void move(DungeonMania game, Direction move) {
+    public void move(DungeonMania game, List<Entity> items, Direction move) {
         Position newPos = this.getPos().translateBy(move);
         for (Entity entity : game.getEntities()) {
             if (entity.getPos().equals(newPos)) {
@@ -67,7 +67,7 @@ public class Character extends Entity {
                     }
                 }
                 if (entity instanceof DoorEntity) {
-                    for (Entity item : game.getItems()) {
+                    for (Entity item : items) {
                         if (item.getType().equals("key")) {
                             ((DoorEntity) entity).setIsOpen(true);
                             ((KeyEntity) item).setIsUsed(true);

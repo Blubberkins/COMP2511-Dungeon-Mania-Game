@@ -586,6 +586,25 @@ public class m3test {
         assertTrue(cHP - game.getCharacter().getHealth() < dmgReceived);
     }
 
+    @Test 
+    public void TestTimeTravel(){
+        DungeonManiaController dm = new DungeonManiaController();
+        dm.newGame("TimetravelTest", "Peaceful");
+        dm.getLoadedGame();
+        DungeonMania game = dm.getLoadedGame();
+        int numberofEntities = game.getEntities().size();
+        dm.tick(null, Direction.LEFT);
+        dm.tick(null, Direction.RIGHT);
+        dm.tick(null, Direction.RIGHT);
+        assert(game.getEntities().size() == numberofEntities - 1);
+        dm.tick(null, Direction.LEFT);
+        dm.tick(null, Direction.LEFT);
+        dm.rewind(3);
+        game = dm.getLoadedGame();
+        assert(game.getEntities().size() == numberofEntities + 1);
+        
+        
+    }
     @Test
     public void testSceptre() {
         DungeonManiaController dm = new DungeonManiaController();

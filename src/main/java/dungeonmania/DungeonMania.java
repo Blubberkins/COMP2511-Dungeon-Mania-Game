@@ -568,6 +568,18 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("wall")) {
             entity = new Wall(pos, Type, id);
         }
+        if (Type.equalsIgnoreCase("older_player")) {
+            entity = new OlderPlayer(pos, Type, id);
+        }
+        if (Type.equalsIgnoreCase("spider")) {
+            entity = new Spider(pos, Type, id);
+        }
+        if(Type.equalsIgnoreCase("time_turner")){
+            entity = new TimeTurner(pos, Type, id);
+        }
+        if(Type.equalsIgnoreCase("time_travelling_portal")){
+            entity = new TimeTravellingPortal(pos, Type, id);
+        }
         if (Type.equalsIgnoreCase("exit")) {
             entity = new Exit(pos, Type, id);
         }
@@ -653,6 +665,9 @@ public class DungeonMania {
         Entity entity = null;
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
+        }
+        if(Type.equalsIgnoreCase("time_turner")){
+            entity = new TimeTurner(null, Type, id);
         }
         if (Type.equalsIgnoreCase("arrow")) {
             entity = new ArrowsEntity(null, Type, id);
