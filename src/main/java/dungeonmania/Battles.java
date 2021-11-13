@@ -28,7 +28,6 @@ public class Battles {
         Boolean hasBow = false;
         for (Entity item : items) {
             if (item instanceof SwordEntity) {
-                characterDamage += 5;
                 ((Damage) item).decrementDurability();
                 if (item instanceof Anduril) {
                     anduril = true;
@@ -62,18 +61,14 @@ public class Battles {
                 entity.receiveDMG(characterDamage);
             }
         } else {
-            int execute = 1;
             if (hasBow) {
                 findBow(items).decrementDurability();
-                execute = 2;
             }
-            for (int i = 0; i < execute; i++) {
-                int prev = entity.getHealth();
-                entity.receiveDMG(characterDamage);
-                int next = entity.getHealth();
-                if (next > prev) {
-                    entity.setHealth(2 * prev - next);
-                }
+            int prev = entity.getHealth();
+            entity.receiveDMG(characterDamage);
+            int next = entity.getHealth();
+            if (next > prev) {
+                entity.setHealth(2 * prev - next);
             }
         }
 
@@ -87,17 +82,10 @@ public class Battles {
         int enemydamage = (entity.getDamage().calculateDamage() + entity.getHealth()) / 5;
         double multiplier = 1.0;
         for (Entity item : items) {
-            if (item instanceof Shield) {
-                enemydamage -= 5;
-                ((Damage) item).decrementDurability();
-            }
             if (item instanceof ArmourEntity) {
                 ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
                 multiplier = multiplier / 2;
 
-            }
-            if (item instanceof MidnightArmour) {
-                enemydamage -= 5;
             }
         }
         character.receiveDMG((int) Math.floor(enemydamage * multiplier));
