@@ -19,12 +19,12 @@ public class Battles {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
             ally.setInBattle(true);
-            allyDamage = (ally.getDamage() + ally.getHealth()) / 10;
+            allyDamage = (ally.getDamage().calculateDamage() + ally.getHealth()) / 10;
             entity.receiveDMG(allyDamage);
         }
 
         Boolean anduril = false;
-        int characterDamage = (character.getDamage() + character.getHealth()) / 10;
+        int characterDamage = (character.getDamage().calculateDamage() + character.getHealth()) / 10;
         Boolean hasBow = false;
         for (Entity item : items) {
             if (item instanceof SwordEntity) {
@@ -84,7 +84,7 @@ public class Battles {
             }
             return BattleOutcome.CHARACTER_WINS;
         }
-        int enemydamage = (entity.getDamage() + entity.getHealth()) / 5;
+        int enemydamage = (entity.getDamage().calculateDamage() + entity.getHealth()) / 5;
         double multiplier = 1.0;
         for (Entity item : items) {
             if (item instanceof Shield) {
@@ -92,7 +92,7 @@ public class Battles {
                 ((Damage) item).decrementDurability();
             }
             if (item instanceof ArmourEntity) {
-                ((Damage) item).decrementDurability();
+                ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
                 multiplier = multiplier / 2;
 
             }

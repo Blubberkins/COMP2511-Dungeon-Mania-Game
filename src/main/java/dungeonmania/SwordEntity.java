@@ -5,14 +5,15 @@ import dungeonmania.util.Position;
 public class SwordEntity extends Weapons {
     Damage weapon;
 
-    public SwordEntity(Position pos, String type, String id) {
+    public SwordEntity(Damage weapon, Position pos, String type, String id) {
         super(pos, type, id);
         super.setDurability(4);
+        this.weapon = weapon;
     }
 
     @Override
-    public double calculateDamage() {
-        return 5.0 + weapon.calculateDamage();
+    public int calculateDamage() {
+        return 5 + weapon.calculateDamage();
     }
 
 }

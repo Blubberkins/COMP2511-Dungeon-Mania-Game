@@ -4,6 +4,7 @@ import dungeonmania.util.Position;
 
 public abstract class Damage extends CollectableEntities {
     private int durability;
+    private int base;
 
     public Damage(Position pos, String type, String id) {
         super(pos, type, id);
@@ -21,5 +22,13 @@ public abstract class Damage extends CollectableEntities {
         this.durability--;
     }
 
-    public abstract double calculateDamage();
+    public void setDamage(int base) {
+        this.base = base;
+    }
+
+    public int getDamage() {
+        return this.base;
+    }
+
+    public abstract int calculateDamage();
 }

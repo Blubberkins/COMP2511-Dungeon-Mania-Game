@@ -5,10 +5,20 @@ import java.util.concurrent.ThreadLocalRandom;
 import dungeonmania.util.Position;
 
 public class Hydra extends ZombieToast {
+    private Damage damage;
+
     public Hydra(Position pos, String type, String id) {
         super(pos, type, id);
         super.setHealth(40);
-        super.setDamage(10);
+        this.damage = new BaseDamage(10, null, null, null);
+    }
+
+    public void setDamage(int damage) {
+        this.damage.setDamage(damage);
+    }
+
+    public Damage getDamage() {
+        return this.damage;
     }
 
     @Override

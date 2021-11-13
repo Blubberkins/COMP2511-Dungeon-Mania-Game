@@ -6,13 +6,14 @@ public class Shield extends Weapons {
 
     Damage weapon;
 
-    public Shield(Position pos, String type, String id) {
+    public Shield(Damage weapon, Position pos, String type, String id) {
         super(pos, type, id);
         super.setDurability(4);
+        this.weapon = weapon;
     }
 
     @Override
-    public double calculateDamage() {
-        return weapon.calculateDamage() - 5.0;
+    public int calculateDamage() {
+        return weapon.calculateDamage() - 5;
     }
 }

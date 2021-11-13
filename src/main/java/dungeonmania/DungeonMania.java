@@ -33,7 +33,6 @@ public class DungeonMania {
         this.Buildables = new ArrayList<>();
         this.intId = 0;
         this.swampTiles = new ArrayList<SwampTile>();
-        // TODO this.random = new Random(29);
     }
 
     /**
@@ -107,7 +106,8 @@ public class DungeonMania {
         String id = Integer.toString(Buildables.size());
         List<Entity> toRemove = new ArrayList<>();
         if (type.equals("bow")) {
-            this.Items.add(new Bow(null, type, id));
+            this.Items.add(new Bow(null, null, type, id));
+            this.getCharacter().addWeapon("bow");
             this.Buildables.remove("bow");
             int woodCount = 1;
             int arrowCount = 3;
@@ -123,7 +123,8 @@ public class DungeonMania {
             }
         }
         if (type.equals("shield")) {
-            this.Items.add(new Shield(null, type, id));
+            this.Items.add(new Shield(null, null, type, id));
+            this.getCharacter().addWeapon("shield");
             this.Buildables.remove("shield");
             int metalCount = 1;
             int woodCount = 2;
@@ -625,7 +626,7 @@ public class DungeonMania {
             entity = new BombEntity(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("sword")) {
-            entity = new SwordEntity(pos, Type, id);
+            entity = new SwordEntity(null, pos, Type, id);
         }
         if (Type.equalsIgnoreCase("armour")) {
             entity = new ArmourEntity(pos, Type, id);
@@ -637,7 +638,7 @@ public class DungeonMania {
             entity = new SunStone(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("anduril")) {
-            entity = new Anduril(pos, Type, id);
+            entity = new Anduril(null, pos, Type, id);
         }
         if (entity != null) {
             this.Entities.add(entity);
@@ -668,7 +669,8 @@ public class DungeonMania {
             entity = new BombEntity(null, Type, id);
         }
         if (Type.equalsIgnoreCase("sword")) {
-            entity = new SwordEntity(null, Type, id);
+            entity = new SwordEntity(null, null, Type, id);
+            this.getCharacter().addWeapon("sword");
         }
         if (Type.equalsIgnoreCase("armour")) {
             entity = new ArmourEntity(null, Type, id);
@@ -689,7 +691,8 @@ public class DungeonMania {
             entity = new SunStone(null, Type, id);
         }
         if (Type.equalsIgnoreCase("anduril")) {
-            entity = new Anduril(null, Type, id);
+            entity = new Anduril(null, null, Type, id);
+            this.getCharacter().addWeapon("anduril");
         }
         if (entity != null) {
             this.Items.add(entity);
