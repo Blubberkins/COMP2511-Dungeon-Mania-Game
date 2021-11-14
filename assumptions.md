@@ -41,6 +41,7 @@ passing in seed
 - Player presumably has more health than the zombie can do in one hit
 
 **Miscellaneous**
+- Sunstone does not get used to open doors/bribe mercenaries, but get used up in building
 - Midnight armour and sceptre has no durability
 - Swamp tile causes enemies to be stuck.
 - Interactable entities are boulder, door, mercenary, all collectables 
