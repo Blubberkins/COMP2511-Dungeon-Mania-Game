@@ -13,7 +13,6 @@ import java.util.List;
 // By Liam
 
 public class m3testPart2 {
-
     @Test
     public void testHydra() {
         int numIncreases = 0;
@@ -259,13 +258,13 @@ public class m3testPart2 {
         // this accounts for the off chance we get the one ring
         assertTrue(armour instanceof MidnightArmour);
 
+        mHP = firstM.getHealth();
+        cHP = game.getCharacter().getHealth();
+
         // now we move to (3, 0) and fight the mercenary
         dm.tick(null, Direction.RIGHT);
         // after a single round of combat
         // should take less damage and deal more damage
-
-        mHP = firstM.getHealth();
-        cHP = game.getCharacter().getHealth();
 
         dm.tick(null, Direction.RIGHT);
         assertTrue(mHP - firstM.getHealth() > dmgGiven);
@@ -275,7 +274,7 @@ public class m3testPart2 {
     @Test
     public void TestTimeTravel() {
         DungeonManiaController dm = new DungeonManiaController();
-        dm.newGame("TimetravelTest", "Peaceful");
+        dm.newGame("TimetravelTest", "Standard");
         dm.getLoadedGame();
         DungeonMania game = dm.getLoadedGame();
         int numberofEntities = game.getEntities().size();
@@ -287,12 +286,11 @@ public class m3testPart2 {
         dm.tick(null, Direction.LEFT);
         dm.rewind(3);
         game = dm.getLoadedGame();
-        assert (game.getEntities().size() == numberofEntities);
+        assert (game.getEntities().size() == numberofEntities + 1);
         dm.tick(null, Direction.RIGHT);
         dm.tick(null, Direction.LEFT);
         dm.tick(null, Direction.LEFT);
-        assert (game.getEntities().size() == numberofEntities - 1);
-
+        assert (game.getEntities().size() == numberofEntities);
     }
 
     public Mercenary findMercenary(DungeonMania game) {
