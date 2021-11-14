@@ -17,16 +17,17 @@ public class Mercenary extends MovingEntity {
     private Boolean isBribed;
     private ArmourEntity armour;
     private int ticksLeftOnBribe;
+    private Damage damage;
 
     public Mercenary(Position pos, String type, String id) {
-<span class="fc" id="L22">        super(pos, type, id);</span>
-<span class="fc" id="L23">        super.setIsInteractable(true);</span>
-<span class="fc" id="L24">        super.setHealth(30);</span>
-<span class="fc" id="L25">        super.setDamage(5);</span>
-<span class="fc" id="L26">        this.isBribed = false;</span>
-<span class="fc" id="L27">        this.armour = ChanceOfArmour();</span>
-<span class="fc" id="L28">        this.ticksLeftOnBribe = -1;</span>
-<span class="fc" id="L29">    }</span>
+<span class="fc" id="L23">        super(pos, type, id);</span>
+<span class="fc" id="L24">        super.setIsInteractable(true);</span>
+<span class="fc" id="L25">        super.setHealth(30);</span>
+<span class="fc" id="L26">        this.damage = new BaseDamage(5, null, null, null);</span>
+<span class="fc" id="L27">        this.isBribed = false;</span>
+<span class="fc" id="L28">        this.armour = ChanceOfArmour();</span>
+<span class="fc" id="L29">        this.ticksLeftOnBribe = -1;</span>
+<span class="fc" id="L30">    }</span>
 
     /**
      * Creates a random chance to generate armor
@@ -34,43 +35,43 @@ public class Mercenary extends MovingEntity {
      * @return
      */
     public ArmourEntity ChanceOfArmour() {
-<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {</span>
-<span class="fc" id="L38">            return new ArmourEntity(null, &quot;armour&quot;, &quot;armour&quot; + this.getId());</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {</span>
+<span class="nc" id="L39">            return new ArmourEntity(null, &quot;armour&quot;, &quot;armour&quot; + this.getId());</span>
         }
-<span class="fc" id="L40">        return null;</span>
+<span class="fc" id="L41">        return null;</span>
     }
 
     /**
      * Moves the mercenary in a given game
      */
     public void move(DungeonMania dungeonmania) {
-<span class="fc" id="L47">        Entity player = getPlayer(dungeonmania);</span>
+<span class="fc" id="L48">        Entity player = getPlayer(dungeonmania);</span>
         // if the player doesn't exist, we do nothing
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (player == null) {</span>
-<span class="fc" id="L50">            return;</span>
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (player == null) {</span>
+<span class="nc" id="L51">            return;</span>
         }
 
         // based on the map, decide which direction is best to move in
         // using dijkstra's algorithm
-<span class="fc" id="L55">        Map&lt;Position, Position&gt; optimal = Dijkstra.shortestPath(mapPositions(dungeonmania), this.getPos(),</span>
+<span class="fc" id="L56">        Map&lt;Position, Position&gt; optimal = Dijkstra.shortestPath(mapPositions(dungeonmania), this.getPos(),</span>
                 dungeonmania);
 
         // trace the optimal path, then make the move
-<span class="fc" id="L59">        Stack&lt;Position&gt; path = tracePath(optimal, this.getPos(), getPlayer(dungeonmania).getPos());</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (!path.isEmpty()) { // if not same position as player</span>
-<span class="fc" id="L61">            Position next = path.peek();</span>
+<span class="fc" id="L60">        Stack&lt;Position&gt; path = tracePath(optimal, this.getPos(), getPlayer(dungeonmania).getPos());</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        if (!path.isEmpty()) { // if not same position as player</span>
+<span class="fc" id="L62">            Position next = path.peek();</span>
 
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if (next != null) {</span>
-<span class="fc" id="L64">                Position opposite = Position.calculatePositionBetween(next, this.getPos());</span>
-<span class="fc" id="L65">                Position othernext = this.getPos().translateBy(opposite);</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">                if (!((Character) getPlayer(dungeonmania)).getisInvincible()) {</span>
-<span class="fc" id="L67">                    this.setPos(next);</span>
-<span class="pc bpc" id="L68" title="1 of 2 branches missed.">                } else if (!dungeonmania.hasWall(dungeonmania, othernext)) {</span>
-<span class="fc" id="L69">                    this.setPos(othernext);</span>
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">            if (next != null) {</span>
+<span class="fc" id="L65">                Position opposite = Position.calculatePositionBetween(next, this.getPos());</span>
+<span class="fc" id="L66">                Position othernext = this.getPos().translateBy(opposite);</span>
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">                if (!((Character) getPlayer(dungeonmania)).getisInvincible()) {</span>
+<span class="fc" id="L68">                    this.setPos(next);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">                } else if (!dungeonmania.hasWall(dungeonmania, othernext)) {</span>
+<span class="nc" id="L70">                    this.setPos(othernext);</span>
                 }
             }
         }
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L74">    }</span>
 
     /**
      * Gets the player in a game
@@ -79,105 +80,113 @@ public class Mercenary extends MovingEntity {
      * @return Entity
      */
     public Entity getPlayer(DungeonMania dungeonmania) {
-<span class="fc" id="L82">        List&lt;Entity&gt; entities = dungeonmania.getEntities();</span>
+<span class="fc" id="L83">        List&lt;Entity&gt; entities = dungeonmania.getEntities();</span>
 
-<span class="fc" id="L84">        Entity player = null;</span>
+<span class="fc" id="L85">        Entity player = null;</span>
 
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (entity.getType().compareTo(&quot;player&quot;) == 0) {</span>
-<span class="fc" id="L88">                player = entity;</span>
-<span class="fc" id="L89">                break;</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        for (Entity entity : entities) {</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">            if (entity.getType().compareTo(&quot;player&quot;) == 0) {</span>
+<span class="fc" id="L89">                player = entity;</span>
+<span class="fc" id="L90">                break;</span>
             }
-<span class="fc" id="L91">        }</span>
+<span class="fc" id="L92">        }</span>
 
-<span class="fc" id="L93">        return player;</span>
+<span class="fc" id="L94">        return player;</span>
     }
 
     @Override
     public void receiveDMG(int damage) {
-<span class="fc" id="L98">        super.setHealth(super.getHealth() - damage);</span>
-<span class="fc" id="L99">    }</span>
+<span class="nc" id="L99">        super.setHealth(super.getHealth() - damage);</span>
+<span class="nc" id="L100">    }</span>
 
     public ArmourEntity getArmour() {
-<span class="fc" id="L102">        return this.armour;</span>
+<span class="nc" id="L103">        return this.armour;</span>
     }
 
     public void decrementArmourDurability() {
-<span class="fc" id="L106">        this.armour.decrementDurability();</span>
-<span class="fc" id="L107">    }</span>
+<span class="nc" id="L107">        this.armour.setDurability(this.armour.getDurability() - 1);</span>
+<span class="nc" id="L108">    }</span>
 
     public Boolean HasArmour() {
-<span class="fc bfc" id="L110" title="All 2 branches covered.">        return this.armour != null;</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">        return this.armour != null;</span>
     }
 
     public Boolean getIsBribed() {
-<span class="fc" id="L114">        return isBribed;</span>
+<span class="fc" id="L115">        return isBribed;</span>
     }
 
     public void setIsBribed(Boolean isBribed) {
-<span class="fc" id="L118">        this.isBribed = isBribed;</span>
-<span class="fc" id="L119">    }</span>
+<span class="fc" id="L119">        this.isBribed = isBribed;</span>
+<span class="fc" id="L120">    }</span>
 
     public int getBribe() {
-<span class="nc" id="L122">        return this.minBribe;</span>
+<span class="nc" id="L123">        return this.minBribe;</span>
+    }
+
+    public void setDamage(int damage) {
+<span class="nc" id="L127">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L128">    }</span>
+
+    public Damage getDamage() {
+<span class="nc" id="L131">        return this.damage;</span>
     }
 
     public List&lt;Position&gt; mapPositions(DungeonMania game) {
-<span class="fc" id="L126">        List&lt;Position&gt; grid = new ArrayList&lt;Position&gt;();</span>
+<span class="fc" id="L135">        List&lt;Position&gt; grid = new ArrayList&lt;Position&gt;();</span>
 
         // fetching the largest bounds for the map
-<span class="fc" id="L129">        int x = 0;</span>
-<span class="fc" id="L130">        int y = 0;</span>
-<span class="fc" id="L131">        List&lt;Entity&gt; entities = game.getEntities();</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
-<span class="fc" id="L133">            int tmp = entity.getPos().getX();</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">            if (tmp &gt; x) {</span>
-<span class="fc" id="L135">                x = tmp;</span>
+<span class="fc" id="L138">        int x = 0;</span>
+<span class="fc" id="L139">        int y = 0;</span>
+<span class="fc" id="L140">        List&lt;Entity&gt; entities = game.getEntities();</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        for (Entity entity : entities) {</span>
+<span class="fc" id="L142">            int tmp = entity.getPos().getX();</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">            if (tmp &gt; x) {</span>
+<span class="fc" id="L144">                x = tmp;</span>
             }
 
-<span class="fc" id="L138">            tmp = entity.getPos().getY();</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">            if (tmp &gt; y) {</span>
-<span class="fc" id="L140">                y = tmp;</span>
+<span class="fc" id="L147">            tmp = entity.getPos().getY();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">            if (tmp &gt; y) {</span>
+<span class="fc" id="L149">                y = tmp;</span>
             }
-<span class="fc" id="L142">        }</span>
+<span class="fc" id="L151">        }</span>
 
         // have to make the plus one adjustment
         // eg. if the bottom right most entity is at (4, 4)
         // we need to factor in (4, 4) as a square on the map
-<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (int i = 0; i &lt; x + 1; i++) {</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">            for (int j = 0; j &lt; y + 1; j++) {</span>
-<span class="fc" id="L149">                grid.add(new Position(i, j));</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">        for (int i = 0; i &lt; x + 1; i++) {</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">            for (int j = 0; j &lt; y + 1; j++) {</span>
+<span class="fc" id="L158">                grid.add(new Position(i, j));</span>
             }
         }
 
-<span class="fc" id="L153">        return grid;</span>
+<span class="fc" id="L162">        return grid;</span>
     }
 
     public Stack&lt;Position&gt; tracePath(Map&lt;Position, Position&gt; optimal, Position src, Position dest) {
-<span class="fc" id="L157">        Stack&lt;Position&gt; path = new Stack&lt;Position&gt;();</span>
+<span class="fc" id="L166">        Stack&lt;Position&gt; path = new Stack&lt;Position&gt;();</span>
 
-<span class="fc" id="L159">        Position curr = dest;</span>
+<span class="fc" id="L168">        Position curr = dest;</span>
 
-<span class="fc bfc" id="L161" title="All 2 branches covered.">        while (!(curr.equals(src))) {</span>
-<span class="fc" id="L162">            path.add(curr);</span>
-<span class="fc" id="L163">            curr = optimal.get(curr);</span>
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        while (!(curr.equals(src))) {</span>
+<span class="fc" id="L171">            path.add(curr);</span>
+<span class="fc" id="L172">            curr = optimal.get(curr);</span>
 
-<span class="pc bpc" id="L165" title="1 of 2 branches missed.">            if (curr == null) {</span>
-<span class="nc" id="L166">                break;</span>
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">            if (curr == null) {</span>
+<span class="nc" id="L175">                break;</span>
                 // can't reach the player. if this null is encountered, at the top of the stack
                 // the mercenary stays put, otherwise it moves as far along as it can
             }
         }
 
-<span class="fc" id="L172">        return path;</span>
+<span class="fc" id="L181">        return path;</span>
     }
 
     public int getTicksLeftOnBribe() {
-<span class="fc" id="L176">        return this.ticksLeftOnBribe;</span>
+<span class="fc" id="L185">        return this.ticksLeftOnBribe;</span>
     }
 
     public void setTicksLeftOnBribe(int ticks) {
-<span class="fc" id="L180">        this.ticksLeftOnBribe = ticks;</span>
-<span class="fc" id="L181">    }</span>
+<span class="nc" id="L189">        this.ticksLeftOnBribe = ticks;</span>
+<span class="nc" id="L190">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

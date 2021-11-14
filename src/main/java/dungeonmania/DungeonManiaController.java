@@ -383,6 +383,7 @@ public class DungeonManiaController {
             throws IllegalArgumentException, InvalidActionException {
         String Goalstring;
         Boolean isTimeTravelling = false;
+        tick++;
         oldDirection.put(this.tick, movementDirection);
         oldItem.put(this.tick, itemUsed);
         DungeonMania currentGame = this.loadedgame;
@@ -414,7 +415,7 @@ public class DungeonManiaController {
                                 removables.add(e);
                             }
                         }
-                        if(firstentity instanceof Character && !(firstentity instanceof OlderPlayer) && firstentity.getPos().equals(olderPlayer.getPos())){
+                        if(firstentity instanceof Character && !(firstentity instanceof OlderPlayer) && firstentity.getPos().translateBy(movementDirection).equals(olderPlayer.getPos())){
                             while(toRemove == null) {
                                 toRemove = ((OlderPlayer) olderPlayer).OlderPlayerBattle(currentGame, (Character) firstentity);
                                 if(toRemove != null) {
@@ -545,7 +546,6 @@ public class DungeonManiaController {
             Goalstring = GoalFactory.goalString(currentGame.getGoal());
             RewindGame();
         }
-        tick++;
         
         return new DungeonResponse(id, name, e, i, currentGame.getBuildables(), Goalstring);
 

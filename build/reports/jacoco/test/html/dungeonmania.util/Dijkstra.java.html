@@ -38,7 +38,7 @@ public class Dijkstra {
 
 <span class="fc" id="L39">        dist.replace(source, (double) 0);</span>
 
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        while (!(q.isEmpty())) {</span>
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        while (!(q.isEmpty())) {</span>
 <span class="fc" id="L42">            Position curr = smallest(q, dist);</span>
 <span class="fc bfc" id="L43" title="All 2 branches covered.">            if (curr == null) {</span>
 <span class="fc" id="L44">                break; // implies no other reachable tiles (walls or otherwise)</span>
@@ -53,8 +53,8 @@ public class Dijkstra {
                 // the square
 <span class="fc bfc" id="L54" title="All 2 branches covered.">                if (Position.isAdjacent(p, curr)) {</span>
 <span class="fc" id="L55">                    Double d = 1.0; // by default</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">                    if (game.getSwampTilePos().contains(p)) {</span>
-<span class="fc" id="L57">                        d = (double) game.getSlow(p);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">                    if (game.getSwampTilePos().contains(p)) {</span>
+<span class="nc" id="L57">                        d = (double) game.getSlow(p);</span>
                     }
 
 <span class="fc bfc" id="L60" title="All 2 branches covered.">                    if (!hasWall(game, p)) {</span>

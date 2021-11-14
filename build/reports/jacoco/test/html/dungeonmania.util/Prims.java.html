@@ -59,7 +59,7 @@ import java.util.concurrent.ThreadLocalRandom;
 <span class="pc bpc" id="L59" title="2 of 4 branches missed.">                noEmpty = (noEmpty || b);</span>
 <span class="fc" id="L60">            }</span>
 
-<span class="pc bpc" id="L62" title="2 of 4 branches missed.">            if (!noEmpty &amp;&amp; endNeighbours.size() &gt; 0) { // every p checked would have been false</span>
+<span class="pc bpc" id="L62" title="1 of 4 branches missed.">            if (!noEmpty &amp;&amp; endNeighbours.size() &gt; 0) { // every p checked would have been false</span>
 <span class="fc" id="L63">                int endNeighbourIndex = ThreadLocalRandom.current().nextInt(0, endNeighbours.size());</span>
 <span class="fc" id="L64">                Position endNeighbour = endNeighbours.get(endNeighbourIndex);</span>
 <span class="fc" id="L65">                grid.get(endNeighbour.getX()).set(endNeighbour.getY(), true);</span>

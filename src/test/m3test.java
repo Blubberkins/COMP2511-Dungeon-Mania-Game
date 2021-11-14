@@ -468,19 +468,21 @@ public class m3test {
             game.getCharacter().setHealth(30); // so player doesn't die to mercenary
         }
 
-        dm.tick(null, Direction.NONE);
-
         Hydra hydra = findHydra(game);
         assertTrue(hydra != null);
         int hydraHP = ((MovingEntity) hydra).getHealth();
 
         // make sure character's health is back at max of 30
         // just so we have the same conditions as when fighting the mercenary
-        game.getCharacter().setHealth(30);
         int currHP = hydraHP;
         // do stuff until the hydra comes into a single combat with the player
         while (currHP == hydraHP) {
-            dm.tick(null, Direction.NONE);
+            if(hydra.getPos().getX() > game.getCharacter().getPos().getX()) {
+            dm.tick(null, Direction.RIGHT);
+            }
+            if(hydra.getPos().getX() < game.getCharacter().getPos().getX()) {
+                dm.tick(null, Direction.LEFT);
+                }
             currHP = ((MovingEntity) hydra).getHealth();
         }
 
@@ -498,7 +500,6 @@ public class m3test {
         // hydra will never regen a head
         assertTrue(currHP < hydraHP);
     }
-
     @Test
     public void testMidnight() {
         // midnight armour test first
@@ -609,6 +610,7 @@ public class m3test {
         dm.tick(null,Direction.RIGHT);
         dm.tick(null,Direction.LEFT);
         dm.tick(null,Direction.LEFT);
+        assert(game.getEntities().size() == numberofEntities - 1);
         
         
     }

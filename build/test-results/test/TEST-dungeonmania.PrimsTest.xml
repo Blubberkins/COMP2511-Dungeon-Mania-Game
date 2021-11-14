@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="dungeonmania.PrimsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-11-12T08:42:13" hostname="DESKTOP-6SB42GV" time="17.775">
+<testsuite name="dungeonmania.PrimsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-11-14T06:32:01" hostname="vx8" time="79.346">
   <properties/>
-  <testcase name="testGenerate()" classname="dungeonmania.PrimsTest" time="0.076"/>
-  <testcase name="testCompleteGame()" classname="dungeonmania.PrimsTest" time="16.279"/>
-  <testcase name="moreTestCompletions()" classname="dungeonmania.PrimsTest" time="1.419"/>
+  <testcase name="testGenerate()" classname="dungeonmania.PrimsTest" time="0.589"/>
+  <testcase name="testCompleteGame()" classname="dungeonmania.PrimsTest" time="40.351"/>
+  <testcase name="moreTestCompletions()" classname="dungeonmania.PrimsTest" time="38.4"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

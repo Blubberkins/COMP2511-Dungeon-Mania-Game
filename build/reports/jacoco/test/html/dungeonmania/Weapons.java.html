@@ -2,25 +2,9 @@
 
 import dungeonmania.util.Position;
 
-public class Weapons extends CollectableEntities{
-
-    private int durability;
-    
+public abstract class Weapons extends Damage {
     public Weapons(Position pos, String type, String id) {
-<span class="fc" id="L10">        super(pos, type, id);</span>
-<span class="fc" id="L11">    }</span>
-
-    public int getDurability() {
-<span class="fc" id="L14">        return durability;</span>
-    }
-
-    public void setDurability(int durability) {
-<span class="fc" id="L18">        this.durability = durability;</span>
-<span class="fc" id="L19">    }</span>
-
-    public void decrementDurability() {
-<span class="fc" id="L22">        this.durability--;</span>
-<span class="fc" id="L23">    }</span>
-
+<span class="fc" id="L7">        super(pos, type, id);</span>
+<span class="fc" id="L8">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

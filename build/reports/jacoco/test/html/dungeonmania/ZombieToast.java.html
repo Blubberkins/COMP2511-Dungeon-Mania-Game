@@ -9,14 +9,15 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ZombieToast extends MovingEntity {
     private ArmourEntity armour;
+    private Damage damage;
 
     public ZombieToast(Position pos, String type, String id) {
-<span class="fc" id="L14">        super(pos, type, id);</span>
-<span class="fc" id="L15">        super.setIsInteractable(false);</span>
-<span class="fc" id="L16">        super.setHealth(20);</span>
-<span class="fc" id="L17">        super.setDamage(5);</span>
-<span class="fc" id="L18">        this.armour = ChanceOfArmour();</span>
-<span class="fc" id="L19">    }</span>
+<span class="fc" id="L15">        super(pos, type, id);</span>
+<span class="fc" id="L16">        super.setIsInteractable(false);</span>
+<span class="fc" id="L17">        super.setHealth(20);</span>
+<span class="fc" id="L18">        this.damage = new BaseDamage(5, null, null, null);</span>
+<span class="fc" id="L19">        this.armour = ChanceOfArmour();</span>
+<span class="fc" id="L20">    }</span>
 
     /**
      * Generates a chance for a zombie to spawn with armor
@@ -24,18 +25,18 @@ public class ZombieToast extends MovingEntity {
      * @return
      */
     public ArmourEntity ChanceOfArmour() {
-<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {</span>
-<span class="nc" id="L28">            return new ArmourEntity(null, &quot;armour&quot;, &quot;armour&quot; + this.getId());</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if (ThreadLocalRandom.current().nextInt(0, 11) == 5) {</span>
+<span class="nc" id="L29">            return new ArmourEntity(null, &quot;armour&quot;, &quot;armour&quot; + this.getId());</span>
         }
-<span class="fc" id="L30">        return null;</span>
+<span class="fc" id="L31">        return null;</span>
     }
 
     /**
      * Decrements armor durability
      */
     public void decrementArmourDurability() {
-<span class="nc" id="L37">        this.armour.decrementDurability();</span>
-<span class="nc" id="L38">    }</span>
+<span class="nc" id="L38">        this.armour.setDurability(this.armour.getDurability() - 1);</span>
+<span class="nc" id="L39">    }</span>
 
     /**
      * Gets current zombies armour
@@ -43,7 +44,7 @@ public class ZombieToast extends MovingEntity {
      * @return ArmourEntity
      */
     public ArmourEntity getArmour() {
-<span class="nc" id="L46">        return this.armour;</span>
+<span class="nc" id="L47">        return this.armour;</span>
     }
 
     /**
@@ -52,7 +53,15 @@ public class ZombieToast extends MovingEntity {
      * @return boolean
      */
     public Boolean HasArmour() {
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        return this.armour != null;</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        return this.armour != null;</span>
+    }
+
+    public void setDamage(int damage) {
+<span class="nc" id="L60">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L61">    }</span>
+
+    public Damage getDamage() {
+<span class="fc" id="L64">        return this.damage;</span>
     }
 
     /**
@@ -60,39 +69,39 @@ public class ZombieToast extends MovingEntity {
      */
     @Override
     public void move(DungeonMania d) {
-<span class="fc" id="L63">        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L72">        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (!hasWall(d, this.getPos().translateBy(Direction.RIGHT))) {</span>
-<span class="fc" id="L66">            directions.add(Direction.RIGHT);</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.RIGHT))) {</span>
+<span class="nc" id="L75">            directions.add(Direction.RIGHT);</span>
         }
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (!hasWall(d, this.getPos().translateBy(Direction.LEFT))) {</span>
-<span class="fc" id="L69">            directions.add(Direction.LEFT);</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.LEFT))) {</span>
+<span class="fc" id="L78">            directions.add(Direction.LEFT);</span>
         }
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.UP))) {</span>
-<span class="nc" id="L72">            directions.add(Direction.UP);</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.UP))) {</span>
+<span class="nc" id="L81">            directions.add(Direction.UP);</span>
         }
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.DOWN))) {</span>
-<span class="nc" id="L75">            directions.add(Direction.DOWN);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (!hasWall(d, this.getPos().translateBy(Direction.DOWN))) {</span>
+<span class="nc" id="L84">            directions.add(Direction.DOWN);</span>
         }
 
-<span class="fc" id="L78">        Direction random = directions.get(ThreadLocalRandom.current().nextInt(0, directions.size()));</span>
-<span class="fc" id="L79">        this.setPos(this.getPos().translateBy(random));</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L87">        Direction random = directions.get(ThreadLocalRandom.current().nextInt(0, directions.size()));</span>
+<span class="fc" id="L88">        this.setPos(this.getPos().translateBy(random));</span>
+<span class="fc" id="L89">    }</span>
 
     /**
      * Does damage to the zombie
      */
     public void receiveDMG(int damage) {
-<span class="fc" id="L86">        super.setHealth(super.getHealth() - damage);</span>
-<span class="fc" id="L87">    }</span>
+<span class="fc" id="L95">        super.setHealth(super.getHealth() - damage);</span>
+<span class="fc" id="L96">    }</span>
 
     public Boolean hasWall(DungeonMania game, Position pos) {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (Entity entity : game.getEntities()) {</span>
-<span class="fc bfc" id="L91" title="All 4 branches covered.">            if ((entity instanceof Wall) &amp;&amp; pos.equals(entity.getPos())) {</span>
-<span class="fc" id="L92">                return true;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (Entity entity : game.getEntities()) {</span>
+<span class="fc bfc" id="L100" title="All 4 branches covered.">            if ((entity instanceof Wall) &amp;&amp; pos.equals(entity.getPos())) {</span>
+<span class="fc" id="L101">                return true;</span>
             }
-<span class="fc" id="L94">        }</span>
-<span class="fc" id="L95">        return false;</span>
+<span class="fc" id="L103">        }</span>
+<span class="fc" id="L104">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

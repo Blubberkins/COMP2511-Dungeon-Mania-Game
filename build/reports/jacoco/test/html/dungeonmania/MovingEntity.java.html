@@ -4,56 +4,58 @@ import dungeonmania.util.Position;
 
 public abstract class MovingEntity extends Entity {
     private int health;
-    private int damage;
-    private Boolean InBattle;   
+    private Damage damage;
+    private Boolean InBattle;
+
     public MovingEntity(Position pos, String type, String id) {
-<span class="fc" id="L10">        super(pos, type, id);</span>
-<span class="fc" id="L11">        super.setIsInteractable(false);</span>
-<span class="fc" id="L12">        this.InBattle = false;</span>
-<span class="fc" id="L13">    }</span>
+<span class="fc" id="L11">        super(pos, type, id);</span>
+<span class="fc" id="L12">        super.setIsInteractable(false);</span>
+<span class="fc" id="L13">        this.InBattle = false;</span>
+<span class="fc" id="L14">    }</span>
 
     /**
-     * Checks if a Mercenary is bribed,
-     * else is hostile
+     * Checks if a Mercenary is bribed, else is hostile
+     * 
      * @return boolean
      */
-    public Boolean isHostile(){
-<span class="fc bfc" id="L21" title="All 4 branches covered.">        if(this instanceof Mercenary &amp;&amp; ((Mercenary) this).getIsBribed()){</span>
-<span class="fc" id="L22">            return false;</span>
+    public Boolean isHostile() {
+<span class="fc bfc" id="L22" title="All 4 branches covered.">        if (this instanceof Mercenary &amp;&amp; ((Mercenary) this).getIsBribed()) {</span>
+<span class="fc" id="L23">            return false;</span>
         }
-<span class="fc" id="L24">        return true;</span>
+<span class="fc" id="L25">        return true;</span>
     }
-    
+
     public int getHealth() {
-<span class="fc" id="L28">        return health;</span>
+<span class="fc" id="L29">        return health;</span>
     }
 
     public Boolean getInBattle() {
-<span class="fc" id="L32">        return InBattle;</span>
+<span class="fc" id="L33">        return InBattle;</span>
     }
 
     public void setInBattle(Boolean inBattle) {
-<span class="fc" id="L36">        InBattle = inBattle;</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L37">        InBattle = inBattle;</span>
+<span class="fc" id="L38">    }</span>
 
     public void setHealth(int health) {
-<span class="fc" id="L40">        this.health = health;</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L41">        this.health = health;</span>
+<span class="fc" id="L42">    }</span>
 
     public void setDamage(int damage) {
-<span class="fc" id="L44">        this.damage = damage;</span>
-<span class="fc" id="L45">    }</span>
-    public int getDamage() {
-<span class="fc" id="L47">        return this.damage;</span>
+<span class="nc" id="L45">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L46">    }</span>
+
+    public Damage getDamage() {
+<span class="nc" id="L49">        return this.damage;</span>
     }
 
     public abstract void move(DungeonMania d);
-    public abstract void receiveDMG(int damage);
-    
-    public Boolean isAlive(){
-<span class="fc bfc" id="L54" title="All 2 branches covered.">        return this.health &gt; 0;</span>
-    }
 
+    public abstract void receiveDMG(int damage);
+
+    public Boolean isAlive() {
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        return this.health &gt; 0;</span>
+    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

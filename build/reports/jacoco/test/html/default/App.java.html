@@ -127,16 +127,21 @@ import scintilla.Scintilla;
 <span class="nc" id="L127">            return callUsingSessionAndArgument(request, (dmc) -&gt; dmc.interact(request.queryParams(&quot;entityId&quot;)));</span>
 <span class="nc" id="L128">        }, gson::toJson);</span>
 
+<span class="nc" id="L130">        Spark.post(&quot;/api/game/rewind/&quot;, &quot;application/json&quot;, (request, response) -&gt; {</span>
+<span class="nc" id="L131">            return callUsingSessionAndArgument(request, (dmc) -&gt; dmc.rewind(Integer.parseInt(request.queryParams(&quot;ticks&quot;))));</span>
+<span class="nc" id="L132">        }, gson::toJson);</span>
+
+
         // no forum fix has been presented, so this is a quickfix
         // running randoms
-<span class="nc" id="L132">        Spark.post(&quot;/api/game/new/generate/&quot;, &quot;application/json&quot;, (request, response) -&gt; {</span>
-<span class="nc" id="L133">            return callUsingSessionAndArgument(request,</span>
-<span class="nc" id="L134">                    (dmc) -&gt; dmc.generateDungeon(ThreadLocalRandom.current().nextInt(1, 49),</span>
-<span class="nc" id="L135">                            ThreadLocalRandom.current().nextInt(1, 49), ThreadLocalRandom.current().nextInt(1, 49),</span>
-<span class="nc" id="L136">                            ThreadLocalRandom.current().nextInt(1, 49), request.queryParams(&quot;gameMode&quot;)));</span>
-<span class="nc" id="L137">        }, gson::toJson);</span>
+<span class="nc" id="L137">        Spark.post(&quot;/api/game/new/generate/&quot;, &quot;application/json&quot;, (request, response) -&gt; {</span>
+<span class="nc" id="L138">            return callUsingSessionAndArgument(request,</span>
+<span class="nc" id="L139">                    (dmc) -&gt; dmc.generateDungeon(ThreadLocalRandom.current().nextInt(1, 49),</span>
+<span class="nc" id="L140">                            ThreadLocalRandom.current().nextInt(1, 49), ThreadLocalRandom.current().nextInt(1, 49),</span>
+<span class="nc" id="L141">                            ThreadLocalRandom.current().nextInt(1, 49), request.queryParams(&quot;gameMode&quot;)));</span>
+<span class="nc" id="L142">        }, gson::toJson);</span>
 
-<span class="nc" id="L139">        Scintilla.start();</span>
-<span class="nc" id="L140">    }</span>
+<span class="nc" id="L144">        Scintilla.start();</span>
+<span class="nc" id="L145">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

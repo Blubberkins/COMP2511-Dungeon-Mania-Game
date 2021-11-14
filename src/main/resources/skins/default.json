@@ -15,6 +15,8 @@
         "text_color": "white"
     },
     "entities": {
+        "anduril": "images/tileset/entities/anduril.png",
+        "armour": "images/tileset/items/armour.png",
         "boulder": "images/tileset/entities/boulder_00.png",
         "bow": "images/tileset/items/bow_0.png",
         "player": "images/tileset/entities/entity.png",

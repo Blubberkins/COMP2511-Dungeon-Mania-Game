@@ -5,38 +5,45 @@ import dungeonmania.util.Position;
 
 public class Spider extends MovingEntity {
     private Position spawn_point;
+    private Damage damage;
     Boolean clockwise;
 
     public Spider(Position pos, String type, String id) {
-<span class="fc" id="L11">        super(pos, type, id);</span>
-<span class="fc" id="L12">        super.setIsInteractable(false);</span>
-<span class="fc" id="L13">        this.spawn_point = pos;</span>
-<span class="fc" id="L14">        this.clockwise = true;</span>
-<span class="fc" id="L15">        this.setPos(pos.translateBy(Direction.UP));</span>
-<span class="fc" id="L16">        this.clockwise = true;</span>
-<span class="fc" id="L17">        super.setHealth(30);</span>
-<span class="fc" id="L18">        super.setDamage(5);</span>
-<span class="fc" id="L19">    }</span>
-    
+<span class="fc" id="L12">        super(pos, type, id);</span>
+<span class="fc" id="L13">        super.setIsInteractable(false);</span>
+<span class="fc" id="L14">        this.spawn_point = pos;</span>
+<span class="fc" id="L15">        this.clockwise = true;</span>
+<span class="fc" id="L16">        this.setPos(pos.translateBy(Direction.UP));</span>
+<span class="fc" id="L17">        this.clockwise = true;</span>
+<span class="fc" id="L18">        super.setHealth(30);</span>
+<span class="fc" id="L19">        this.damage = new BaseDamage(5, null, null, null);</span>
+<span class="fc" id="L20">    }</span>
+    public void setDamage(int damage) {
+<span class="nc" id="L22">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L23">    }</span>
+
+    public Damage getDamage() {
+<span class="nc" id="L26">        return this.damage;</span>
+    }
     /**
-     * Checks if the current spider's desired move
-     * moves towards the character.
+     * Checks if the current spider's desired move moves towards the character.
+     * 
      * @param originalPos
      * @param newPos
      * @param dungeonmania
      * @return boolean
      */
-    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania){
-<span class="nc" id="L30">            Position CharacterPos = dungeonmania.getCharacter().getPos();</span>
-<span class="nc" id="L31">            int CharacterX = CharacterPos.getX();</span>
-<span class="nc" id="L32">            int CharacterY = CharacterPos.getY();</span>
-<span class="nc" id="L33">            int OldPosX = originalPos.getX();</span>
-<span class="nc" id="L34">            int OldPosY = originalPos.getY();</span>
-<span class="nc" id="L35">            int NewPosX = originalPos.getX();</span>
-<span class="nc" id="L36">            int NewPosY = originalPos.getY();</span>
-<span class="nc" id="L37">            int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));</span>
-<span class="nc" id="L38">            int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));</span>
-<span class="nc bnc" id="L39" title="All 2 branches missed.">            return (NewDistance &gt; OldDistance);</span>
+    public Boolean IsCloser(Position originalPos, Position newPos, DungeonMania dungeonmania) {
+<span class="nc" id="L37">        Position CharacterPos = dungeonmania.getCharacter().getPos();</span>
+<span class="nc" id="L38">        int CharacterX = CharacterPos.getX();</span>
+<span class="nc" id="L39">        int CharacterY = CharacterPos.getY();</span>
+<span class="nc" id="L40">        int OldPosX = originalPos.getX();</span>
+<span class="nc" id="L41">        int OldPosY = originalPos.getY();</span>
+<span class="nc" id="L42">        int NewPosX = originalPos.getX();</span>
+<span class="nc" id="L43">        int NewPosY = originalPos.getY();</span>
+<span class="nc" id="L44">        int OldDistance = Math.abs((OldPosX - CharacterX)) + Math.abs((OldPosY - CharacterY));</span>
+<span class="nc" id="L45">        int NewDistance = Math.abs((NewPosX - CharacterX)) + Math.abs((NewPosY - CharacterY));</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        return (NewDistance &gt; OldDistance);</span>
     }
 
     /**
@@ -44,98 +51,100 @@ public class Spider extends MovingEntity {
      */
     @Override
     public void move(DungeonMania dungeonmania) {
-<span class="fc" id="L47">        Position newPosition = this.getPos();</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (this.clockwise) {</span>
-<span class="fc" id="L49">            newPosition = nextSquare(dungeonmania);</span>
+<span class="fc" id="L54">        Position newPosition = this.getPos();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (this.clockwise) {</span>
+<span class="fc" id="L56">            newPosition = nextSquare(dungeonmania);</span>
         } else {
-<span class="fc" id="L51">            newPosition = previousSquare(dungeonmania);</span>
+<span class="fc" id="L58">            newPosition = previousSquare(dungeonmania);</span>
         }
 
-<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (newPosition == null) {</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (this.clockwise) {</span>
-<span class="fc" id="L56">                newPosition = previousSquare(dungeonmania);</span>
-<span class="fc" id="L57">                setDirection(false);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (newPosition == null) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (this.clockwise) {</span>
+<span class="fc" id="L63">                newPosition = previousSquare(dungeonmania);</span>
+<span class="fc" id="L64">                setDirection(false);</span>
             } else {
-<span class="nc" id="L59">                newPosition = nextSquare(dungeonmania);</span>
-<span class="nc" id="L60">                setDirection(true);</span>
+<span class="fc" id="L66">                newPosition = nextSquare(dungeonmania);</span>
+<span class="fc" id="L67">                setDirection(true);</span>
             }
 
         }
 
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (newPosition != null) {</span>
-<span class="fc" id="L66">            this.setPos(newPosition);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (newPosition != null) {</span>
+<span class="fc" id="L73">            this.setPos(newPosition);</span>
         }
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L75">    }</span>
 
     /**
      * Gets the next spiders next square and returns it
+     * 
      * @param dungeonmania
      * @return Position
      */
     public Position nextSquare(DungeonMania dungeonmania) {
-<span class="fc" id="L76">        int spawnX = this.spawn_point.getX();</span>
-<span class="fc" id="L77">        int spawnY = this.spawn_point.getY();</span>
-<span class="fc" id="L78">        int currX = this.getPos().getX();</span>
-<span class="fc" id="L79">        int currY = this.getPos().getY();</span>
-<span class="fc" id="L80">        Position newPos = null;</span>
-<span class="fc bfc" id="L81" title="All 4 branches covered.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
-<span class="fc" id="L82">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
-<span class="fc bfc" id="L83" title="All 4 branches covered.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
-<span class="fc" id="L84">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
-<span class="fc bfc" id="L85" title="All 4 branches covered.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
-<span class="fc" id="L86">            newPos = (this.getPos().translateBy(Direction.UP));</span>
+<span class="fc" id="L84">        int spawnX = this.spawn_point.getX();</span>
+<span class="fc" id="L85">        int spawnY = this.spawn_point.getY();</span>
+<span class="fc" id="L86">        int currX = this.getPos().getX();</span>
+<span class="fc" id="L87">        int currY = this.getPos().getY();</span>
+<span class="fc" id="L88">        Position newPos = null;</span>
+<span class="fc bfc" id="L89" title="All 4 branches covered.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L90">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
+<span class="fc bfc" id="L91" title="All 4 branches covered.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
+<span class="fc" id="L92">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
+<span class="fc bfc" id="L93" title="All 4 branches covered.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L94">            newPos = (this.getPos().translateBy(Direction.UP));</span>
         } else {
-<span class="fc" id="L88">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
+<span class="fc" id="L96">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
         }
-<span class="pc bpc" id="L90" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
-<span class="nc" id="L91">            newPos = null;</span>
+<span class="pc bpc" id="L98" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
+<span class="nc" id="L99">            newPos = null;</span>
         }
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
-<span class="fc" id="L94">            newPos = null;</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
+<span class="fc" id="L102">            newPos = null;</span>
         }
 
-<span class="fc" id="L97">        return newPos;</span>
+<span class="fc" id="L105">        return newPos;</span>
     }
 
     /**
      * Gets the spiders previous square and returns it
+     * 
      * @param dungeonmania
      * @return Position
      */
     public Position previousSquare(DungeonMania dungeonmania) {
-<span class="fc" id="L106">        int spawnX = this.spawn_point.getX();</span>
-<span class="fc" id="L107">        int spawnY = this.spawn_point.getY();</span>
-<span class="fc" id="L108">        int currX = this.getPos().getX();</span>
-<span class="fc" id="L109">        int currY = this.getPos().getY();</span>
-<span class="fc" id="L110">        Position newPos = null;</span>
-<span class="pc bpc" id="L111" title="3 of 4 branches missed.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
-<span class="nc" id="L112">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
-<span class="pc bpc" id="L113" title="1 of 4 branches missed.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
-<span class="fc" id="L114">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
-<span class="pc bpc" id="L115" title="2 of 4 branches missed.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
-<span class="fc" id="L116">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
+<span class="fc" id="L115">        int spawnX = this.spawn_point.getX();</span>
+<span class="fc" id="L116">        int spawnY = this.spawn_point.getY();</span>
+<span class="fc" id="L117">        int currX = this.getPos().getX();</span>
+<span class="fc" id="L118">        int currY = this.getPos().getY();</span>
+<span class="fc" id="L119">        Position newPos = null;</span>
+<span class="fc bfc" id="L120" title="All 4 branches covered.">        if (currY &lt; spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L121">            newPos = (this.getPos().translateBy(Direction.DOWN));</span>
+<span class="pc bpc" id="L122" title="3 of 4 branches missed.">        } else if (currY &gt; spawnY &amp;&amp; currX &gt;= spawnX) {</span>
+<span class="nc" id="L123">            newPos = (this.getPos().translateBy(Direction.LEFT));</span>
+<span class="fc bfc" id="L124" title="All 4 branches covered.">        } else if (currY &gt;= spawnY &amp;&amp; currX &lt;= spawnX) {</span>
+<span class="fc" id="L125">            newPos = (this.getPos().translateBy(Direction.RIGHT));</span>
         } else {
-<span class="nc" id="L118">            newPos = (this.getPos().translateBy(Direction.UP));</span>
+<span class="fc" id="L127">            newPos = (this.getPos().translateBy(Direction.UP));</span>
         }
-<span class="pc bpc" id="L120" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
-<span class="nc" id="L121">            newPos = null;</span>
-        }
-
-<span class="pc bpc" id="L124" title="1 of 2 branches missed.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
-<span class="nc" id="L125">            newPos = null;</span>
+<span class="pc bpc" id="L129" title="3 of 4 branches missed.">        if (dungeonmania.getCharacter().getisInvincible() &amp;&amp; IsCloser(this.getPos(), newPos, dungeonmania)) {</span>
+<span class="nc" id="L130">            newPos = null;</span>
         }
 
-<span class="fc" id="L128">        return newPos;</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (BoulderGoal.hasBoulder(dungeonmania, newPos)) {</span>
+<span class="fc" id="L134">            newPos = null;</span>
+        }
+
+<span class="fc" id="L137">        return newPos;</span>
     }
 
     @Override
     public void receiveDMG(int damage) {
-<span class="nc" id="L133">        super.setHealth(super.getHealth() - super.getDamage());</span>
-<span class="nc" id="L134">    }</span>
+<span class="nc" id="L142">        super.setHealth(super.getHealth() - getDamage().calculateDamage());</span>
+<span class="nc" id="L143">    }</span>
 
     public void setDirection(Boolean direction) {
-<span class="fc" id="L137">        this.clockwise = direction;</span>
-<span class="fc" id="L138">    }</span>
+<span class="fc" id="L146">        this.clockwise = direction;</span>
+<span class="fc" id="L147">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

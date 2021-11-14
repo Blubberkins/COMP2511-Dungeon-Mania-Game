@@ -74,41 +74,41 @@ public class Character extends Entity{
         Entity tobeRemoved = null;
         BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity,
                             currentGame.getItems());
-                    if (outcome == BattleOutcome.CHARACTER_WINS) {
-                        tobeRemoved = entity;
-                        ((MovingEntity) entity).setInBattle(false);
-                        this.setInBattle(false);
-                        if (entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
-                            currentGame.winItem(((ZombieToast) entity).getArmour());
-                        }
-                        if (entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
-                            currentGame.winItem(((Mercenary) entity).getArmour());
-                        }
-                        int probability = ThreadLocalRandom.current().nextInt(0, 11);
-                        if (probability == 1) {
-                            currentGame.AddItem("one_ring");
-                        }
+        if (outcome == BattleOutcome.CHARACTER_WINS) {
+            tobeRemoved = entity;
+            ((MovingEntity) entity).setInBattle(false);
+            this.setInBattle(false);
+            if (entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
+                currentGame.winItem(((ZombieToast) entity).getArmour());
+            }
+            if (entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+                currentGame.winItem(((Mercenary) entity).getArmour());
+            }
+            int probability = ThreadLocalRandom.current().nextInt(0, 11);
+            if (probability == 1) {
+                currentGame.AddItem("one_ring");
+            }
 
-                    } else if (outcome == BattleOutcome.ENEMY_WINS) {
-                        ((MovingEntity) entity).setInBattle(false);
-                        Boolean HasOneRing = false;
-                        for (Entity item : currentGame.getItems()) {
-                            if (item instanceof TheOneRingEntity) {
-                                HasOneRing = true;
-                                ((TheOneRingEntity) item).setIsUsed(true);
-                            }
-                        }
-                        if (!HasOneRing) {
-                            tobeRemoved = updateCharacter;
-                        } else {
-                            this.setHealth(30);
-                            this.setInBattle(false);
-                            
-                        }
+        } else if (outcome == BattleOutcome.ENEMY_WINS) {
+            ((MovingEntity) entity).setInBattle(false);
+            Boolean HasOneRing = false;
+            for (Entity item : currentGame.getItems()) {
+                if (item instanceof TheOneRingEntity) {
+                    HasOneRing = true;
+                    ((TheOneRingEntity) item).setIsUsed(true);
+                }
+            }
+            if (!HasOneRing) {
+                tobeRemoved = updateCharacter;
+            } else {
+                this.setHealth(100);
+                this.setInBattle(false);
+                
+            }
 
-                    }
-                    currentGame.removeUsedItems();
-                    return tobeRemoved;
+        }
+            currentGame.removeUsedItems();
+            return tobeRemoved;
     }
 
     public boolean RealisBomb(Position e) {
