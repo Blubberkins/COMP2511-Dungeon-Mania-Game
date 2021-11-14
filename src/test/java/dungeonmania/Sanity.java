@@ -2,17 +2,12 @@ package dungeonmania;
 
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.DungeonManiaController;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
 
 public class Sanity {
 

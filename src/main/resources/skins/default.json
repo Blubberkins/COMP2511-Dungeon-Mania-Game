@@ -1,7 +1,8 @@
 {
     "main_menu": {
-        "background_image": "images/backgrounds/main_menu.png",
-        "text_color": "white"
+        "background_image": "images/backgrounds/actualbg.jfif",
+        "audio":"images/music.mp3",
+        "text_color": "black"
     },
     "game": {
         "background_image": {

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Character extends Entity{
+public class Character extends Entity {
     private int health;
     private Damage damage;
     private Boolean inBattle;
@@ -82,8 +82,7 @@ public class Character extends Entity{
      */
     public Entity doBattle(Character updateCharacter, MovingEntity entity, DungeonMania currentGame, List<Entity> toRemove) {
         Entity tobeRemoved = null;
-        BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity,
-                            currentGame.getItems());
+        BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity, currentGame.getItems());
         if (outcome == BattleOutcome.CHARACTER_WINS) {
             tobeRemoved = entity;
             ((MovingEntity) entity).setInBattle(false);
@@ -113,7 +112,7 @@ public class Character extends Entity{
             } else {
                 this.setHealth(100);
                 this.setInBattle(false);
-                
+
             }
 
         }
@@ -122,7 +121,7 @@ public class Character extends Entity{
     }
 
     public boolean RealisBomb(Position e) {
-        if(RealisAdjacent(e)) {
+        if (RealisAdjacent(e)) {
             return true;
         }
         if (this.getPos().translateBy(Direction.UP).translateBy(Direction.LEFT).equals(e)) {
@@ -140,13 +139,14 @@ public class Character extends Entity{
         return false;
     }
 
-    public DungeonResponse processItem(String itemUsed, DungeonMania currentGame, List<String> buildables) throws InvalidActionException{ 
+    public DungeonResponse processItem(String itemUsed, DungeonMania currentGame, List<String> buildables)
+            throws InvalidActionException {
         if (itemUsed != null) {
             if (currentGame.getItemFromId(itemUsed) == null) {
                 throw new InvalidActionException("Item Not In Inventory");
             }
             if (currentGame.getItemFromId(itemUsed).getType().equals("bomb")) {
-                    Boolean isActivated = false;
+                Boolean isActivated = false;
                 for (Entity entity : currentGame.getEntities()) {
                     if (entity.getType().equals("switch") && RealisAdjacent(entity.getPos())) {
                         isActivated = ((FloorSwitch) entity).isTriggered();
@@ -192,6 +192,7 @@ public class Character extends Entity{
         }
         return null;
     }
+
     /**
      * Moves the character in the game given a direction also checks for blocked
      * movement by walls and boulders
@@ -342,6 +343,8 @@ public class Character extends Entity{
         if (this.damage instanceof Bow) {
             weapon = new Bow(weapon, pos, wtype, id);
         }
+
+        this.setWeapon(weapon);
     }
 
     public void receiveDMG(int damage2) {

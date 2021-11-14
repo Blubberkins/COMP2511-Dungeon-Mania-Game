@@ -15,7 +15,8 @@ public class Battles {
      * @param items
      * @return BattleOutcome
      */
-    public static BattleOutcome BattleYourself(Character character,Character player , List<Entity> items, List<Entity> olditems) {
+    public static BattleOutcome BattleYourself(Character character, Character player, List<Entity> items,
+            List<Entity> olditems) {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
             ally.setInBattle(true);

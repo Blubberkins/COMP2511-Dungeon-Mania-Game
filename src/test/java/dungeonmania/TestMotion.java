@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import dungeonmania.response.models.*;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ public class TestMotion {
     public void reverse() {
         DungeonManiaController dm = new DungeonManiaController();
         dm.newGame("basicmap11", "Standard");
-        DungeonMania game = dm.getLoadedGame();
         for (int i = 0; i < 5; i++) {
             dm.tick(null, Direction.UP);
             dm.tick(null, Direction.DOWN);
@@ -34,13 +32,13 @@ public class TestMotion {
         DungeonManiaController dm = new DungeonManiaController();
         DungeonMania game = null;
         int spider = -1;
-        while (spider != 0){
+        while (spider != 0) {
             int spidercount = 0;
             dm.newGame("basicmap12", "standard");
             game = dm.getLoadedGame();
             List<Entity> entities = game.getEntities();
             for (Entity e : entities) {
-                if(e instanceof Spider) {
+                if (e instanceof Spider) {
                     spidercount++;
                 }
             }
@@ -53,7 +51,7 @@ public class TestMotion {
         // pick up key
         dm.tick(null, Direction.RIGHT);
         assertTrue(game.getItems().size() == 1);
-;
+        ;
 
         // walk through door then portal
         dm.tick(null, Direction.RIGHT);
@@ -63,7 +61,7 @@ public class TestMotion {
         assertTrue(player.getPos().getY() == 1);
 
     }
-    
+
     public Boolean hasSpider(DungeonMania game, Position position) {
         List<Entity> entities = game.getEntities();
 

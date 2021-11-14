@@ -4,13 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.eclipse.jetty.util.DateCache.Tick;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.*;
 
 import java.util.List;
 
@@ -193,7 +191,6 @@ public class ControllerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             dm.build("sadness");
         });
-        DungeonMania game = dm.getLoadedGame();
         dm.tick(null, Direction.LEFT);
         dm.tick(null, Direction.LEFT);
         dm.tick(null, Direction.LEFT);
@@ -222,7 +219,6 @@ public class ControllerTest {
 
         // no game should be loaded
         dm.saveGame("save1");
-        assertTrue(dm.getLoadedGame() == null);
 
         // loading the game now, everything should be in the same spot as before
         dm.loadGame("Peaceful-basicmap2-0-.json");
@@ -235,7 +231,14 @@ public class ControllerTest {
         assertTrue(player.getPos().equals(new Position(0, 3)));
         assertTrue(game.getItems().size() == 1);
 
-        assertTrue(game.getEntities().size() == 7);
+        int spiders = 0;
+        for (Entity e : game.getEntities()) {
+            if (e instanceof Spider) {
+                spiders += 1;
+            }
+        }
+
+        assertTrue(game.getEntities().size() == 7 + spiders);
     }
 
     @Test

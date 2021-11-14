@@ -2,13 +2,11 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.*;
 
 import java.util.List;
@@ -81,8 +79,7 @@ public class GoalTest {
             spider = spidercount;
 
         }
-        Character player = dungeonManiaController.getLoadedGame().getCharacter();
-        // maxing out the hp of the character so they don't die to random spiders
+       
 
         for (int i = 0; i < 3; i++) {
             dungeonManiaController.tick(null, Direction.DOWN);
@@ -255,8 +252,6 @@ public class GoalTest {
             spider = spidercount;
 
         }
-        Character player = game.getCharacter();
-        // maxing out the hp of the character so they don't die to random spiders
 
         // player on (0, 0)
         dungeonManiaController.tick(null, Direction.RIGHT);
@@ -293,7 +288,6 @@ public class GoalTest {
             spider = spidercount;
 
         }
-        Character player = dungeonManiaController.getLoadedGame().getCharacter();
         // maxing out the hp of the character so they don't die to random spiders
 
         // player to head straight to the exit
@@ -353,19 +347,13 @@ public class GoalTest {
             spider = spidercount;
 
         }
-        Character player = dungeonManiaController.getLoadedGame().getCharacter();
-        // maxing out the hp of the character so they don't die to random spiders
 
         // player on (0, 0), will dodge the treasure on (2, 0)
         // and go to the exit on (3, 0)
         dungeonManiaController.tick(null, Direction.DOWN);
-
         dungeonManiaController.tick(null, Direction.RIGHT);
-
         dungeonManiaController.tick(null, Direction.RIGHT);
-
         dungeonManiaController.tick(null, Direction.RIGHT);
-
         dungeonManiaController.tick(null, Direction.UP);
 
         assertFalse(dungeonManiaController.getLoadedGame() == null);

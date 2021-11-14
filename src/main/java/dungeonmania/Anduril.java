@@ -14,6 +14,6 @@ public class Anduril extends SwordEntity {
 
     @Override
     public int calculateDamage() {
-        return 5 + weapon.calculateDamage();
+        return 10 + weapon.calculateDamage();
     }
 }
