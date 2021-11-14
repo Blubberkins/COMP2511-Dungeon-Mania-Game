@@ -225,25 +225,18 @@ public class m3testPart2 {
         // but right now we are in combat with the first mercenary
         // on (2, 0), having picked up the sun stone on (1, 0)
         dm.tick(null, Direction.RIGHT);
-        dm.tick(null, Direction.RIGHT);
-
-        // to fix issue where the character dies, we'll increase
-        // their damage and health
-        // we're only checking that midnight armor does relatively more/makes them take
-        // relatively less, and we need to break past the mercenary's armour
-        game.getCharacter().setDamage(100);
-        game.getCharacter().setHealth(50);
-
         int mHP = firstM.getHealth();
         int dmgGiven = 0;
         int cHP = game.getCharacter().getHealth();
         int dmgReceived = 0;
+        dm.tick(null, Direction.RIGHT);
+        dmgGiven = mHP - firstM.getHealth();
+        dmgReceived = cHP - game.getCharacter().getHealth();
+        // restore health
+        game.getCharacter().setHealth(100);
+
         for (int i = 0; i < 5; i++) {
             dm.tick(null, Direction.NONE);
-            if (i == 0) {
-                dmgGiven = mHP - firstM.getHealth();
-                dmgReceived = cHP - game.getCharacter().getHealth();
-            }
         }
 
         // the second mercenary should now be the only mercenary
