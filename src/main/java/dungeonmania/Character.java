@@ -72,8 +72,15 @@ public class Character extends Entity {
         return false;
     }
 
-    public Entity doBattle(Character updateCharacter, MovingEntity entity, DungeonMania currentGame,
-            List<Entity> toRemove) {
+    /**
+     * Completes a battle
+     * @param updateCharacter
+     * @param entity
+     * @param currentGame
+     * @param toRemove
+     * @return
+     */
+    public Entity doBattle(Character updateCharacter, MovingEntity entity, DungeonMania currentGame, List<Entity> toRemove) {
         Entity tobeRemoved = null;
         BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity, currentGame.getItems());
         if (outcome == BattleOutcome.CHARACTER_WINS) {

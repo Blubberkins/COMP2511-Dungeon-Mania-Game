@@ -36,7 +36,6 @@ public class OlderPlayer extends Character {
         if (outcome == BattleOutcome.ENEMY_WINS) {
             tobeRemoved = character;
         }
-
         return tobeRemoved;
     }
 

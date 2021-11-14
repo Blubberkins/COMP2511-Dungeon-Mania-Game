@@ -13,6 +13,7 @@ public class DoorEntity extends StaticEntity {
     public Boolean getIsOpen() {
         return isOpen;
     }
+    
     public void setIsOpen(Boolean isOpen) {
         this.isOpen = isOpen;
     }

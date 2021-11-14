@@ -933,6 +933,10 @@ public class DungeonManiaController {
         return this.loadedgame;
     }
 
+    /**
+     * Rewinds the game
+     * @throws IllegalArgumentException
+     */
     public void RewindGame() throws IllegalArgumentException {
         int numSaves = tick;
         String difficulty = this.loadedgame.getDifficulty();

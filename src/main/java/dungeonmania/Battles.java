@@ -64,7 +64,6 @@ public class Battles {
             if (item instanceof ArmourEntity) {
                 ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
                 multiplier = multiplier / 2;
-
             }
         }
         character.receiveDMG((int) Math.floor(enemydamage * multiplier));
@@ -152,7 +151,7 @@ public class Battles {
             return BattleOutcome.ENEMY_WINS;
         }
         return BattleOutcome.NEITHER;
-    }
+    }   
 
     public static Bow findBow(List<Entity> items) {
         for (Entity e : items) {
