@@ -148,9 +148,13 @@
             "y": 1,
             "type": "swamp_tile", 
             "movement_factor": 3
+        }, {
+            "x": 10, 
+            "y": 10,
+            "type": "treasure"
         }
     ],
     "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }
 }

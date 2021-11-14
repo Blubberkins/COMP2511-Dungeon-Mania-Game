@@ -95,6 +95,14 @@ public class DungeonMania {
         return null;
 
     }
+    public Entity getItemFromId(List<Entity> items, String id) {
+        for (Entity item : items) {
+            if (item.getId().equals(id)) {
+                return item;
+            }
+        }
+        return null;
+    }
 
     /**
      * Given a string of the desired item, crafts the item and consumes necessary

@@ -101,7 +101,7 @@ public class m3test {
     @Test
     public void testHydra() {
         int numIncreases = 0;
-        int numTrials = 2500;
+        int numTrials = 2;
         for (int i = 0; i < numTrials; i++) {
             DungeonManiaController dm = new DungeonManiaController();
             DungeonMania game = null;
@@ -605,7 +605,10 @@ public class m3test {
         dm.tick(null, Direction.LEFT);
         dm.rewind(3);
         game = dm.getLoadedGame();
-        assert(game.getEntities().size() == numberofEntities + 1);
+        assert(game.getEntities().size() == numberofEntities);
+        dm.tick(null,Direction.RIGHT);
+        dm.tick(null,Direction.LEFT);
+        dm.tick(null,Direction.LEFT);
         
         
     }

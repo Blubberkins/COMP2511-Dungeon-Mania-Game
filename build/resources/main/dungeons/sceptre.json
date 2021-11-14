@@ -24,9 +24,13 @@
             "x": 7,
             "y": 0,
             "type": "mercenary"
+        }, {
+            "x": 10, 
+            "y": 10,
+            "type": "treasure"
         }
     ],
         "goal-condition": {
-        "goal": "exit"
+        "goal": "treasure"
     }
 }

@@ -15,6 +15,63 @@ public class Battles {
      * @param items
      * @return BattleOutcome
      */
+    public static BattleOutcome BattleYourself(Character character,Character player , List<Entity> items, List<Entity> olditems) {
+        int allyDamage = 0;
+        for (MovingEntity ally : character.getAllies()) {
+            ally.setInBattle(true);
+            allyDamage = (ally.getDamage().calculateDamage() + ally.getHealth()) / 10;
+            player.receiveDMG(allyDamage);
+        }
+
+        Boolean anduril = false;
+        int characterDamage = (character.getDamage().calculateDamage() + character.getHealth()) / 10;
+        Boolean hasBow = false;
+        for (Entity item : items) {
+            if (item instanceof SwordEntity) {
+                ((Damage) item).decrementDurability();
+                if (item instanceof Anduril) {
+                    anduril = true;
+                }
+            }
+            if (item instanceof Bow) {
+                hasBow = true;
+            }
+            if (item instanceof MidnightArmour) {
+                characterDamage += 5;
+            }
+        }
+            if (hasBow) {
+                findBow(items).decrementDurability();
+            }
+            int prev = player.getHealth();
+            player.receiveDMG(characterDamage);
+            int next = player.getHealth();
+            if (next > prev) {
+                player.setHealth(2 * prev - next);
+            }
+
+        if (!player.isAlive()) {
+            character.setInBattle(false);
+            for (MovingEntity ally : character.getAllies()) {
+                ally.setInBattle(false);
+            }
+            return BattleOutcome.CHARACTER_WINS;
+        }
+        int enemydamage = (player.getDamage().calculateDamage() + player.getHealth()) / 5;
+        double multiplier = 1.0;
+        for (Entity item : items) {
+            if (item instanceof ArmourEntity) {
+                ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
+                multiplier = multiplier / 2;
+
+            }
+        }
+        character.receiveDMG((int) Math.floor(enemydamage * multiplier));
+        if (!character.isAlive()) {
+            return BattleOutcome.ENEMY_WINS;
+        }
+        return BattleOutcome.NEITHER;
+    }
     public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items) {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {

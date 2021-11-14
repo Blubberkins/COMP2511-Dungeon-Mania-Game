@@ -1,12 +1,16 @@
 package dungeonmania;
 
+import dungeonmania.Battles.BattleOutcome;
+import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class Character extends Entity {
+public class Character extends Entity{
     private int health;
     private Damage damage;
     private Boolean inBattle;
@@ -20,7 +24,7 @@ public class Character extends Entity {
         super(pos, type, id);
         super.setIsInteractable(false);
         this.damage = new BaseDamage(10, null, null, null);
-        this.health = 30;
+        this.health = 100;
         this.allies = new ArrayList<>();
         this.inBattle = false;
         this.isInvincible = false;
@@ -47,7 +51,137 @@ public class Character extends Entity {
             this.setInvisible(false);
         }
     }
+        /**
+     * Checks if a position is adjacent
+     * 
+     * @param e
+     * @return boolean
+     */
+    public boolean RealisAdjacent(Position e) {
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.UP);
+        directions.add(Direction.DOWN);
+        directions.add(Direction.LEFT);
+        directions.add(Direction.RIGHT);
+        for (Direction d : directions) {
+            if (this.getPos().translateBy(d).equals(e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public Entity doBattle(Character updateCharacter, MovingEntity entity, DungeonMania currentGame, List<Entity> toRemove) {
+        Entity tobeRemoved = null;
+        BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity,
+                            currentGame.getItems());
+                    if (outcome == BattleOutcome.CHARACTER_WINS) {
+                        tobeRemoved = entity;
+                        ((MovingEntity) entity).setInBattle(false);
+                        this.setInBattle(false);
+                        if (entity instanceof ZombieToast && ((ZombieToast) entity).HasArmour()) {
+                            currentGame.winItem(((ZombieToast) entity).getArmour());
+                        }
+                        if (entity instanceof Mercenary && ((Mercenary) entity).HasArmour()) {
+                            currentGame.winItem(((Mercenary) entity).getArmour());
+                        }
+                        int probability = ThreadLocalRandom.current().nextInt(0, 11);
+                        if (probability == 1) {
+                            currentGame.AddItem("one_ring");
+                        }
 
+                    } else if (outcome == BattleOutcome.ENEMY_WINS) {
+                        ((MovingEntity) entity).setInBattle(false);
+                        Boolean HasOneRing = false;
+                        for (Entity item : currentGame.getItems()) {
+                            if (item instanceof TheOneRingEntity) {
+                                HasOneRing = true;
+                                ((TheOneRingEntity) item).setIsUsed(true);
+                            }
+                        }
+                        if (!HasOneRing) {
+                            tobeRemoved = updateCharacter;
+                        } else {
+                            this.setHealth(30);
+                            this.setInBattle(false);
+                            
+                        }
+
+                    }
+                    currentGame.removeUsedItems();
+                    return tobeRemoved;
+    }
+
+    public boolean RealisBomb(Position e) {
+        if(RealisAdjacent(e)) {
+            return true;
+        }
+        if (this.getPos().translateBy(Direction.UP).translateBy(Direction.LEFT).equals(e)) {
+            return true;
+        }
+        if (this.getPos().translateBy(Direction.UP).translateBy(Direction.RIGHT).equals(e)) {
+            return true;
+        }
+        if (this.getPos().translateBy(Direction.DOWN).translateBy(Direction.LEFT).equals(e)) {
+            return true;
+        }
+        if (this.getPos().translateBy(Direction.DOWN).translateBy(Direction.RIGHT).equals(e)) {
+            return true;
+        }
+        return false;
+    }
+
+    public DungeonResponse processItem(String itemUsed, DungeonMania currentGame, List<String> buildables) throws InvalidActionException{ 
+        if (itemUsed != null) {
+            if (currentGame.getItemFromId(itemUsed) == null) {
+                throw new InvalidActionException("Item Not In Inventory");
+            }
+            if (currentGame.getItemFromId(itemUsed).getType().equals("bomb")) {
+                    Boolean isActivated = false;
+                for (Entity entity : currentGame.getEntities()) {
+                    if (entity.getType().equals("switch") && RealisAdjacent(entity.getPos())) {
+                        isActivated = ((FloorSwitch) entity).isTriggered();
+                    }
+                }
+                if (!isActivated) {
+                    throw new InvalidActionException("not activated");
+                }
+                List<Entity> removable = new ArrayList<>();
+                for (Entity entity : currentGame.getEntities()) {
+                    if (RealisBomb(entity.getPos())) {
+                        removable.add(entity);
+                    }
+                }
+                for (Entity e : removable) {
+                    currentGame.removeEntity(e);
+                }
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                        currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            } else if (currentGame.getItemFromId(itemUsed).getType().equals("health_potion")) {
+                this.setHealth(30);
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                        currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            } else if (currentGame.getItemFromId(itemUsed).getType().equals("invisibility_potion")) {
+                this.setInvisibleTimer(5);
+                this.setInvisible(true);
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                        currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            } else if (currentGame.getItemFromId(itemUsed).getType().equals("invincibility_potion")) {
+                this.setInvincibleTimer(5);
+                if (!currentGame.getDifficulty().equalsIgnoreCase("Hard")) {
+                    this.setInvincible(true);
+                }
+                currentGame.removeItem(currentGame.getItemFromId(itemUsed));
+                return new DungeonResponse(currentGame.getId(), currentGame.getName(), currentGame.getEntityResponses(),
+                        currentGame.getItemResponses(), buildables, GoalFactory.goalString(currentGame.getGoal()));
+            } else {
+                throw new IllegalArgumentException("invalid item id");
+            }
+        }
+        return null;
+    }
     /**
      * Moves the character in the game given a direction also checks for blocked
      * movement by walls and boulders
