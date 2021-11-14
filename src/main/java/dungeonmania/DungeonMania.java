@@ -77,6 +77,7 @@ public class DungeonMania {
      * @param e
      */
     public void removeItem(Entity e) {
+        // TODO weapon removal
         this.Items.remove(e);
     }
 
@@ -95,6 +96,7 @@ public class DungeonMania {
         return null;
 
     }
+
     public Entity getItemFromId(List<Entity> items, String id) {
         for (Entity item : items) {
             if (item.getId().equals(id)) {
@@ -586,10 +588,10 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("spider")) {
             entity = new Spider(pos, Type, id);
         }
-        if(Type.equalsIgnoreCase("time_turner")){
+        if (Type.equalsIgnoreCase("time_turner")) {
             entity = new TimeTurner(pos, Type, id);
         }
-        if(Type.equalsIgnoreCase("time_travelling_portal")){
+        if (Type.equalsIgnoreCase("time_travelling_portal")) {
             entity = new TimeTravellingPortal(pos, Type, id);
         }
         if (Type.equalsIgnoreCase("exit")) {
@@ -678,7 +680,7 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
         }
-        if(Type.equalsIgnoreCase("time_turner")){
+        if (Type.equalsIgnoreCase("time_turner")) {
             entity = new TimeTurner(null, Type, id);
         }
         if (Type.equalsIgnoreCase("arrow")) {

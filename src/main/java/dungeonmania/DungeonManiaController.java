@@ -312,26 +312,6 @@ public class DungeonManiaController {
         return false;
     }
 
-    public boolean RealisBomb(Position e) {
-        DungeonMania dungeon = this.loadedgame;
-        if (RealisAdjacent(e)) {
-            return true;
-        }
-        if (dungeon.getCharacter().getPos().translateBy(Direction.UP).translateBy(Direction.LEFT).equals(e)) {
-            return true;
-        }
-        if (dungeon.getCharacter().getPos().translateBy(Direction.UP).translateBy(Direction.RIGHT).equals(e)) {
-            return true;
-        }
-        if (dungeon.getCharacter().getPos().translateBy(Direction.DOWN).translateBy(Direction.LEFT).equals(e)) {
-            return true;
-        }
-        if (dungeon.getCharacter().getPos().translateBy(Direction.DOWN).translateBy(Direction.RIGHT).equals(e)) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Checks if a mercenary is adjacent to a given position
      * 
@@ -402,13 +382,6 @@ public class DungeonManiaController {
                     }
                     ((OlderPlayer) olderPlayer).move(currentGame, ((OlderPlayer) olderPlayer).getItems(),
                             this.oldDirection.get(tick - TimeTravelDuration));
-                    if (itemUsed != null && oldItem.get(this.tick - TimeTravelDuration) != null) {
-                        DungeonResponse d = ((OlderPlayer) olderPlayer).processItem(
-                                oldItem.get(this.tick - TimeTravelDuration), currentGame, currentGame.getBuildables());
-                        if (d != null) {
-                            return d;
-                        }
-                    }
                     for (Entity firstentity : currentGame.getEntities()) {
                         Entity toRemove = null;
                         if (firstentity instanceof MovingEntity && firstentity.getPos().equals(olderPlayer.getPos())) {
@@ -474,9 +447,6 @@ public class DungeonManiaController {
                         ((Mercenary) entity).setIsBribed(false);
                     }
                 }
-                if (updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
-                    ((MovingEntity) entity).move(currentGame);
-                }
                 if (updateCharacter.getInBattle() && entity instanceof Mercenary
                         && !((MovingEntity) entity).getInBattle()) {
                     if (isMercenaryAdjacent(entity.getPos())) {
@@ -494,8 +464,11 @@ public class DungeonManiaController {
                         }
                     }
                 }
+                if (updateCharacter.getInBattle() && !((MovingEntity) entity).getInBattle()) {
+                    ((MovingEntity) entity).move(currentGame);
+                }
 
-                while (updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()
+                if (updateCharacter.getInBattle() && ((MovingEntity) entity).getInBattle()
                         && ((MovingEntity) entity).isHostile()) {
                     Entity removable = updateCharacter.doBattle(updateCharacter, (MovingEntity) entity, currentGame,
                             toRemove);
@@ -907,7 +880,6 @@ public class DungeonManiaController {
         String difficulty = dungeon.getString("difficulty");
         String mapName = dungeon.getString("mapName");
         DungeonMania dungeonMania = new DungeonMania(difficulty, mapName);
-        OlderPlayer player = null;
         JSONArray entities = dungeon.getJSONArray("entities");
         for (int i = 0; i < entities.length(); i++) {
             String type = entities.getJSONObject(i).getString("type");
@@ -918,18 +890,6 @@ public class DungeonManiaController {
         }
         dungeonMania.setCharacter(this.loadedgame.getCharacter());
         dungeonMania.createEntity(dungeonMania.getCharacter().getPos(), dungeonMania.getCharacter().getType());
-
-        JSONArray inventory = dungeon.getJSONArray("inventory");
-        for (int i = 0; i < inventory.length(); i++) {
-            String type = inventory.getJSONObject(i).getString("type");
-            if (!type.equalsIgnoreCase("time_turner")) {
-                for (Entity entity : dungeonMania.getEntities()) {
-                    if (entity instanceof OlderPlayer) {
-                        ((OlderPlayer) entity).AddItem(type, loadedgame);
-                    }
-                }
-            }
-        }
 
         JSONObject jsonGoalCondition = dungeon.getJSONObject("goal-condition");
         dungeonMania.setGoal(GoalFactory.generate(jsonGoalCondition.toString()));

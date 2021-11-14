@@ -15,7 +15,8 @@ public class Battles {
      * @param items
      * @return BattleOutcome
      */
-    public static BattleOutcome BattleYourself(Character character,Character player , List<Entity> items, List<Entity> olditems) {
+    public static BattleOutcome BattleYourself(Character character, Character player, List<Entity> items,
+            List<Entity> olditems) {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
             ally.setInBattle(true);
@@ -40,15 +41,15 @@ public class Battles {
                 characterDamage += 5;
             }
         }
-            if (hasBow) {
-                findBow(items).decrementDurability();
-            }
-            int prev = player.getHealth();
-            player.receiveDMG(characterDamage);
-            int next = player.getHealth();
-            if (next > prev) {
-                player.setHealth(2 * prev - next);
-            }
+        if (hasBow) {
+            findBow(items).decrementDurability();
+        }
+        int prev = player.getHealth();
+        player.receiveDMG(characterDamage);
+        int next = player.getHealth();
+        if (next > prev) {
+            player.setHealth(2 * prev - next);
+        }
 
         if (!player.isAlive()) {
             character.setInBattle(false);
@@ -72,6 +73,7 @@ public class Battles {
         }
         return BattleOutcome.NEITHER;
     }
+
     public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items) {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
