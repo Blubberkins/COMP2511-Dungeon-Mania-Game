@@ -60,5 +60,6 @@ passing in seed
 - Invincibility causes spiders to change direction as if there was a boulder in the way
 - If bomb is not cardinally adjacent to an activated switch, an illegal action error is thrown
 - The game either accepts movement input or item input not both
+- Prim's algorithm assumes neighbours 2 away are only in cardinal directions, exit and start of a generated dungeon are random
 
 Link to timeline and minutes: https://docs.google.com/document/d/1DuSlnb45k3kwA7Nsfz6sRFuLpjWA6yu70Jba2Ndr40c/edit?usp=sharing
