@@ -21,7 +21,6 @@ public class TheOneRingEntity extends CollectableEntities {
 
     public static synchronized TheOneRingEntity getInstance(Position pos, String type, String id) {
         if (single_instance == null) {
-
             single_instance = new TheOneRingEntity(pos, type, id);
         }
         return single_instance;

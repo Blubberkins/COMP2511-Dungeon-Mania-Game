@@ -40,15 +40,15 @@ public class Battles {
                 characterDamage += 5;
             }
         }
-            if (hasBow) {
-                findBow(items).decrementDurability();
-            }
-            int prev = player.getHealth();
-            player.receiveDMG(characterDamage);
-            int next = player.getHealth();
-            if (next > prev) {
-                player.setHealth(2 * prev - next);
-            }
+        if (hasBow) {
+            findBow(items).decrementDurability();
+        }
+        int prev = player.getHealth();
+        player.receiveDMG(characterDamage);
+        int next = player.getHealth();
+        if (next > prev) {
+            player.setHealth(2 * prev - next);
+        }
 
         if (!player.isAlive()) {
             character.setInBattle(false);
@@ -63,7 +63,6 @@ public class Battles {
             if (item instanceof ArmourEntity) {
                 ((ArmourEntity) item).setDurability(((ArmourEntity) item).getDurability() - 1);
                 multiplier = multiplier / 2;
-
             }
         }
         character.receiveDMG((int) Math.floor(enemydamage * multiplier));
@@ -72,6 +71,7 @@ public class Battles {
         }
         return BattleOutcome.NEITHER;
     }
+
     public static BattleOutcome Battle(Character character, MovingEntity entity, List<Entity> items) {
         int allyDamage = 0;
         for (MovingEntity ally : character.getAllies()) {
@@ -150,7 +150,7 @@ public class Battles {
             return BattleOutcome.ENEMY_WINS;
         }
         return BattleOutcome.NEITHER;
-    }
+    }   
 
     public static Bow findBow(List<Entity> items) {
         for (Entity e : items) {

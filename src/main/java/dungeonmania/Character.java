@@ -51,7 +51,8 @@ public class Character extends Entity{
             this.setInvisible(false);
         }
     }
-        /**
+
+    /**
      * Checks if a position is adjacent
      * 
      * @param e
@@ -70,6 +71,15 @@ public class Character extends Entity{
         }
         return false;
     }
+
+    /**
+     * Completes a battle
+     * @param updateCharacter
+     * @param entity
+     * @param currentGame
+     * @param toRemove
+     * @return
+     */
     public Entity doBattle(Character updateCharacter, MovingEntity entity, DungeonMania currentGame, List<Entity> toRemove) {
         Entity tobeRemoved = null;
         BattleOutcome outcome = Battles.Battle(updateCharacter, (MovingEntity) entity,
@@ -107,8 +117,8 @@ public class Character extends Entity{
             }
 
         }
-            currentGame.removeUsedItems();
-            return tobeRemoved;
+        currentGame.removeUsedItems();
+        return tobeRemoved;
     }
 
     public boolean RealisBomb(Position e) {

@@ -678,7 +678,7 @@ public class DungeonMania {
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
         }
-        if(Type.equalsIgnoreCase("time_turner")){
+        if (Type.equalsIgnoreCase("time_turner")) {
             entity = new TimeTurner(null, Type, id);
         }
         if (Type.equalsIgnoreCase("arrow")) {
