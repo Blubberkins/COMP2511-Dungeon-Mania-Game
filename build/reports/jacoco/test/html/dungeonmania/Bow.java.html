@@ -4,10 +4,22 @@ import dungeonmania.util.Position;
 
 public class Bow extends Weapons {
 
-    public Bow(Position pos, String type, String id) {
-<span class="fc" id="L8">        super(pos, type, id);</span>
-<span class="fc" id="L9">        super.setDurability(4);</span>
-<span class="fc" id="L10">    }</span>
-    
+    Damage weapon;
+
+    public Bow(Damage weapon, Position pos, String type, String id) {
+<span class="fc" id="L10">        super(pos, type, id);</span>
+<span class="fc" id="L11">        super.setDurability(4);</span>
+<span class="fc" id="L12">        this.weapon = weapon;</span>
+<span class="fc" id="L13">    }</span>
+
+    public Damage getWeapon() {
+<span class="nc" id="L16">        return this.weapon;</span>
+    }
+
+    @Override
+    public int calculateDamage() {
+<span class="nc" id="L21">        return 2 * weapon.calculateDamage();</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

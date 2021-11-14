@@ -8,7 +8,7 @@ public class Anduril extends SwordEntity {
 
     public Anduril(Damage weapon, Position pos, String type, String id) {
         super(weapon, pos, type, id);
-        super.setDurability(10);
+        super.setDurability(50);
         this.weapon = weapon;
     }
 

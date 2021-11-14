@@ -3,9 +3,20 @@
 import dungeonmania.util.Position;
 
 public class Assassin extends Mercenary {
+    private Damage damage;
+
     public Assassin(Position pos, String type, String id) {
-<span class="fc" id="L7">        super(pos, type, id);</span>
-<span class="fc" id="L8">        super.setDamage(10); // add to assumptions assassin does double mercenaries damage</span>
-<span class="fc" id="L9">    }</span>
+<span class="fc" id="L9">        super(pos, type, id);</span>
+<span class="fc" id="L10">        this.damage = new BaseDamage(10, null, null, null);</span>
+        // add to assumptions assassin does double mercenary's damage
+<span class="fc" id="L12">    }</span>
+
+    public void setDamage(int damage) {
+<span class="nc" id="L15">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L16">    }</span>
+
+    public Damage getDamage() {
+<span class="nc" id="L19">        return this.damage;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

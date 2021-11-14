@@ -127,6 +127,11 @@ public class App {
             return callUsingSessionAndArgument(request, (dmc) -> dmc.interact(request.queryParams("entityId")));
         }, gson::toJson);
 
+        Spark.post("/api/game/rewind/", "application/json", (request, response) -> {
+            return callUsingSessionAndArgument(request, (dmc) -> dmc.rewind(Integer.parseInt(request.queryParams("ticks"))));
+        }, gson::toJson);
+
+
         // no forum fix has been presented, so this is a quickfix
         // running randoms
         Spark.post("/api/game/new/generate/", "application/json", (request, response) -> {

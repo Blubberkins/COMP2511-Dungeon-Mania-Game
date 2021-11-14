@@ -18,7 +18,13 @@ public class Spider extends MovingEntity {
         super.setHealth(30);
         this.damage = new BaseDamage(5, null, null, null);
     }
+    public void setDamage(int damage) {
+        this.damage.setDamage(damage);
+    }
 
+    public Damage getDamage() {
+        return this.damage;
+    }
     /**
      * Checks if the current spider's desired move moves towards the character.
      * 
@@ -133,7 +139,7 @@ public class Spider extends MovingEntity {
 
     @Override
     public void receiveDMG(int damage) {
-        super.setHealth(super.getHealth() - super.getDamage().calculateDamage());
+        super.setHealth(super.getHealth() - getDamage().calculateDamage());
     }
 
     public void setDirection(Boolean direction) {

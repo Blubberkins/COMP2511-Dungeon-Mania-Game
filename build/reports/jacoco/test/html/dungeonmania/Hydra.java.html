@@ -5,20 +5,32 @@ import java.util.concurrent.ThreadLocalRandom;
 import dungeonmania.util.Position;
 
 public class Hydra extends ZombieToast {
+    private Damage damage;
+    private Position spawn;
+
     public Hydra(Position pos, String type, String id) {
-<span class="fc" id="L9">        super(pos, type, id);</span>
-<span class="fc" id="L10">        super.setHealth(40);</span>
-<span class="fc" id="L11">        super.setDamage(10);</span>
-<span class="fc" id="L12">    }</span>
+<span class="nc" id="L12">        super(pos, type, id);</span>
+<span class="nc" id="L13">        super.setHealth(40);</span>
+<span class="nc" id="L14">        this.damage = new BaseDamage(10, null, null, null);</span>
+<span class="nc" id="L15">        this.spawn = pos;</span>
+<span class="nc" id="L16">    }</span>
+
+    public void setDamage(int damage) {
+<span class="nc" id="L19">        this.damage.setDamage(damage);</span>
+<span class="nc" id="L20">    }</span>
+
+    public Damage getDamage() {
+<span class="nc" id="L23">        return this.damage;</span>
+    }
 
     @Override
     public void receiveDMG(int damage) {
-<span class="fc" id="L16">        int chance = ThreadLocalRandom.current().nextInt(0, 2);</span>
-<span class="fc bfc" id="L17" title="All 2 branches covered.">        if (chance == 0) {</span>
-<span class="fc" id="L18">            super.setHealth(super.getHealth() - damage);</span>
+<span class="nc" id="L28">        int chance = ThreadLocalRandom.current().nextInt(0, 2);</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        if (chance == 0) {</span>
+<span class="nc" id="L30">            super.setHealth(super.getHealth() - damage);</span>
         } else { // chance == 1
-<span class="fc" id="L20">            super.setHealth(super.getHealth() + damage);</span>
+<span class="nc" id="L32">            super.setHealth(super.getHealth() + damage);</span>
         }
-<span class="fc" id="L22">    }</span>
+<span class="nc" id="L34">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
