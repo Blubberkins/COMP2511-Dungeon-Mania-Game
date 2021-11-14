@@ -18,6 +18,7 @@ public class Spider extends MovingEntity {
         super.setHealth(30);
         this.damage = new BaseDamage(5, null, null, null);
     }
+    
     public void setDamage(int damage) {
         this.damage.setDamage(damage);
     }

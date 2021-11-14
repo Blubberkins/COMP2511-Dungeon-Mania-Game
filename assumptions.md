@@ -11,7 +11,7 @@ passing in seed
 - Durability of the armour a zombie possesses is decremented 
 
 **Weapons**
-- Only Bows and Swords count as weapons
+- Bows, swords and Anduril count as weapons
 
 **One Ring**
  - probability of OneRingDrop is 10%

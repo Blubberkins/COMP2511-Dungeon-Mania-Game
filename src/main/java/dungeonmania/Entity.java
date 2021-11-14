@@ -25,18 +25,23 @@ public abstract class Entity {
     public Position getPos() {
         return pos;
     }
+
     public void setPos(Position pos) {
         this.pos = pos;
     }
+
     public String getId() {
         return id;
     }
+
     public void setId(String id) {
         this.id = id;
     }
+
     public Boolean getIsInteractable() {
         return isInteractable;
     }
+    
     public void setIsInteractable(Boolean isInteractable) {
         this.isInteractable = isInteractable;
     }

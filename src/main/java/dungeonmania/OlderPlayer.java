@@ -16,13 +16,15 @@ public class OlderPlayer extends Character {
     public List<Entity> getItems() {
         return items;
     }
+
     public void setItems(List<Entity> items) {
         this.items = items;
     }
+
     public OlderPlayer(Position pos, String type, String id) {
         super(pos, type, id);
-        //TODO Auto-generated constructor stub
     }
+
     public boolean RealisAdjacent(Position e) {
         List<Direction> directions = new ArrayList<>();
         directions.add(Direction.UP);
@@ -38,7 +40,7 @@ public class OlderPlayer extends Character {
     }
 
     public boolean RealisBomb(Position e) {
-        if(RealisAdjacent(e)) {
+        if (RealisAdjacent(e)) {
             return true;
         }
         if (this.getPos().translateBy(Direction.UP).translateBy(Direction.LEFT).equals(e)) {
@@ -62,7 +64,7 @@ public class OlderPlayer extends Character {
         if (Type.equalsIgnoreCase("wood")) {
             entity = new WoodEntity(null, Type, id);
         }
-        if(Type.equalsIgnoreCase("time_turner")){
+        if (Type.equalsIgnoreCase("time_turner")){
             entity = new TimeTurner(null, Type, id);
         }
         if (Type.equalsIgnoreCase("arrow")) {
@@ -160,17 +162,16 @@ public class OlderPlayer extends Character {
         }
         return null;
     }
-    public Entity OlderPlayerBattle(DungeonMania dungeonmania, Character character){
+    public Entity OlderPlayerBattle(DungeonMania dungeonmania, Character character) {
         Entity tobeRemoved = null;
         BattleOutcome outcome = Battles.BattleYourself(character,this,
                             dungeonmania.getItems(), this.items);
         if (outcome == BattleOutcome.CHARACTER_WINS) {
-                tobeRemoved = this;
+            tobeRemoved = this;
         }
         if (outcome == BattleOutcome.ENEMY_WINS) {
             tobeRemoved = character;
         }
-
         return tobeRemoved;
     }
 
